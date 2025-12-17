@@ -3910,6 +3910,12 @@
           this.money += amount;
           this.save();
         },
+
+        // Remove money from losing (can't go below 0)
+        removeMoney(amount) {
+          this.money = Math.max(0, this.money - amount);
+          this.save();
+        },
       };
 
       // Load account on start
@@ -4981,8 +4987,7 @@
               // Lose = lose 20% of LK difference (minimum 0)
               const loss = Math.floor(lkDiff * 0.2);
               if (loss > 0) {
-                PlayerAccount.money = Math.max(0, PlayerAccount.money - loss);
-                PlayerAccount.save();
+                PlayerAccount.removeMoney(loss);
                 updateAccountDisplay();
               }
             }
