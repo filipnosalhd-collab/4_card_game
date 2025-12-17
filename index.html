@@ -1701,6 +1701,274 @@
         opacity: 0.5;
       }
 
+      /* Account Panel */
+      .account-panel {
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid var(--gold);
+        border-radius: 15px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        max-width: 200px;
+      }
+
+      .account-name-row {
+        margin-bottom: 0.8rem;
+      }
+
+      .account-name-input {
+        width: 100%;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--gold);
+        border-radius: 8px;
+        color: var(--cream);
+        font-family: "Cinzel", serif;
+        font-size: 1rem;
+        text-align: center;
+      }
+
+      .account-name-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .account-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .account-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.3rem 0;
+      }
+
+      .stat-label {
+        font-size: 1rem;
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      .stat-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--cream);
+      }
+
+      .stat-bonus {
+        display: none;
+      }
+
+      .upgrade-btn {
+        width: 100%;
+        padding: 0.5rem;
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        border: none;
+        border-radius: 8px;
+        color: #000;
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .upgrade-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+      }
+
+      /* Upgrade Modal */
+      .upgrade-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .upgrade-modal.active {
+        display: flex;
+      }
+
+      .upgrade-content {
+        background: linear-gradient(135deg, var(--velvet), #2a1a1a);
+        border: 3px solid var(--gold);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+      }
+
+      .upgrade-title {
+        color: var(--gold);
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .upgrade-current {
+        font-size: 1.2rem;
+        color: var(--cream);
+        margin-bottom: 1.5rem;
+      }
+
+      .upgrade-bonus {
+        display: none;
+      }
+
+      .upgrade-slider-container {
+        margin-bottom: 1.5rem;
+      }
+
+      .upgrade-slider-container label {
+        display: block;
+        color: var(--cream);
+        margin-bottom: 0.5rem;
+      }
+
+      .upgrade-slider {
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      .upgrade-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--gold);
+        cursor: pointer;
+      }
+
+      .upgrade-points {
+        display: block;
+        color: #4ade80;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 0.5rem;
+      }
+
+      .upgrade-preview {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .upgrade-new,
+      .upgrade-cost,
+      .upgrade-balance {
+        margin: 0.5rem 0;
+        color: var(--cream);
+      }
+
+      .upgrade-cost span:last-child {
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      .upgrade-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .upgrade-confirm-btn,
+      .upgrade-cancel-btn {
+        flex: 1;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 10px;
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .upgrade-confirm-btn {
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        color: #000;
+      }
+
+      .upgrade-confirm-btn:hover:not(:disabled) {
+        transform: scale(1.02);
+      }
+
+      .upgrade-confirm-btn:disabled {
+        background: #666;
+        cursor: not-allowed;
+      }
+
+      .upgrade-cancel-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--cream);
+        border: 1px solid var(--gold);
+      }
+
+      /* LK display in game */
+      .luck-display {
+        font-size: 0.8rem;
+        color: #4ade80;
+        margin-top: 0.2rem;
+      }
+
+      /* LK Slider in setup */
+      .luck-slider-group {
+        margin-top: 1rem;
+      }
+
+      .luck-slider-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .luck-slider {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.2);
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      .luck-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #4ade80;
+        cursor: pointer;
+      }
+
+      .luck-value {
+        display: none;
+      }
+
+      .luck-input {
+        width: 70px;
+        padding: 0.3rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--gold);
+        border-radius: 5px;
+        color: var(--cream);
+        font-family: "Cinzel", serif;
+        text-align: center;
+      }
+
       /* Language button - right corner */
       .lang-btn {
         position: fixed;
@@ -2349,6 +2617,34 @@
       <h1 class="logo">4 CARDS</h1>
       <p class="subtitle" data-i18n="subtitle">Cztero Karcianka</p>
 
+      <!-- Player Account Panel -->
+      <div class="account-panel" id="accountPanel">
+        <div class="account-name-row">
+          <input
+            type="text"
+            class="account-name-input"
+            id="accountNameInput"
+            placeholder="Twoja nazwa..."
+            maxlength="12"
+            onchange="saveAccountName()"
+          />
+        </div>
+        <div class="account-stats">
+          <div class="account-stat">
+            <span class="stat-label">LK</span>
+            <span class="stat-value" id="accountLuck">0</span>
+            <span class="stat-bonus" id="accountLuckBonus">(+0%)</span>
+          </div>
+          <div class="account-stat">
+            <span class="stat-label">Ⱡ</span>
+            <span class="stat-value" id="accountMoney">100</span>
+          </div>
+        </div>
+        <button class="upgrade-btn" onclick="showUpgradeModal()">
+          ⬆️ <span data-i18n="upgradeLuck">ULEPSZ LK</span>
+        </button>
+      </div>
+
       <div class="menu-cards">
         <div class="menu-card" style="--i: 0">A</div>
         <div class="menu-card" style="--i: 1">K</div>
@@ -2378,6 +2674,65 @@
         >
           INSTRUKCJA
         </button>
+      </div>
+    </div>
+
+    <!-- Upgrade LK Modal -->
+    <div class="upgrade-modal" id="upgradeModal">
+      <div class="upgrade-content">
+        <h2 class="upgrade-title">
+          ⬆️ <span data-i18n="upgradeLuck">ULEPSZ SZCZĘŚCIE</span>
+        </h2>
+        <div class="upgrade-current">
+          <span data-i18n="currentLK">Aktualny LK:</span>
+          <span id="upgradeCurrent">0</span>
+          <span class="upgrade-bonus" id="upgradeCurrentBonus">(+0%)</span>
+        </div>
+        <div class="upgrade-slider-container">
+          <label data-i18n="pointsToAdd">Punkty do dodania:</label>
+          <input
+            type="range"
+            class="upgrade-slider"
+            id="upgradeSlider"
+            min="1"
+            max="100"
+            value="1"
+            oninput="updateUpgradePreview()"
+          />
+          <span class="upgrade-points" id="upgradePoints">+1</span>
+        </div>
+        <div class="upgrade-preview">
+          <div class="upgrade-new">
+            <span data-i18n="newLK">Nowy LK:</span>
+            <span id="upgradeNew">1</span>
+            <span class="upgrade-bonus" id="upgradeNewBonus">(+0.1%)</span>
+          </div>
+          <div class="upgrade-cost">
+            <span data-i18n="cost">Koszt:</span>
+            <span id="upgradeCost">1</span> Ⱡ
+          </div>
+          <div class="upgrade-balance">
+            <span data-i18n="yourBalance">Twoje Ⱡ:</span>
+            <span id="upgradeBalance">100</span>
+          </div>
+        </div>
+        <div class="upgrade-buttons">
+          <button
+            class="upgrade-confirm-btn"
+            id="upgradeConfirmBtn"
+            onclick="confirmUpgrade()"
+            data-i18n="upgrade"
+          >
+            ULEPSZ
+          </button>
+          <button
+            class="upgrade-cancel-btn"
+            onclick="closeUpgradeModal()"
+            data-i18n="cancel"
+          >
+            ANULUJ
+          </button>
+        </div>
       </div>
     </div>
 
@@ -2456,6 +2811,63 @@
               maxlength="12"
               style="display: none"
             />
+          </div>
+        </div>
+
+        <!-- LK Settings -->
+        <div class="setup-group" id="luckSettings">
+          <label class="setup-label">🍀 Szczęście (LK):</label>
+
+          <!-- Player 1 LK (shown in bot mode) -->
+          <div class="luck-slider-group" id="player1LuckGroup">
+            <div class="luck-slider-row">
+              <span id="player1LuckLabel">Ty:</span>
+              <input
+                type="range"
+                class="luck-slider"
+                id="player1LuckSlider"
+                min="0"
+                max="2000"
+                value="0"
+                oninput="updateLuckDisplay(1)"
+              />
+              <input
+                type="number"
+                class="luck-input"
+                id="player1LuckInput"
+                min="0"
+                max="2000"
+                value="0"
+                onchange="updateLuckFromInput(1)"
+              />
+            </div>
+            <div class="luck-value" id="player1LuckBonus">(+0% szans)</div>
+          </div>
+
+          <!-- Bot/Player 2 LK -->
+          <div class="luck-slider-group" id="player2LuckGroup">
+            <div class="luck-slider-row">
+              <span id="player2LuckLabel">Bot:</span>
+              <input
+                type="range"
+                class="luck-slider"
+                id="player2LuckSlider"
+                min="0"
+                max="2000"
+                value="0"
+                oninput="updateLuckDisplay(2)"
+              />
+              <input
+                type="number"
+                class="luck-input"
+                id="player2LuckInput"
+                min="0"
+                max="2000"
+                value="0"
+                onchange="updateLuckFromInput(2)"
+              />
+            </div>
+            <div class="luck-value" id="player2LuckBonus">(+0% szans)</div>
           </div>
         </div>
 
@@ -3406,6 +3818,258 @@
         updateLanguage();
       });
 
+      // ==================== PLAYER ACCOUNT SYSTEM ====================
+      const PlayerAccount = {
+        name: "",
+        luck: 0, // LK points (affects card draw)
+        money: 100, // Ⱡ currency
+
+        load() {
+          try {
+            const saved = localStorage.getItem("4cards-account");
+            if (saved) {
+              const data = JSON.parse(saved);
+              this.name = data.name || "";
+              this.luck = data.luck || 0;
+              this.money = data.money || 100;
+            }
+          } catch (e) {}
+        },
+
+        save() {
+          try {
+            localStorage.setItem(
+              "4cards-account",
+              JSON.stringify({
+                name: this.name,
+                luck: this.luck,
+                money: this.money,
+              })
+            );
+          } catch (e) {}
+        },
+
+        // Calculate upgrade cost - exponential scaling
+        getUpgradeCost(currentLK, pointsToAdd) {
+          let totalCost = 0;
+          for (let i = 0; i < pointsToAdd; i++) {
+            const level = currentLK + i;
+            // Cost formula: starts at 1, increases exponentially
+            totalCost += Math.floor(1 + Math.pow(level / 50, 2));
+          }
+          return totalCost;
+        },
+
+        // Upgrade luck if can afford
+        upgradeLuck(points) {
+          const cost = this.getUpgradeCost(this.luck, points);
+          if (this.money >= cost && this.luck + points <= 2000) {
+            this.money -= cost;
+            this.luck += points;
+            this.save();
+            return true;
+          }
+          return false;
+        },
+
+        // Add money from winning
+        addMoney(amount) {
+          this.money += amount;
+          this.save();
+        },
+      };
+
+      // Load account on start
+      PlayerAccount.load();
+
+      // ==================== LUCK SYSTEM ====================
+      const LuckSystem = {
+        // Convert LK to percentage bonus (0-2000 LK = 0-100% bonus chance)
+        // But capped so it's not OP - max ~50% better odds
+        getLuckBonus(lk) {
+          // Logarithmic scaling: diminishing returns
+          // 0 LK = 0%, 500 LK = ~15%, 1000 LK = ~25%, 2000 LK = ~40%
+          return Math.min(40, Math.log10(lk + 1) * 12);
+        },
+
+        // Apply luck when drawing cards - higher LK = better chance of high cards
+        applyLuckToDeck(deck, luck) {
+          const bonus = this.getLuckBonus(luck);
+          if (bonus <= 0) return deck;
+
+          // Sort deck by points (highest first)
+          const sorted = [...deck].sort((a, b) => b.points - a.points);
+          const result = [];
+
+          // For each position, chance to pick from top cards
+          for (let i = 0; i < deck.length; i++) {
+            if (sorted.length === 0) break;
+
+            // Random chance based on luck to pick better card
+            const roll = Math.random() * 100;
+            if (roll < bonus && sorted.length > 1) {
+              // Pick from top half
+              const topHalf = Math.ceil(sorted.length / 2);
+              const idx = Math.floor(Math.random() * topHalf);
+              result.push(sorted.splice(idx, 1)[0]);
+            } else {
+              // Pick randomly
+              const idx = Math.floor(Math.random() * sorted.length);
+              result.push(sorted.splice(idx, 1)[0]);
+            }
+          }
+
+          return result;
+        },
+
+        // Calculate money earned from round win
+        calculateWinnings(winnerLK, loserLK) {
+          const diff = Math.abs(winnerLK - loserLK);
+          // Base winnings + bonus for beating higher LK opponent
+          let winnings = 5;
+          if (loserLK > winnerLK) {
+            // Underdog bonus
+            winnings += Math.floor(diff / 20);
+          }
+          return winnings;
+        },
+      };
+
+      // Update account display
+      function updateAccountDisplay() {
+        const nameInput = document.getElementById("accountNameInput");
+        if (nameInput) {
+          nameInput.value = PlayerAccount.name;
+        }
+        const luckEl = document.getElementById("accountLuck");
+        if (luckEl) luckEl.textContent = PlayerAccount.luck;
+        const moneyEl = document.getElementById("accountMoney");
+        if (moneyEl) moneyEl.textContent = PlayerAccount.money;
+        const bonusEl = document.getElementById("accountLuckBonus");
+        if (bonusEl)
+          bonusEl.textContent = `(+${LuckSystem.getLuckBonus(
+            PlayerAccount.luck
+          ).toFixed(1)}%)`;
+      }
+
+      function saveAccountName() {
+        PlayerAccount.name = document
+          .getElementById("accountNameInput")
+          .value.trim();
+        PlayerAccount.save();
+      }
+
+      // Upgrade modal functions
+      function showUpgradeModal() {
+        document.getElementById("upgradeModal").classList.add("active");
+        document.getElementById("upgradeCurrent").textContent =
+          PlayerAccount.luck;
+        document.getElementById(
+          "upgradeCurrentBonus"
+        ).textContent = `(+${LuckSystem.getLuckBonus(
+          PlayerAccount.luck
+        ).toFixed(1)}%)`;
+        document.getElementById("upgradeBalance").textContent =
+          PlayerAccount.money;
+
+        // Set slider max based on what player can afford and max LK
+        const maxAffordable = Math.min(2000 - PlayerAccount.luck, 500);
+        document.getElementById("upgradeSlider").max = Math.max(
+          1,
+          maxAffordable
+        );
+        document.getElementById("upgradeSlider").value = 1;
+
+        updateUpgradePreview();
+      }
+
+      function closeUpgradeModal() {
+        document.getElementById("upgradeModal").classList.remove("active");
+      }
+
+      function updateUpgradePreview() {
+        const points = parseInt(document.getElementById("upgradeSlider").value);
+        const newLK = PlayerAccount.luck + points;
+        const cost = PlayerAccount.getUpgradeCost(PlayerAccount.luck, points);
+
+        document.getElementById("upgradePoints").textContent = `+${points}`;
+        document.getElementById("upgradeNew").textContent = newLK;
+        document.getElementById(
+          "upgradeNewBonus"
+        ).textContent = `(+${LuckSystem.getLuckBonus(newLK).toFixed(1)}%)`;
+        document.getElementById("upgradeCost").textContent = cost;
+
+        const canAfford = PlayerAccount.money >= cost && newLK <= 2000;
+        document.getElementById("upgradeConfirmBtn").disabled = !canAfford;
+      }
+
+      function confirmUpgrade() {
+        const points = parseInt(document.getElementById("upgradeSlider").value);
+        if (PlayerAccount.upgradeLuck(points)) {
+          SoundManager.play("win");
+          updateAccountDisplay();
+          closeUpgradeModal();
+        }
+      }
+
+      // LK slider functions in setup
+      function updateLuckDisplay(playerNum) {
+        const slider = document.getElementById(`player${playerNum}LuckSlider`);
+        const input = document.getElementById(`player${playerNum}LuckInput`);
+        const bonus = document.getElementById(`player${playerNum}LuckBonus`);
+
+        if (!slider || !input || !bonus) return;
+
+        const value = parseInt(slider.value);
+        input.value = value;
+        bonus.textContent = `(+${LuckSystem.getLuckBonus(value).toFixed(1)}% ${
+          currentLang === "pl" ? "szans" : "chance"
+        })`;
+      }
+
+      function updateLuckFromInput(playerNum) {
+        const slider = document.getElementById(`player${playerNum}LuckSlider`);
+        const input = document.getElementById(`player${playerNum}LuckInput`);
+        const bonus = document.getElementById(`player${playerNum}LuckBonus`);
+
+        if (!slider || !input || !bonus) return;
+
+        let value = parseInt(input.value) || 0;
+        value = Math.max(0, Math.min(2000, value));
+
+        slider.value = value;
+        input.value = value;
+        bonus.textContent = `(+${LuckSystem.getLuckBonus(value).toFixed(1)}% ${
+          currentLang === "pl" ? "szans" : "chance"
+        })`;
+      }
+
+      function initLuckSliders() {
+        // Set player 1 slider to their actual LK
+        const p1Slider = document.getElementById("player1LuckSlider");
+        const p1Input = document.getElementById("player1LuckInput");
+        if (p1Slider && p1Input) {
+          p1Slider.value = PlayerAccount.luck;
+          p1Slider.max = Math.max(PlayerAccount.luck, 2000);
+          p1Input.value = PlayerAccount.luck;
+          updateLuckDisplay(1);
+        }
+
+        // Player 2 / Bot starts at 0
+        const p2Slider = document.getElementById("player2LuckSlider");
+        const p2Input = document.getElementById("player2LuckInput");
+        if (p2Slider && p2Input) {
+          p2Slider.value = 0;
+          p2Input.value = 0;
+          updateLuckDisplay(2);
+        }
+      }
+
+      // Initialize account display on DOMContentLoaded
+      document.addEventListener("DOMContentLoaded", function () {
+        updateAccountDisplay();
+      });
+
       // ==================== SOUND SYSTEM ====================
       const SoundManager = {
         ctx: null,
@@ -3582,7 +4246,7 @@
 
       // Game State
       const gameState = {
-        mode: "bot", // 'bot' or 'local'
+        mode: "bot", // 'bot' or 'local' or 'online'
         targetScore: 2660,
         scores: [0, 0],
         decks: [[], []],
@@ -3593,14 +4257,15 @@
         inRound: false,
         inTiebreaker: false,
         tiebreakerLevel: 0,
-        tiebreakerPot: [], // Cards accumulated during tiebreaker
-        wonCardsPile: [], // Kupka wygranych kart (niedostępna dla graczy do momentu gdy skończą się karty)
+        tiebreakerPot: [],
+        wonCardsPile: [],
         gameOver: false,
         playerNames: ["Gracz 1", "BOT"],
-        currentTurn: 1, // For local multiplayer - who plays next
+        playerLuck: [0, 0], // LK for each player
+        currentTurn: 1,
         waitingForSecondPlayer: false,
-        isProcessingPlay: false, // Prevent double-clicks/rapid calls
-        isAnimating: false, // Prevent play during animations
+        isProcessingPlay: false,
+        isAnimating: false,
       };
 
       // Card definitions - standard deck from 9 up (9, 10, J, Q, K, A)
@@ -3638,8 +4303,15 @@
       // Deal cards to both players from a single shuffled deck
       function dealCards() {
         const fullDeck = createDeck();
-        gameState.decks[0] = fullDeck.slice(0, CARDS_PER_PLAYER); // First 12 cards to player 1
-        gameState.decks[1] = fullDeck.slice(CARDS_PER_PLAYER); // Last 12 cards to player 2
+        let deck1 = fullDeck.slice(0, CARDS_PER_PLAYER); // First 12 cards to player 1
+        let deck2 = fullDeck.slice(CARDS_PER_PLAYER); // Last 12 cards to player 2
+
+        // Apply luck to decks - higher LK = better card arrangement
+        deck1 = LuckSystem.applyLuckToDeck(deck1, gameState.playerLuck[0]);
+        deck2 = LuckSystem.applyLuckToDeck(deck2, gameState.playerLuck[1]);
+
+        gameState.decks[0] = deck1;
+        gameState.decks[1] = deck2;
       }
 
       // Shuffle deck
@@ -3704,10 +4376,16 @@
           gameState.mode = value;
           // Show/hide second player name input
           const player2Input = document.getElementById("player2NameInput");
+          const player2LuckLabel = document.getElementById("player2LuckLabel");
+
           if (value === "local") {
             player2Input.style.display = "block";
+            if (player2LuckLabel)
+              player2LuckLabel.textContent =
+                currentLang === "pl" ? "Gracz 2:" : "Player 2:";
           } else {
             player2Input.style.display = "none";
+            if (player2LuckLabel) player2LuckLabel.textContent = "Bot:";
           }
         } else if (option === "target") {
           gameState.targetScore = parseInt(value);
@@ -3733,6 +4411,13 @@
         gameState.playerNames[0] = name1Input || t("player1");
         gameState.playerNames[1] =
           gameState.mode === "bot" ? "BOT" : name2Input || t("player2");
+
+        // Get LK values from sliders
+        const p1Luck =
+          parseInt(document.getElementById("player1LuckInput").value) || 0;
+        const p2Luck =
+          parseInt(document.getElementById("player2LuckInput").value) || 0;
+        gameState.playerLuck = [p1Luck, p2Luck];
 
         // Reset game state
         gameState.scores = [0, 0];
@@ -4239,11 +4924,19 @@
           gameState.tiebreakerPot = [];
           resetTiebreaker();
 
-          // Play sound based on who won
+          // Play sound and award money based on who won
           const myIndex =
             gameState.mode === "online" ? onlineState.myPlayerIndex : 0;
           if (winnerIndex === myIndex) {
             SoundManager.play("win");
+            // Award money for winning
+            const loserIndex = 1 - winnerIndex;
+            const earnings = LuckSystem.calculateWinnings(
+              gameState.playerLuck[winnerIndex],
+              gameState.playerLuck[loserIndex]
+            );
+            PlayerAccount.addMoney(earnings);
+            updateAccountDisplay();
           } else {
             SoundManager.play("lose");
           }
@@ -4902,8 +5595,21 @@
             "block";
           document.getElementById("hostLobbySection").style.display = "none";
           document.getElementById("guestLobbySection").style.display = "none";
+
+          // Set player name from account
+          const nameInput = document.getElementById("onlinePlayerName");
+          if (nameInput && PlayerAccount.name) {
+            nameInput.value = PlayerAccount.name;
+          }
         } else {
           document.getElementById("setupScreen").classList.add("active");
+          initLuckSliders();
+
+          // Set player name from account
+          const nameInput = document.getElementById("player1Name");
+          if (nameInput && PlayerAccount.name) {
+            nameInput.value = PlayerAccount.name;
+          }
         }
       }
 
