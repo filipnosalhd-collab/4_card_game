@@ -2624,6 +2624,7 @@
             type="text"
             class="account-name-input"
             id="accountNameInput"
+            data-i18n-placeholder="yourNamePlaceholder"
             placeholder="Twoja nazwa..."
             maxlength="12"
             onchange="saveAccountName()"
@@ -2633,7 +2634,6 @@
           <div class="account-stat">
             <span class="stat-label">LK</span>
             <span class="stat-value" id="accountLuck">0</span>
-            <span class="stat-bonus" id="accountLuckBonus">(+0%)</span>
           </div>
           <div class="account-stat">
             <span class="stat-label">Ⱡ</span>
@@ -2681,12 +2681,11 @@
     <div class="upgrade-modal" id="upgradeModal">
       <div class="upgrade-content">
         <h2 class="upgrade-title">
-          ⬆️ <span data-i18n="upgradeLuck">ULEPSZ SZCZĘŚCIE</span>
+          ⬆️ <span data-i18n="upgradeLuck">ULEPSZ LK</span>
         </h2>
         <div class="upgrade-current">
           <span data-i18n="currentLK">Aktualny LK:</span>
           <span id="upgradeCurrent">0</span>
-          <span class="upgrade-bonus" id="upgradeCurrentBonus">(+0%)</span>
         </div>
         <div class="upgrade-slider-container">
           <label data-i18n="pointsToAdd">Punkty do dodania:</label>
@@ -2705,7 +2704,6 @@
           <div class="upgrade-new">
             <span data-i18n="newLK">Nowy LK:</span>
             <span id="upgradeNew">1</span>
-            <span class="upgrade-bonus" id="upgradeNewBonus">(+0.1%)</span>
           </div>
           <div class="upgrade-cost">
             <span data-i18n="cost">Koszt:</span>
@@ -2816,12 +2814,14 @@
 
         <!-- LK Settings -->
         <div class="setup-group" id="luckSettings">
-          <label class="setup-label">🍀 Szczęście (LK):</label>
+          <label class="setup-label" data-i18n="luckLabel"
+            >🍀 Szczęście (LK):</label
+          >
 
           <!-- Player 1 LK (shown in bot mode) -->
           <div class="luck-slider-group" id="player1LuckGroup">
             <div class="luck-slider-row">
-              <span id="player1LuckLabel">Ty:</span>
+              <span id="player1LuckLabel" data-i18n="you">Ty:</span>
               <input
                 type="range"
                 class="luck-slider"
@@ -2841,7 +2841,7 @@
                 onchange="updateLuckFromInput(1)"
               />
             </div>
-            <div class="luck-value" id="player1LuckBonus">(+0% szans)</div>
+            <div class="luck-value" id="player1LuckBonus"></div>
           </div>
 
           <!-- Bot/Player 2 LK -->
@@ -2867,7 +2867,7 @@
                 onchange="updateLuckFromInput(2)"
               />
             </div>
-            <div class="luck-value" id="player2LuckBonus">(+0% szans)</div>
+            <div class="luck-value" id="player2LuckBonus"></div>
           </div>
         </div>
 
@@ -3632,6 +3632,18 @@
           guestWaiting: "Oczekiwanie na rozpoczęcie gry przez hosta...",
           dealing: "ROZDAWANIE KART",
           shuffling: "TASOWANIE KART...",
+          // LK System
+          luck: "Szczęście",
+          upgradeLuck: "ULEPSZ LK",
+          currentLK: "Aktualny LK:",
+          pointsToAdd: "Punkty do dodania:",
+          newLK: "Nowy LK:",
+          cost: "Koszt:",
+          yourBalance: "Twoje Ⱡ:",
+          upgrade: "ULEPSZ",
+          cancel: "ANULUJ",
+          luckLabel: "🍀 Szczęście (LK):",
+          yourNamePlaceholder: "Twoja nazwa...",
         },
         en: {
           subtitle: "Four Cards Game",
@@ -3751,6 +3763,18 @@
           guestWaiting: "Waiting for host to start the game...",
           dealing: "DEALING CARDS",
           shuffling: "SHUFFLING CARDS...",
+          // LK System
+          luck: "Luck",
+          upgradeLuck: "UPGRADE LK",
+          currentLK: "Current LK:",
+          pointsToAdd: "Points to add:",
+          newLK: "New LK:",
+          cost: "Cost:",
+          yourBalance: "Your Ⱡ:",
+          upgrade: "UPGRADE",
+          cancel: "CANCEL",
+          luckLabel: "🍀 Luck (LK):",
+          yourNamePlaceholder: "Your name...",
         },
       };
 
@@ -3964,11 +3988,6 @@
         document.getElementById("upgradeModal").classList.add("active");
         document.getElementById("upgradeCurrent").textContent =
           PlayerAccount.luck;
-        document.getElementById(
-          "upgradeCurrentBonus"
-        ).textContent = `(+${LuckSystem.getLuckBonus(
-          PlayerAccount.luck
-        ).toFixed(1)}%)`;
         document.getElementById("upgradeBalance").textContent =
           PlayerAccount.money;
 
@@ -3994,9 +4013,6 @@
 
         document.getElementById("upgradePoints").textContent = `+${points}`;
         document.getElementById("upgradeNew").textContent = newLK;
-        document.getElementById(
-          "upgradeNewBonus"
-        ).textContent = `(+${LuckSystem.getLuckBonus(newLK).toFixed(1)}%)`;
         document.getElementById("upgradeCost").textContent = cost;
 
         const canAfford = PlayerAccount.money >= cost && newLK <= 2000;
