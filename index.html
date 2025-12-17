@@ -2649,8 +2649,25 @@
             Łączenie z pokojem...
           </div>
 
+          <button
+            class="menu-btn"
+            id="retryConnectBtn"
+            style="
+              display: none;
+              margin: 1rem auto;
+              background: var(--gold);
+              color: var(--velvet);
+            "
+            onclick="retryConnect()"
+            data-i18n="retryConnect"
+          >
+            SPRÓBUJ PONOWNIE
+          </button>
+
           <div class="lobby-players">
-            <div class="setup-label">Gracze w lobby:</div>
+            <div class="setup-label" data-i18n="playersInLobby">
+              Gracze w lobby:
+            </div>
             <div class="player-slots-container" id="guestPlayerSlots">
               <div class="player-slot" id="guestSlot1">
                 <span class="player-slot-icon">👤</span>
@@ -3094,6 +3111,8 @@
           hostDisconnected: "Host rozłączył się",
           roomFull: "Pokój jest pełny!",
           connectionError: "Błąd połączenia",
+          retryConnect: "SPRÓBUJ PONOWNIE",
+          roomNotFound: "Pokój nie istnieje lub host się rozłączył",
           playCards: "WYSTAW KARTY",
           player1Key: "Gracz 1: Spacja",
           player2Key: "Gracz 2: ↑",
@@ -3210,6 +3229,8 @@
           hostDisconnected: "Host disconnected",
           roomFull: "Room is full!",
           connectionError: "Connection error",
+          retryConnect: "TRY AGAIN",
+          roomNotFound: "Room does not exist or host disconnected",
           playCards: "PLAY CARDS",
           player1Key: "Player 1: Space",
           player2Key: "Player 2: ↑",
@@ -4898,16 +4919,43 @@
         }, 100);
       }
 
-      function connectToRoom(roomId) {
+      function connectToRoom(roomId, retryCount = 0) {
+        const maxRetries = 3;
+
         try {
           onlineState.peer = new Peer();
 
           onlineState.peer.on("open", () => {
             console.log("Connecting to room:", roomId);
-            const conn = onlineState.peer.connect(roomId);
+            const conn = onlineState.peer.connect(roomId, { reliable: true });
+
+            // Timeout for connection
+            const connectionTimeout = setTimeout(() => {
+              if (!conn.open) {
+                conn.close();
+                if (retryCount < maxRetries) {
+                  document.getElementById("guestLobbyStatus").textContent =
+                    currentLang === "pl"
+                      ? `Ponawiam próbę (${retryCount + 1}/${maxRetries})...`
+                      : `Retrying (${retryCount + 1}/${maxRetries})...`;
+                  onlineState.peer.destroy();
+                  setTimeout(() => connectToRoom(roomId, retryCount + 1), 1000);
+                } else {
+                  document.getElementById("guestLobbyStatus").textContent =
+                    currentLang === "pl"
+                      ? "Nie można połączyć - pokój nie istnieje lub host się rozłączył"
+                      : "Cannot connect - room does not exist or host disconnected";
+                  document
+                    .getElementById("guestLobbyStatus")
+                    .classList.add("error");
+                }
+              }
+            }, 5000);
+
             onlineState.connections.push(conn);
 
             conn.on("open", () => {
+              clearTimeout(connectionTimeout);
               document.getElementById("guestLobbyStatus").textContent = t(
                 "connectedWaitingHost"
               );
@@ -4922,6 +4970,7 @@
             conn.on("data", (data) => handleOnlineMessage(data, conn));
 
             conn.on("close", () => {
+              clearTimeout(connectionTimeout);
               document.getElementById("guestLobbyStatus").textContent =
                 t("hostDisconnected");
               document
@@ -4933,25 +4982,49 @@
             });
 
             conn.on("error", (err) => {
-              document.getElementById("guestLobbyStatus").textContent =
-                "Błąd połączenia";
-              document
-                .getElementById("guestLobbyStatus")
-                .classList.add("error");
+              clearTimeout(connectionTimeout);
+              console.error("Connection error:", err);
             });
           });
 
           onlineState.peer.on("error", (err) => {
             console.error("Peer error:", err);
-            document.getElementById("guestLobbyStatus").textContent =
-              "Nie można połączyć: " + err.type;
+
+            let errorMsg = "";
+            if (err.type === "peer-unavailable") {
+              errorMsg = t("roomNotFound");
+            } else if (err.type === "network") {
+              errorMsg =
+                currentLang === "pl"
+                  ? "Błąd sieci - sprawdź połączenie internetowe"
+                  : "Network error - check your internet connection";
+            } else {
+              errorMsg = t("connectionError") + ": " + err.type;
+            }
+
+            document.getElementById("guestLobbyStatus").textContent = errorMsg;
             document.getElementById("guestLobbyStatus").classList.add("error");
+            document.getElementById("retryConnectBtn").style.display = "block";
           });
         } catch (e) {
           document.getElementById("guestLobbyStatus").textContent =
-            "Błąd: " + e.message;
+            (currentLang === "pl" ? "Błąd: " : "Error: ") + e.message;
           document.getElementById("guestLobbyStatus").classList.add("error");
         }
+      }
+
+      function retryConnect() {
+        document.getElementById("retryConnectBtn").style.display = "none";
+        document.getElementById("guestLobbyStatus").textContent =
+          t("connectingToRoom") + "...";
+        document.getElementById("guestLobbyStatus").classList.remove("error");
+
+        if (onlineState.peer) {
+          onlineState.peer.destroy();
+        }
+        onlineState.connections = [];
+
+        connectToRoom(onlineState.roomId, 0);
       }
 
       function broadcastToAll(data) {
