@@ -1671,7 +1671,37 @@
         color: #f87171;
       }
 
-      /* Language button */
+      /* Sound button - left corner */
+      .sound-btn {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid var(--gold);
+        border-radius: 50%;
+        color: var(--gold);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        z-index: 1000;
+      }
+
+      .sound-btn:hover {
+        background: rgba(212, 175, 55, 0.2);
+        transform: scale(1.05);
+      }
+
+      .sound-btn.muted {
+        opacity: 0.5;
+      }
+
+      /* Language button - right corner */
       .lang-btn {
         position: fixed;
         top: 1rem;
@@ -2303,6 +2333,11 @@
     </style>
   </head>
   <body>
+    <!-- Sound Button -->
+    <button class="sound-btn" id="soundBtn" onclick="toggleSound()">
+      <span class="sound-icon">🔊</span>
+    </button>
+
     <!-- Language Button -->
     <button class="lang-btn" id="langBtn" onclick="toggleLanguage()">
       <span class="lang-flag">🇵🇱</span>
@@ -3371,6 +3406,180 @@
         updateLanguage();
       });
 
+      // ==================== SOUND SYSTEM ====================
+      const SoundManager = {
+        ctx: null,
+        enabled: true,
+
+        init() {
+          try {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+          } catch (e) {
+            console.log("Audio not supported");
+          }
+        },
+
+        resume() {
+          if (this.ctx && this.ctx.state === "suspended") {
+            this.ctx.resume();
+          }
+        },
+
+        play(type) {
+          if (!this.enabled || !this.ctx) return;
+          this.resume();
+
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          switch (type) {
+            case "card":
+              // Card flip sound - short click
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(800, now);
+              osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+              gain.gain.setValueAtTime(0.3, now);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+              osc.start(now);
+              osc.stop(now + 0.05);
+              break;
+
+            case "win":
+              // Win round - happy ascending
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(523, now); // C5
+              osc.frequency.setValueAtTime(659, now + 0.1); // E5
+              osc.frequency.setValueAtTime(784, now + 0.2); // G5
+              gain.gain.setValueAtTime(0.3, now);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+              osc.start(now);
+              osc.stop(now + 0.4);
+              break;
+
+            case "lose":
+              // Lose round - sad descending
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(400, now);
+              osc.frequency.exponentialRampToValueAtTime(200, now + 0.3);
+              gain.gain.setValueAtTime(0.3, now);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+              osc.start(now);
+              osc.stop(now + 0.3);
+              break;
+
+            case "tie":
+              // Tie - two quick beeps
+              osc.type = "square";
+              osc.frequency.setValueAtTime(440, now);
+              gain.gain.setValueAtTime(0.2, now);
+              gain.gain.setValueAtTime(0, now + 0.1);
+              gain.gain.setValueAtTime(0.2, now + 0.15);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+              osc.start(now);
+              osc.stop(now + 0.25);
+              break;
+
+            case "gameWin":
+              // Game win - victory fanfare
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(523, now);
+              osc.frequency.setValueAtTime(659, now + 0.15);
+              osc.frequency.setValueAtTime(784, now + 0.3);
+              osc.frequency.setValueAtTime(1047, now + 0.45);
+              gain.gain.setValueAtTime(0.4, now);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+              osc.start(now);
+              osc.stop(now + 0.7);
+              break;
+
+            case "gameLose":
+              // Game lose - sad trombone
+              osc.type = "sawtooth";
+              osc.frequency.setValueAtTime(300, now);
+              osc.frequency.exponentialRampToValueAtTime(100, now + 0.5);
+              gain.gain.setValueAtTime(0.2, now);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+              osc.start(now);
+              osc.stop(now + 0.5);
+              break;
+
+            case "click":
+              // Button click
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(600, now);
+              gain.gain.setValueAtTime(0.2, now);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+              osc.start(now);
+              osc.stop(now + 0.03);
+              break;
+
+            case "shuffle":
+              // Shuffle cards
+              osc.type = "noise" in osc ? "noise" : "sawtooth";
+              osc.frequency.setValueAtTime(100, now);
+              gain.gain.setValueAtTime(0.1, now);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+              osc.start(now);
+              osc.stop(now + 0.2);
+              break;
+
+            case "join":
+              // Player joined
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(440, now);
+              osc.frequency.setValueAtTime(880, now + 0.1);
+              gain.gain.setValueAtTime(0.3, now);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+              osc.start(now);
+              osc.stop(now + 0.2);
+              break;
+          }
+        },
+      };
+
+      // Initialize sound on first interaction
+      document.addEventListener("click", () => SoundManager.init(), {
+        once: true,
+      });
+      document.addEventListener("keydown", () => SoundManager.init(), {
+        once: true,
+      });
+
+      function toggleSound() {
+        SoundManager.enabled = !SoundManager.enabled;
+        const btn = document.getElementById("soundBtn");
+        if (SoundManager.enabled) {
+          btn.innerHTML = '<span class="sound-icon">🔊</span>';
+          btn.classList.remove("muted");
+        } else {
+          btn.innerHTML = '<span class="sound-icon">🔇</span>';
+          btn.classList.add("muted");
+        }
+        // Save preference
+        try {
+          localStorage.setItem(
+            "4cards-sound",
+            SoundManager.enabled ? "on" : "off"
+          );
+        } catch (e) {}
+      }
+
+      // Load sound preference
+      try {
+        const savedSound = localStorage.getItem("4cards-sound");
+        if (savedSound === "off") {
+          SoundManager.enabled = false;
+          document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("soundBtn").innerHTML =
+              '<span class="sound-icon">🔇</span>';
+            document.getElementById("soundBtn").classList.add("muted");
+          });
+        }
+      } catch (e) {}
+
       // Game State
       const gameState = {
         mode: "bot", // 'bot' or 'local'
@@ -3573,6 +3782,7 @@
       }
 
       function startShuffleAnimation() {
+        SoundManager.play("shuffle");
         const shuffleOverlay = document.getElementById("shuffleOverlay");
         shuffleOverlay.classList.add("active");
 
@@ -3885,6 +4095,7 @@
 
         cards.forEach((card, index) => {
           setTimeout(() => {
+            SoundManager.play("card");
             const cardEl = createCardElement(card);
             cardEl.classList.add("dealing");
             container.appendChild(cardEl);
@@ -4027,8 +4238,18 @@
           winner = `🏆 ${winnerName} ${t("winsRound")}`;
           gameState.tiebreakerPot = [];
           resetTiebreaker();
+
+          // Play sound based on who won
+          const myIndex =
+            gameState.mode === "online" ? onlineState.myPlayerIndex : 0;
+          if (winnerIndex === myIndex) {
+            SoundManager.play("win");
+          } else {
+            SoundManager.play("lose");
+          }
         } else {
           // Tie - tiebreaker
+          SoundManager.play("tie");
           resultTitle = t("tiebreaker");
           const winnerNames = winners
             .map((i) => gameState.playerNames[i])
@@ -4259,10 +4480,17 @@
       function endGame() {
         gameState.gameOver = true;
 
-        const winner =
-          gameState.scores[0] > gameState.scores[1]
-            ? gameState.playerNames[0]
-            : gameState.playerNames[1];
+        const winnerIndex = gameState.scores[0] > gameState.scores[1] ? 0 : 1;
+        const winner = gameState.playerNames[winnerIndex];
+
+        // Play sound based on who won
+        const myIndex =
+          gameState.mode === "online" ? onlineState.myPlayerIndex : 0;
+        if (winnerIndex === myIndex || gameState.mode === "bot") {
+          SoundManager.play("gameWin");
+        } else {
+          SoundManager.play("gameLose");
+        }
 
         document.getElementById("gameWinner").textContent = `${winner} ${t(
           "winsGame"
@@ -4844,10 +5072,11 @@
         }
 
         conn.on("open", () => {
+          SoundManager.play("join");
           const playerIndex = onlineState.players.length + 1; // 1, 2, 3 (host is 0)
           onlineState.players.push({
             id: conn.peer,
-            name: "Gracz " + (playerIndex + 1),
+            name: t("player1").replace("1", String(playerIndex + 1)),
             conn: conn,
           });
 
@@ -4921,13 +5150,14 @@
 
       function connectToRoom(roomId, retryCount = 0) {
         const maxRetries = 3;
+        const peerId = roomId.toLowerCase(); // Host używa lowercase
 
         try {
           onlineState.peer = new Peer();
 
           onlineState.peer.on("open", () => {
-            console.log("Connecting to room:", roomId);
-            const conn = onlineState.peer.connect(roomId, { reliable: true });
+            console.log("Connecting to room:", peerId);
+            const conn = onlineState.peer.connect(peerId, { reliable: true });
 
             // Timeout for connection
             const connectionTimeout = setTimeout(() => {
