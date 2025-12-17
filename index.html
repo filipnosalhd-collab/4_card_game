@@ -3955,16 +3955,13 @@
           return result;
         },
 
-        // Calculate money earned from round win
+        // Calculate money earned from winning (online only)
+        // You get the difference between opponent's LK and your LK
         calculateWinnings(winnerLK, loserLK) {
-          const diff = Math.abs(winnerLK - loserLK);
-          // Base winnings + bonus for beating higher LK opponent
-          let winnings = 5;
-          if (loserLK > winnerLK) {
-            // Underdog bonus
-            winnings += Math.floor(diff / 20);
-          }
-          return winnings;
+          // You earn the difference (if opponent has more LK, you earn more)
+          const diff = loserLK - winnerLK;
+          // Minimum 1 Ⱡ, plus the difference if positive
+          return Math.max(1, diff);
         },
       };
 
@@ -4957,21 +4954,38 @@
           gameState.tiebreakerPot = [];
           resetTiebreaker();
 
-          // Play sound and award money based on who won
+          // Play sound and award/deduct money based on who won (ONLINE ONLY)
           const myIndex =
             gameState.mode === "online" ? onlineState.myPlayerIndex : 0;
-          if (winnerIndex === myIndex) {
+          const opponentIndex = 1 - myIndex;
+          const myLK = gameState.playerLuck[myIndex] || 0;
+          const opponentLK = gameState.playerLuck[opponentIndex] || 0;
+          const lkDiff = Math.abs(myLK - opponentLK);
+
+          if (
+            winnerIndex === myIndex ||
+            (gameState.mode !== "online" && winnerIndex === 0)
+          ) {
             SoundManager.play("win");
-            // Award money for winning
-            const loserIndex = 1 - winnerIndex;
-            const earnings = LuckSystem.calculateWinnings(
-              gameState.playerLuck[winnerIndex],
-              gameState.playerLuck[loserIndex]
-            );
-            PlayerAccount.addMoney(earnings);
-            updateAccountDisplay();
+            // Award money for winning - ONLY in online mode
+            if (gameState.mode === "online") {
+              // Win = get the LK difference
+              const earnings = Math.max(1, lkDiff);
+              PlayerAccount.addMoney(earnings);
+              updateAccountDisplay();
+            }
           } else {
             SoundManager.play("lose");
+            // Deduct money for losing - ONLY in online mode
+            if (gameState.mode === "online") {
+              // Lose = lose 20% of LK difference (minimum 0)
+              const loss = Math.floor(lkDiff * 0.2);
+              if (loss > 0) {
+                PlayerAccount.money = Math.max(0, PlayerAccount.money - loss);
+                PlayerAccount.save();
+                updateAccountDisplay();
+              }
+            }
           }
         } else {
           // Tie - tiebreaker
