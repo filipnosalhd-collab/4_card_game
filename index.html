@@ -3653,6 +3653,10 @@
           cancel: "ANULUJ",
           luckLabel: "🍀 Szczęście (LK):",
           yourNamePlaceholder: "Twoja nazwa...",
+          enterCodeAlert: "Wpisz kod lub link do pokoju!",
+          invalidCodeAlert: "Nieprawidłowy kod lub link!",
+          codeAlreadyUsed: "Ten kod został już wykorzystany!",
+          promoCodeSuccess: "🎉 Otrzymałeś 100 Ⱡ!",
         },
         en: {
           subtitle: "Four Cards Game",
@@ -3784,6 +3788,10 @@
           cancel: "CANCEL",
           luckLabel: "🍀 Luck (LK):",
           yourNamePlaceholder: "Your name...",
+          enterCodeAlert: "Enter room code or link!",
+          invalidCodeAlert: "Invalid code or link!",
+          codeAlreadyUsed: "This code has already been used!",
+          promoCodeSuccess: "🎉 You received 100 Ⱡ!",
         },
       };
 
@@ -5670,11 +5678,27 @@
         let input = codeInput.value.trim();
 
         if (!input) {
-          alert(
-            currentLang === "pl"
-              ? "Wpisz kod lub link do pokoju!"
-              : "Enter room code or link!"
+          alert(t("enterCodeAlert"));
+          return;
+        }
+
+        // Check for promo code AKQJ (case insensitive)
+        const upperInput = input.toUpperCase();
+        if (upperInput === "AKQJ" || upperInput === "C4-AKQJ") {
+          const usedCodes = JSON.parse(
+            localStorage.getItem("4cards-usedCodes") || "[]"
           );
+          if (usedCodes.includes("AKQJ")) {
+            alert(t("codeAlreadyUsed"));
+          } else {
+            usedCodes.push("AKQJ");
+            localStorage.setItem("4cards-usedCodes", JSON.stringify(usedCodes));
+            PlayerAccount.addMoney(100);
+            updateAccountDisplay();
+            SoundManager.play("gameWin");
+            alert(t("promoCodeSuccess"));
+          }
+          codeInput.value = "";
           return;
         }
 
@@ -5704,11 +5728,7 @@
         }
 
         if (!code) {
-          alert(
-            currentLang === "pl"
-              ? "Nieprawidłowy kod lub link!"
-              : "Invalid code or link!"
-          );
+          alert(t("invalidCodeAlert"));
           return;
         }
 
@@ -5718,6 +5738,12 @@
           code = "C4-" + code;
         }
 
+        // Block AKQJ as room code
+        if (code === "C4-AKQJ") {
+          alert(t("invalidCodeAlert"));
+          return;
+        }
+
         joinRoom(code);
       }
 
@@ -5725,9 +5751,12 @@
         onlineState.isHost = true;
         onlineState.players = [];
 
-        // Generate room code
-        const roomId =
-          "C4-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+        // Generate room code (avoid reserved code AKQJ)
+        let roomId;
+        do {
+          roomId =
+            "C4-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+        } while (roomId === "C4-AKQJ");
         onlineState.roomId = roomId;
 
         // Show host lobby section
