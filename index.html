@@ -650,6 +650,13 @@
         letter-spacing: 0.1em;
       }
 
+      .score-lk {
+        font-size: 0.75rem;
+        color: #4ade80;
+        font-weight: 600;
+        margin-top: 0.1rem;
+      }
+
       .score-value {
         font-family: "Cinzel", serif;
         font-size: 2rem;
@@ -3164,6 +3171,7 @@
       <div class="scoreboard">
         <div class="score-item">
           <div class="score-name" id="player1NameDisplay">GRACZ 1</div>
+          <div class="score-lk" id="player1LKDisplay">LK: 0</div>
           <div class="score-value" id="score1">0</div>
         </div>
         <div class="score-item">
@@ -3173,6 +3181,7 @@
         </div>
         <div class="score-item">
           <div class="score-name" id="player2Name">BOT</div>
+          <div class="score-lk" id="player2LKDisplay">LK: 0</div>
           <div class="score-value" id="score2">0</div>
         </div>
       </div>
@@ -3908,36 +3917,36 @@
 
       // ==================== LUCK SYSTEM ====================
       const LuckSystem = {
-        // Convert LK to percentage bonus (0-2000 LK = 0-100% bonus chance)
-        // But capped so it's not OP - max ~50% better odds
+        // Convert LK to percentage bonus
+        // 0 LK = 0%, 500 LK = 25%, 1000 LK = 50%, 2000 LK = 80%
         getLuckBonus(lk) {
-          // Logarithmic scaling: diminishing returns
-          // 0 LK = 0%, 500 LK = ~15%, 1000 LK = ~25%, 2000 LK = ~40%
-          return Math.min(40, Math.log10(lk + 1) * 12);
+          // Linear scaling with soft cap
+          return Math.min(80, lk / 25);
         },
 
-        // Apply luck when drawing cards - higher LK = better chance of high cards
+        // Apply luck when drawing cards - higher LK = better cards go to top of deck
         applyLuckToDeck(deck, luck) {
-          const bonus = this.getLuckBonus(luck);
-          if (bonus <= 0) return deck;
+          if (luck <= 0) return deck;
+
+          const bonus = this.getLuckBonus(luck) / 100; // Convert to 0-0.8
 
           // Sort deck by points (highest first)
           const sorted = [...deck].sort((a, b) => b.points - a.points);
           const result = [];
 
-          // For each position, chance to pick from top cards
+          // For each card, decide if we pick from top (good) or random
           for (let i = 0; i < deck.length; i++) {
             if (sorted.length === 0) break;
 
-            // Random chance based on luck to pick better card
-            const roll = Math.random() * 100;
+            const roll = Math.random();
+
             if (roll < bonus && sorted.length > 1) {
-              // Pick from top half
-              const topHalf = Math.ceil(sorted.length / 2);
-              const idx = Math.floor(Math.random() * topHalf);
+              // Pick from top 25% of remaining cards (better cards)
+              const topCount = Math.max(1, Math.floor(sorted.length * 0.25));
+              const idx = Math.floor(Math.random() * topCount);
               result.push(sorted.splice(idx, 1)[0]);
             } else {
-              // Pick randomly
+              // Pick randomly from remaining
               const idx = Math.floor(Math.random() * sorted.length);
               result.push(sorted.splice(idx, 1)[0]);
             }
@@ -4472,6 +4481,14 @@
           gameState.playerNames[0];
         document.getElementById("livePlayer2Name").textContent =
           gameState.playerNames[1];
+
+        // Update LK displays
+        document.getElementById(
+          "player1LKDisplay"
+        ).textContent = `LK: ${gameState.playerLuck[0]}`;
+        document.getElementById(
+          "player2LKDisplay"
+        ).textContent = `LK: ${gameState.playerLuck[1]}`;
 
         document.getElementById("targetDisplay").textContent =
           gameState.targetScore;
@@ -6358,6 +6375,14 @@
         document.getElementById("finalPlayer2Name").textContent = name2;
         document.getElementById("livePlayer1Name").textContent = name1;
         document.getElementById("livePlayer2Name").textContent = name2;
+
+        // Update LK displays
+        document.getElementById("player1LKDisplay").textContent = `LK: ${
+          gameState.playerLuck[0] || 0
+        }`;
+        document.getElementById("player2LKDisplay").textContent = `LK: ${
+          gameState.playerLuck[1] || 0
+        }`;
       }
 
       function leaveLobby() {
