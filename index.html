@@ -3740,7 +3740,7 @@
               <button
                 class="control-btn"
                 id="playBtn1"
-                onclick="startReaction(0)"
+                onclick="startReactionForMe()"
                 data-i18n="playCards"
               >
                 WYSTAW KARTY
@@ -6577,8 +6577,14 @@
           gameState.playedCards[playerIndex] = selectedCards;
           gameState.playersReady[playerIndex] = true;
 
-          // Disable button
-          document.getElementById(`playBtn${playerIndex + 1}`).disabled = true;
+          // Disable button - in online mode always use playBtn1
+          if (gameState.mode === "online") {
+            document.getElementById("playBtn1").disabled = true;
+          } else {
+            document.getElementById(
+              `playBtn${playerIndex + 1}`
+            ).disabled = true;
+          }
 
           // Display cards (hidden in local mode until both players play)
           const hideCards = gameState.mode === "local";
@@ -6587,8 +6593,15 @@
 
           // Handle turn order in local mode
           if (gameState.mode === "local") {
+            console.log(
+              "Local mode - playerIndex:",
+              playerIndex,
+              "waitingForSecondPlayer:",
+              gameState.waitingForSecondPlayer
+            );
             if (!gameState.waitingForSecondPlayer && playerIndex === 0) {
               // Player 1 finished, enable player 2
+              console.log("Player 1 finished, enabling player 2");
               gameState.waitingForSecondPlayer = true;
               gameState.currentTurn = 2;
               // Show player 2 controls, hide player 1
@@ -6598,9 +6611,14 @@
                 "block";
               document.getElementById("playBtn2").disabled = false;
               document.getElementById("playBtn1").disabled = true;
+              console.log(
+                "playBtn2.disabled:",
+                document.getElementById("playBtn2").disabled
+              );
               updateTurnIndicator();
             } else if (gameState.waitingForSecondPlayer && playerIndex === 1) {
               // Player 2 finished, both ready - don't touch buttons
+              console.log("Player 2 finished");
               document.getElementById("playBtn2").disabled = true;
             }
           }
@@ -6640,10 +6658,33 @@
         },
       };
 
+      function startReactionForMe() {
+        // In online mode, use my player index
+        if (gameState.mode === "online") {
+          startReaction(onlineState.myPlayerIndex);
+        } else {
+          // In local/bot mode, player 1 button is always player 0
+          startReaction(0);
+        }
+      }
+
       function startReaction(playerIndex) {
+        console.log("startReaction called for player", playerIndex);
+        console.log("gameState.playersReady:", gameState.playersReady);
+        console.log(
+          "gameState.waitingForSecondPlayer:",
+          gameState.waitingForSecondPlayer
+        );
+
         // Check if can play
-        if (gameState.gameOver) return;
-        if (gameState.playersReady[playerIndex]) return;
+        if (gameState.gameOver) {
+          console.log("Game over, returning");
+          return;
+        }
+        if (gameState.playersReady[playerIndex]) {
+          console.log("Player already ready, returning");
+          return;
+        }
 
         // In local mode, block the other player's button during reaction test
         if (gameState.mode === "local") {
@@ -6652,6 +6693,7 @@
         }
 
         // Start reaction test
+        console.log("Starting ReactionSystem for player", playerIndex);
         ReactionSystem.start(playerIndex);
       }
 
@@ -7850,7 +7892,13 @@
 
         if (e.code === "Space") {
           e.preventDefault();
-          if (gameState.mode === "local") {
+          if (gameState.mode === "online") {
+            // In online, Space triggers my reaction
+            const myIndex = onlineState.myPlayerIndex;
+            if (!gameState.playersReady[myIndex]) {
+              startReaction(myIndex);
+            }
+          } else if (gameState.mode === "local") {
             if (
               !gameState.waitingForSecondPlayer &&
               !gameState.playersReady[0]
@@ -8221,15 +8269,24 @@
         const maxRetries = 3;
         const peerId = roomId.toLowerCase(); // Host używa lowercase
 
+        console.log(
+          "connectToRoom called with roomId:",
+          roomId,
+          "peerId:",
+          peerId
+        );
+
         try {
           onlineState.peer = new Peer();
 
-          onlineState.peer.on("open", () => {
+          onlineState.peer.on("open", (myId) => {
+            console.log("My peer ID:", myId);
             console.log("Connecting to room:", peerId);
             const conn = onlineState.peer.connect(peerId, { reliable: true });
 
             // Timeout for connection
             const connectionTimeout = setTimeout(() => {
+              console.log("Connection timeout, conn.open:", conn.open);
               if (!conn.open) {
                 conn.close();
                 if (retryCount < maxRetries) {
@@ -8254,6 +8311,7 @@
             onlineState.connections.push(conn);
 
             conn.on("open", () => {
+              console.log("Connection opened to host!");
               clearTimeout(connectionTimeout);
               document.getElementById("guestLobbyStatus").textContent = t(
                 "connectedWaitingHost"
