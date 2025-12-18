@@ -2524,6 +2524,261 @@
           margin: 0.5rem 0;
         }
       }
+
+      /* Card Upgrades Screen */
+      .card-upgrades-screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--velvet) 0%,
+          var(--velvet-light) 50%,
+          var(--velvet) 100%
+        );
+        z-index: 200;
+        overflow-y: auto;
+      }
+
+      .card-upgrades-screen.active {
+        display: flex;
+      }
+
+      .upgrades-title {
+        font-family: "Cinzel", serif;
+        font-size: 2rem;
+        color: var(--gold);
+        text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        margin-bottom: 1rem;
+      }
+
+      .upgrades-balance {
+        font-family: "Cinzel", serif;
+        font-size: 1.3rem;
+        color: var(--gold);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.5rem 1.5rem;
+        border-radius: 20px;
+        border: 1px solid var(--gold);
+        margin-bottom: 2rem;
+      }
+
+      .upgrades-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        max-width: 800px;
+        width: 100%;
+        padding: 0 1rem;
+      }
+
+      @media (max-width: 600px) {
+        .upgrades-cards-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+        }
+      }
+
+      .upgrade-card-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .upgrade-card-flip {
+        width: 100px;
+        height: 140px;
+        perspective: 1000px;
+        cursor: pointer;
+      }
+
+      .upgrade-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+      }
+
+      .upgrade-card-inner.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .upgrade-card-front,
+      .upgrade-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .upgrade-card-front {
+        background: linear-gradient(135deg, #1a0a0a 0%, #2d1515 100%);
+        border-color: #666;
+      }
+
+      .upgrade-card-back {
+        background: linear-gradient(135deg, #0a1a0a 0%, #152d15 100%);
+        border-color: var(--gold);
+        transform: rotateY(180deg);
+      }
+
+      .upgrade-card-corner {
+        position: absolute;
+        top: 5px;
+        left: 8px;
+        font-family: "Cinzel", serif;
+        font-size: 0.9rem;
+        font-weight: bold;
+      }
+
+      .upgrade-card-center {
+        font-family: "Cinzel", serif;
+        font-size: 2.5rem;
+        font-weight: bold;
+      }
+
+      .upgrade-card-tier {
+        position: absolute;
+        bottom: 5px;
+        font-size: 0.6rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .upgrade-card-bonus {
+        font-family: "Cinzel", serif;
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--gold);
+      }
+
+      .upgrade-card-bonus-label {
+        font-size: 0.6rem;
+        color: var(--cream);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      /* Card tiers styling */
+      .upgrade-card-front.tier-bronze {
+        border-color: #cd7f32;
+        box-shadow: 0 0 15px rgba(205, 127, 50, 0.4);
+      }
+      .upgrade-card-front.tier-bronze .upgrade-card-corner,
+      .upgrade-card-front.tier-bronze .upgrade-card-center,
+      .upgrade-card-front.tier-bronze .upgrade-card-tier {
+        color: #cd7f32;
+      }
+
+      .upgrade-card-front.tier-silver {
+        border-color: #c0c0c0;
+        box-shadow: 0 0 15px rgba(192, 192, 192, 0.4);
+      }
+      .upgrade-card-front.tier-silver .upgrade-card-corner,
+      .upgrade-card-front.tier-silver .upgrade-card-center,
+      .upgrade-card-front.tier-silver .upgrade-card-tier {
+        color: #c0c0c0;
+      }
+
+      .upgrade-card-front.tier-gold {
+        border-color: #ffd700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      }
+      .upgrade-card-front.tier-gold .upgrade-card-corner,
+      .upgrade-card-front.tier-gold .upgrade-card-center,
+      .upgrade-card-front.tier-gold .upgrade-card-tier {
+        color: #ffd700;
+      }
+
+      .upgrade-card-front.tier-glow {
+        animation: cardGlow 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes cardGlow {
+        from {
+          box-shadow: 0 0 15px currentColor;
+        }
+        to {
+          box-shadow: 0 0 30px currentColor, 0 0 50px currentColor;
+        }
+      }
+
+      .upgrade-card-buttons {
+        display: flex;
+        gap: 0.3rem;
+      }
+
+      .card-upgrade-btn {
+        font-family: "Cinzel", serif;
+        font-size: 0.7rem;
+        padding: 0.4rem 0.6rem;
+        background: linear-gradient(
+          135deg,
+          var(--gold) 0%,
+          var(--gold-dark) 100%
+        );
+        color: var(--velvet);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s;
+      }
+
+      .card-upgrade-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px var(--gold);
+      }
+
+      .card-upgrade-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .card-downgrade-btn {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.5rem;
+        background: rgba(150, 50, 50, 0.8);
+        color: var(--cream);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .card-downgrade-btn:hover {
+        background: rgba(180, 60, 60, 0.9);
+      }
+
+      .card-downgrade-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .upgrade-card-cost {
+        font-size: 0.7rem;
+        color: var(--cream);
+        opacity: 0.8;
+      }
     </style>
   </head>
   <body>
@@ -2575,7 +2830,7 @@
             <span class="stat-value" id="accountLuck">0</span>
           </div>
           <div class="account-stat">
-            <span class="stat-label">Ⱡ</span>
+            <span class="stat-label">LUP</span>
             <span class="stat-value" id="accountMoney">100</span>
           </div>
         </div>
@@ -2605,6 +2860,13 @@
           data-i18n="onlineGame"
         >
           GRA ONLINE
+        </button>
+        <button
+          class="menu-btn"
+          onclick="showCardUpgrades()"
+          data-i18n="cardUpgrades"
+        >
+          🃏 CARD UPGRADES
         </button>
         <button
           class="menu-btn"
@@ -2646,10 +2908,10 @@
           </div>
           <div class="upgrade-cost">
             <span data-i18n="cost">Koszt:</span>
-            <span id="upgradeCost">1</span> Ⱡ
+            <span id="upgradeCost">1</span> LUP
           </div>
           <div class="upgrade-balance">
-            <span data-i18n="yourBalance">Twoje Ⱡ:</span>
+            <span data-i18n="yourBalance">Twoje LUP:</span>
             <span id="upgradeBalance">100</span>
           </div>
         </div>
@@ -2671,6 +2933,211 @@
           </button>
         </div>
       </div>
+    </div>
+
+    <!-- Card Upgrades Screen -->
+    <div class="card-upgrades-screen" id="cardUpgradesScreen">
+      <h2 class="upgrades-title">🃏 CARD UPGRADES</h2>
+      <div class="upgrades-balance">
+        <span>LUP:</span>
+        <span id="upgradesBalance">100</span>
+      </div>
+
+      <div class="upgrades-cards-grid">
+        <!-- Card 9 -->
+        <div class="upgrade-card-container" data-card="9">
+          <div class="upgrade-card-flip" onclick="flipUpgradeCard('9')">
+            <div class="upgrade-card-inner" id="upgradeCard9">
+              <div class="upgrade-card-front">
+                <div class="upgrade-card-corner">9</div>
+                <div class="upgrade-card-center">9</div>
+                <div class="upgrade-card-tier" id="cardTier9">Base</div>
+              </div>
+              <div class="upgrade-card-back">
+                <div class="upgrade-card-bonus">
+                  +<span id="cardBonus9">0</span>
+                </div>
+                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
+              </div>
+            </div>
+          </div>
+          <div class="upgrade-card-buttons">
+            <button class="card-upgrade-btn" onclick="upgradeCardAction('9')">
+              ⬆️ UPGRADE
+            </button>
+            <button
+              class="card-downgrade-btn"
+              onclick="downgradeCardAction('9')"
+            >
+              ⬇️
+            </button>
+          </div>
+          <div class="upgrade-card-cost" id="cardCost9">Cost: 10 LUP</div>
+        </div>
+
+        <!-- Card 10 -->
+        <div class="upgrade-card-container" data-card="10">
+          <div class="upgrade-card-flip" onclick="flipUpgradeCard('10')">
+            <div class="upgrade-card-inner" id="upgradeCard10">
+              <div class="upgrade-card-front">
+                <div class="upgrade-card-corner">10</div>
+                <div class="upgrade-card-center">10</div>
+                <div class="upgrade-card-tier" id="cardTier10">Base</div>
+              </div>
+              <div class="upgrade-card-back">
+                <div class="upgrade-card-bonus">
+                  +<span id="cardBonus10">0</span>
+                </div>
+                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
+              </div>
+            </div>
+          </div>
+          <div class="upgrade-card-buttons">
+            <button class="card-upgrade-btn" onclick="upgradeCardAction('10')">
+              ⬆️ UPGRADE
+            </button>
+            <button
+              class="card-downgrade-btn"
+              onclick="downgradeCardAction('10')"
+            >
+              ⬇️
+            </button>
+          </div>
+          <div class="upgrade-card-cost" id="cardCost10">Cost: 10 LUP</div>
+        </div>
+
+        <!-- Card J -->
+        <div class="upgrade-card-container" data-card="J">
+          <div class="upgrade-card-flip" onclick="flipUpgradeCard('J')">
+            <div class="upgrade-card-inner" id="upgradeCardJ">
+              <div class="upgrade-card-front">
+                <div class="upgrade-card-corner">J</div>
+                <div class="upgrade-card-center">J</div>
+                <div class="upgrade-card-tier" id="cardTierJ">Base</div>
+              </div>
+              <div class="upgrade-card-back">
+                <div class="upgrade-card-bonus">
+                  +<span id="cardBonusJ">0</span>
+                </div>
+                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
+              </div>
+            </div>
+          </div>
+          <div class="upgrade-card-buttons">
+            <button class="card-upgrade-btn" onclick="upgradeCardAction('J')">
+              ⬆️ UPGRADE
+            </button>
+            <button
+              class="card-downgrade-btn"
+              onclick="downgradeCardAction('J')"
+            >
+              ⬇️
+            </button>
+          </div>
+          <div class="upgrade-card-cost" id="cardCostJ">Cost: 10 LUP</div>
+        </div>
+
+        <!-- Card Q -->
+        <div class="upgrade-card-container" data-card="Q">
+          <div class="upgrade-card-flip" onclick="flipUpgradeCard('Q')">
+            <div class="upgrade-card-inner" id="upgradeCardQ">
+              <div class="upgrade-card-front">
+                <div class="upgrade-card-corner">Q</div>
+                <div class="upgrade-card-center">Q</div>
+                <div class="upgrade-card-tier" id="cardTierQ">Base</div>
+              </div>
+              <div class="upgrade-card-back">
+                <div class="upgrade-card-bonus">
+                  +<span id="cardBonusQ">0</span>
+                </div>
+                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
+              </div>
+            </div>
+          </div>
+          <div class="upgrade-card-buttons">
+            <button class="card-upgrade-btn" onclick="upgradeCardAction('Q')">
+              ⬆️ UPGRADE
+            </button>
+            <button
+              class="card-downgrade-btn"
+              onclick="downgradeCardAction('Q')"
+            >
+              ⬇️
+            </button>
+          </div>
+          <div class="upgrade-card-cost" id="cardCostQ">Cost: 10 LUP</div>
+        </div>
+
+        <!-- Card K -->
+        <div class="upgrade-card-container" data-card="K">
+          <div class="upgrade-card-flip" onclick="flipUpgradeCard('K')">
+            <div class="upgrade-card-inner" id="upgradeCardK">
+              <div class="upgrade-card-front">
+                <div class="upgrade-card-corner">K</div>
+                <div class="upgrade-card-center">K</div>
+                <div class="upgrade-card-tier" id="cardTierK">Base</div>
+              </div>
+              <div class="upgrade-card-back">
+                <div class="upgrade-card-bonus">
+                  +<span id="cardBonusK">0</span>
+                </div>
+                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
+              </div>
+            </div>
+          </div>
+          <div class="upgrade-card-buttons">
+            <button class="card-upgrade-btn" onclick="upgradeCardAction('K')">
+              ⬆️ UPGRADE
+            </button>
+            <button
+              class="card-downgrade-btn"
+              onclick="downgradeCardAction('K')"
+            >
+              ⬇️
+            </button>
+          </div>
+          <div class="upgrade-card-cost" id="cardCostK">Cost: 10 LUP</div>
+        </div>
+
+        <!-- Card A -->
+        <div class="upgrade-card-container" data-card="A">
+          <div class="upgrade-card-flip" onclick="flipUpgradeCard('A')">
+            <div class="upgrade-card-inner" id="upgradeCardA">
+              <div class="upgrade-card-front">
+                <div class="upgrade-card-corner">A</div>
+                <div class="upgrade-card-center">A</div>
+                <div class="upgrade-card-tier" id="cardTierA">Base</div>
+              </div>
+              <div class="upgrade-card-back">
+                <div class="upgrade-card-bonus">
+                  +<span id="cardBonusA">0</span>
+                </div>
+                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
+              </div>
+            </div>
+          </div>
+          <div class="upgrade-card-buttons">
+            <button class="card-upgrade-btn" onclick="upgradeCardAction('A')">
+              ⬆️ UPGRADE
+            </button>
+            <button
+              class="card-downgrade-btn"
+              onclick="downgradeCardAction('A')"
+            >
+              ⬇️
+            </button>
+          </div>
+          <div class="upgrade-card-cost" id="cardCostA">Cost: 10 LUP</div>
+        </div>
+      </div>
+
+      <button
+        class="menu-btn"
+        style="margin-top: 2rem"
+        onclick="closeCardUpgrades()"
+      >
+        BACK TO MENU
+      </button>
     </div>
 
     <!-- Setup Screen -->
@@ -3495,6 +3962,7 @@
           subtitle: "Cztero Karcianka",
           newLocalGame: "NOWA GRA LOKALNA",
           onlineGame: "GRA ONLINE",
+          cardUpgrades: "🃏 ULEPSZENIA KART",
           instructions: "INSTRUKCJA",
           gameSettings: "USTAWIENIA GRY",
           gameMode: "Tryb gry:",
@@ -3608,7 +4076,7 @@
           pointsToAdd: "Punkty do dodania:",
           newLK: "Nowy LK:",
           cost: "Koszt:",
-          yourBalance: "Twoje Ⱡ:",
+          yourBalance: "Twoje LUP:",
           upgrade: "ULEPSZ",
           cancel: "ANULUJ",
           luckLabel: "🍀 Szczęście (LK):",
@@ -3616,7 +4084,7 @@
           enterCodeAlert: "Wpisz kod lub link do pokoju!",
           invalidCodeAlert: "Nieprawidłowy kod lub link!",
           codeAlreadyUsed: "Ten kod został już wykorzystany!",
-          promoCodeSuccess: "🎉 Wygrałeś 100 Ⱡ!",
+          promoCodeSuccess: "🎉 Wygrałeś 100 LUP!",
           waitForGreen: "Czekaj na zielone...",
           clickNow: "KLIKNIJ!",
           tooEarly: "Za wcześnie!",
@@ -3634,6 +4102,7 @@
           subtitle: "Four Cards Game",
           newLocalGame: "NEW LOCAL GAME",
           onlineGame: "ONLINE GAME",
+          cardUpgrades: "🃏 CARD UPGRADES",
           instructions: "INSTRUCTIONS",
           gameSettings: "GAME SETTINGS",
           gameMode: "Game mode:",
@@ -3748,7 +4217,7 @@
           pointsToAdd: "Points to add:",
           newLK: "New LK:",
           cost: "Cost:",
-          yourBalance: "Your Ⱡ:",
+          yourBalance: "Your LUP:",
           upgrade: "UPGRADE",
           cancel: "CANCEL",
           luckLabel: "🍀 Luck (LK):",
@@ -3756,7 +4225,7 @@
           enterCodeAlert: "Enter room code or link!",
           invalidCodeAlert: "Invalid code or link!",
           codeAlreadyUsed: "This code has already been used!",
-          promoCodeSuccess: "🎉 You won 100 Ⱡ!",
+          promoCodeSuccess: "🎉 You won 100 LUP!",
           waitForGreen: "Wait for green...",
           clickNow: "CLICK!",
           tooEarly: "Too early!",
@@ -3839,8 +4308,17 @@
       // ==================== PLAYER ACCOUNT SYSTEM ====================
       const PlayerAccount = {
         name: "",
-        luck: 0, // LK points (affects card draw)
-        money: 100, // Ⱡ currency
+        luck: 0, // LK points (affects reaction time bonus)
+        money: 100, // LUP currency (Luck & Upgrade Points)
+        cardUpgrades: {
+          // Upgrade level for each card (0 = no upgrade)
+          9: 0,
+          10: 0,
+          J: 0,
+          Q: 0,
+          K: 0,
+          A: 0,
+        },
 
         load() {
           try {
@@ -3850,6 +4328,14 @@
               this.name = data.name || "";
               this.luck = data.luck || 0;
               this.money = data.money || 100;
+              this.cardUpgrades = data.cardUpgrades || {
+                9: 0,
+                10: 0,
+                J: 0,
+                Q: 0,
+                K: 0,
+                A: 0,
+              };
             }
           } catch (e) {}
         },
@@ -3862,6 +4348,7 @@
                 name: this.name,
                 luck: this.luck,
                 money: this.money,
+                cardUpgrades: this.cardUpgrades,
               })
             );
           } catch (e) {}
@@ -3906,6 +4393,1503 @@
       // Load account on start
       PlayerAccount.load();
 
+      // ==================== CARD UPGRADE SYSTEM ====================
+      const CardUpgradeSystem = {
+        // 200 upgrade levels with names, colors, costs, and bonus points
+        upgrades: [
+          // Level 0 = no upgrade (base)
+          { name: "Base", color: "#666666", glow: false, cost: 0, bonus: 0 },
+          // Bronze tier (1-3)
+          {
+            name: "Bronze I",
+            color: "#CD7F32",
+            glow: false,
+            cost: 10,
+            bonus: 5,
+          },
+          {
+            name: "Bronze II",
+            color: "#CD7F32",
+            glow: false,
+            cost: 15,
+            bonus: 10,
+          },
+          {
+            name: "Bronze III",
+            color: "#CD7F32",
+            glow: false,
+            cost: 25,
+            bonus: 15,
+          },
+          // Silver tier (4-6)
+          {
+            name: "Silver I",
+            color: "#C0C0C0",
+            glow: false,
+            cost: 40,
+            bonus: 22,
+          },
+          {
+            name: "Silver II",
+            color: "#C0C0C0",
+            glow: false,
+            cost: 60,
+            bonus: 30,
+          },
+          {
+            name: "Silver III",
+            color: "#C0C0C0",
+            glow: false,
+            cost: 85,
+            bonus: 40,
+          },
+          // Gold tier (7-9)
+          {
+            name: "Gold I",
+            color: "#FFD700",
+            glow: false,
+            cost: 120,
+            bonus: 52,
+          },
+          {
+            name: "Gold II",
+            color: "#FFD700",
+            glow: false,
+            cost: 160,
+            bonus: 66,
+          },
+          {
+            name: "Gold III",
+            color: "#FFD700",
+            glow: false,
+            cost: 210,
+            bonus: 82,
+          },
+          // Platinum tier (10-14)
+          {
+            name: "Platinum I",
+            color: "#E5E4E2",
+            glow: true,
+            cost: 270,
+            bonus: 100,
+          },
+          {
+            name: "Platinum II",
+            color: "#E5E4E2",
+            glow: true,
+            cost: 340,
+            bonus: 120,
+          },
+          {
+            name: "Platinum III",
+            color: "#E5E4E2",
+            glow: true,
+            cost: 420,
+            bonus: 142,
+          },
+          {
+            name: "Platinum IV",
+            color: "#E5E4E2",
+            glow: true,
+            cost: 510,
+            bonus: 166,
+          },
+          {
+            name: "Platinum V",
+            color: "#E5E4E2",
+            glow: true,
+            cost: 610,
+            bonus: 192,
+          },
+          // Diamond tier (15-19)
+          {
+            name: "Diamond I",
+            color: "#B9F2FF",
+            glow: true,
+            cost: 720,
+            bonus: 220,
+          },
+          {
+            name: "Diamond II",
+            color: "#B9F2FF",
+            glow: true,
+            cost: 840,
+            bonus: 250,
+          },
+          {
+            name: "Diamond III",
+            color: "#B9F2FF",
+            glow: true,
+            cost: 970,
+            bonus: 282,
+          },
+          {
+            name: "Diamond IV",
+            color: "#B9F2FF",
+            glow: true,
+            cost: 1110,
+            bonus: 316,
+          },
+          {
+            name: "Diamond V",
+            color: "#B9F2FF",
+            glow: true,
+            cost: 1260,
+            bonus: 352,
+          },
+          // Ruby tier (20-24)
+          {
+            name: "Ruby I",
+            color: "#E0115F",
+            glow: true,
+            cost: 1420,
+            bonus: 390,
+          },
+          {
+            name: "Ruby II",
+            color: "#E0115F",
+            glow: true,
+            cost: 1590,
+            bonus: 430,
+          },
+          {
+            name: "Ruby III",
+            color: "#E0115F",
+            glow: true,
+            cost: 1770,
+            bonus: 472,
+          },
+          {
+            name: "Ruby IV",
+            color: "#E0115F",
+            glow: true,
+            cost: 1960,
+            bonus: 516,
+          },
+          {
+            name: "Ruby V",
+            color: "#E0115F",
+            glow: true,
+            cost: 2160,
+            bonus: 562,
+          },
+          // Emerald tier (25-29)
+          {
+            name: "Emerald I",
+            color: "#50C878",
+            glow: true,
+            cost: 2370,
+            bonus: 610,
+          },
+          {
+            name: "Emerald II",
+            color: "#50C878",
+            glow: true,
+            cost: 2590,
+            bonus: 660,
+          },
+          {
+            name: "Emerald III",
+            color: "#50C878",
+            glow: true,
+            cost: 2820,
+            bonus: 712,
+          },
+          {
+            name: "Emerald IV",
+            color: "#50C878",
+            glow: true,
+            cost: 3060,
+            bonus: 766,
+          },
+          {
+            name: "Emerald V",
+            color: "#50C878",
+            glow: true,
+            cost: 3310,
+            bonus: 822,
+          },
+          // Sapphire tier (30-34)
+          {
+            name: "Sapphire I",
+            color: "#0F52BA",
+            glow: true,
+            cost: 3570,
+            bonus: 880,
+          },
+          {
+            name: "Sapphire II",
+            color: "#0F52BA",
+            glow: true,
+            cost: 3840,
+            bonus: 940,
+          },
+          {
+            name: "Sapphire III",
+            color: "#0F52BA",
+            glow: true,
+            cost: 4120,
+            bonus: 1002,
+          },
+          {
+            name: "Sapphire IV",
+            color: "#0F52BA",
+            glow: true,
+            cost: 4410,
+            bonus: 1066,
+          },
+          {
+            name: "Sapphire V",
+            color: "#0F52BA",
+            glow: true,
+            cost: 4710,
+            bonus: 1132,
+          },
+          // Amethyst tier (35-39)
+          {
+            name: "Amethyst I",
+            color: "#9966CC",
+            glow: true,
+            cost: 5020,
+            bonus: 1200,
+          },
+          {
+            name: "Amethyst II",
+            color: "#9966CC",
+            glow: true,
+            cost: 5340,
+            bonus: 1270,
+          },
+          {
+            name: "Amethyst III",
+            color: "#9966CC",
+            glow: true,
+            cost: 5670,
+            bonus: 1342,
+          },
+          {
+            name: "Amethyst IV",
+            color: "#9966CC",
+            glow: true,
+            cost: 6010,
+            bonus: 1416,
+          },
+          {
+            name: "Amethyst V",
+            color: "#9966CC",
+            glow: true,
+            cost: 6360,
+            bonus: 1492,
+          },
+          // Topaz tier (40-44)
+          {
+            name: "Topaz I",
+            color: "#FFC87C",
+            glow: true,
+            cost: 6720,
+            bonus: 1570,
+          },
+          {
+            name: "Topaz II",
+            color: "#FFC87C",
+            glow: true,
+            cost: 7090,
+            bonus: 1650,
+          },
+          {
+            name: "Topaz III",
+            color: "#FFC87C",
+            glow: true,
+            cost: 7470,
+            bonus: 1732,
+          },
+          {
+            name: "Topaz IV",
+            color: "#FFC87C",
+            glow: true,
+            cost: 7860,
+            bonus: 1816,
+          },
+          {
+            name: "Topaz V",
+            color: "#FFC87C",
+            glow: true,
+            cost: 8260,
+            bonus: 1902,
+          },
+          // Obsidian tier (45-49)
+          {
+            name: "Obsidian I",
+            color: "#3D3D3D",
+            glow: true,
+            cost: 8670,
+            bonus: 1990,
+          },
+          {
+            name: "Obsidian II",
+            color: "#3D3D3D",
+            glow: true,
+            cost: 9090,
+            bonus: 2080,
+          },
+          {
+            name: "Obsidian III",
+            color: "#3D3D3D",
+            glow: true,
+            cost: 9520,
+            bonus: 2172,
+          },
+          {
+            name: "Obsidian IV",
+            color: "#3D3D3D",
+            glow: true,
+            cost: 9960,
+            bonus: 2266,
+          },
+          {
+            name: "Obsidian V",
+            color: "#3D3D3D",
+            glow: true,
+            cost: 10410,
+            bonus: 2362,
+          },
+          // Crystal tier (50-54)
+          {
+            name: "Crystal I",
+            color: "#A7D8DE",
+            glow: true,
+            cost: 10870,
+            bonus: 2460,
+          },
+          {
+            name: "Crystal II",
+            color: "#A7D8DE",
+            glow: true,
+            cost: 11340,
+            bonus: 2560,
+          },
+          {
+            name: "Crystal III",
+            color: "#A7D8DE",
+            glow: true,
+            cost: 11820,
+            bonus: 2662,
+          },
+          {
+            name: "Crystal IV",
+            color: "#A7D8DE",
+            glow: true,
+            cost: 12310,
+            bonus: 2766,
+          },
+          {
+            name: "Crystal V",
+            color: "#A7D8DE",
+            glow: true,
+            cost: 12810,
+            bonus: 2872,
+          },
+          // Opal tier (55-59)
+          {
+            name: "Opal I",
+            color: "#A8C3BC",
+            glow: true,
+            cost: 13320,
+            bonus: 2980,
+          },
+          {
+            name: "Opal II",
+            color: "#A8C3BC",
+            glow: true,
+            cost: 13840,
+            bonus: 3090,
+          },
+          {
+            name: "Opal III",
+            color: "#A8C3BC",
+            glow: true,
+            cost: 14370,
+            bonus: 3202,
+          },
+          {
+            name: "Opal IV",
+            color: "#A8C3BC",
+            glow: true,
+            cost: 14910,
+            bonus: 3316,
+          },
+          {
+            name: "Opal V",
+            color: "#A8C3BC",
+            glow: true,
+            cost: 15460,
+            bonus: 3432,
+          },
+          // Jade tier (60-64)
+          {
+            name: "Jade I",
+            color: "#00A86B",
+            glow: true,
+            cost: 16020,
+            bonus: 3550,
+          },
+          {
+            name: "Jade II",
+            color: "#00A86B",
+            glow: true,
+            cost: 16590,
+            bonus: 3670,
+          },
+          {
+            name: "Jade III",
+            color: "#00A86B",
+            glow: true,
+            cost: 17170,
+            bonus: 3792,
+          },
+          {
+            name: "Jade IV",
+            color: "#00A86B",
+            glow: true,
+            cost: 17760,
+            bonus: 3916,
+          },
+          {
+            name: "Jade V",
+            color: "#00A86B",
+            glow: true,
+            cost: 18360,
+            bonus: 4042,
+          },
+          // Pearl tier (65-69)
+          {
+            name: "Pearl I",
+            color: "#FDEEF4",
+            glow: true,
+            cost: 18970,
+            bonus: 4170,
+          },
+          {
+            name: "Pearl II",
+            color: "#FDEEF4",
+            glow: true,
+            cost: 19590,
+            bonus: 4300,
+          },
+          {
+            name: "Pearl III",
+            color: "#FDEEF4",
+            glow: true,
+            cost: 20220,
+            bonus: 4432,
+          },
+          {
+            name: "Pearl IV",
+            color: "#FDEEF4",
+            glow: true,
+            cost: 20860,
+            bonus: 4566,
+          },
+          {
+            name: "Pearl V",
+            color: "#FDEEF4",
+            glow: true,
+            cost: 21510,
+            bonus: 4702,
+          },
+          // Onyx tier (70-74)
+          {
+            name: "Onyx I",
+            color: "#353839",
+            glow: true,
+            cost: 22170,
+            bonus: 4840,
+          },
+          {
+            name: "Onyx II",
+            color: "#353839",
+            glow: true,
+            cost: 22840,
+            bonus: 4980,
+          },
+          {
+            name: "Onyx III",
+            color: "#353839",
+            glow: true,
+            cost: 23520,
+            bonus: 5122,
+          },
+          {
+            name: "Onyx IV",
+            color: "#353839",
+            glow: true,
+            cost: 24210,
+            bonus: 5266,
+          },
+          {
+            name: "Onyx V",
+            color: "#353839",
+            glow: true,
+            cost: 24910,
+            bonus: 5412,
+          },
+          // Garnet tier (75-79)
+          {
+            name: "Garnet I",
+            color: "#733635",
+            glow: true,
+            cost: 25620,
+            bonus: 5560,
+          },
+          {
+            name: "Garnet II",
+            color: "#733635",
+            glow: true,
+            cost: 26340,
+            bonus: 5710,
+          },
+          {
+            name: "Garnet III",
+            color: "#733635",
+            glow: true,
+            cost: 27070,
+            bonus: 5862,
+          },
+          {
+            name: "Garnet IV",
+            color: "#733635",
+            glow: true,
+            cost: 27810,
+            bonus: 6016,
+          },
+          {
+            name: "Garnet V",
+            color: "#733635",
+            glow: true,
+            cost: 28560,
+            bonus: 6172,
+          },
+          // Aquamarine tier (80-84)
+          {
+            name: "Aquamarine I",
+            color: "#7FFFD4",
+            glow: true,
+            cost: 29320,
+            bonus: 6330,
+          },
+          {
+            name: "Aquamarine II",
+            color: "#7FFFD4",
+            glow: true,
+            cost: 30090,
+            bonus: 6490,
+          },
+          {
+            name: "Aquamarine III",
+            color: "#7FFFD4",
+            glow: true,
+            cost: 30870,
+            bonus: 6652,
+          },
+          {
+            name: "Aquamarine IV",
+            color: "#7FFFD4",
+            glow: true,
+            cost: 31660,
+            bonus: 6816,
+          },
+          {
+            name: "Aquamarine V",
+            color: "#7FFFD4",
+            glow: true,
+            cost: 32460,
+            bonus: 6982,
+          },
+          // Turquoise tier (85-89)
+          {
+            name: "Turquoise I",
+            color: "#40E0D0",
+            glow: true,
+            cost: 33270,
+            bonus: 7150,
+          },
+          {
+            name: "Turquoise II",
+            color: "#40E0D0",
+            glow: true,
+            cost: 34090,
+            bonus: 7320,
+          },
+          {
+            name: "Turquoise III",
+            color: "#40E0D0",
+            glow: true,
+            cost: 34920,
+            bonus: 7492,
+          },
+          {
+            name: "Turquoise IV",
+            color: "#40E0D0",
+            glow: true,
+            cost: 35760,
+            bonus: 7666,
+          },
+          {
+            name: "Turquoise V",
+            color: "#40E0D0",
+            glow: true,
+            cost: 36610,
+            bonus: 7842,
+          },
+          // Coral tier (90-94)
+          {
+            name: "Coral I",
+            color: "#FF7F50",
+            glow: true,
+            cost: 37470,
+            bonus: 8020,
+          },
+          {
+            name: "Coral II",
+            color: "#FF7F50",
+            glow: true,
+            cost: 38340,
+            bonus: 8200,
+          },
+          {
+            name: "Coral III",
+            color: "#FF7F50",
+            glow: true,
+            cost: 39220,
+            bonus: 8382,
+          },
+          {
+            name: "Coral IV",
+            color: "#FF7F50",
+            glow: true,
+            cost: 40110,
+            bonus: 8566,
+          },
+          {
+            name: "Coral V",
+            color: "#FF7F50",
+            glow: true,
+            cost: 41010,
+            bonus: 8752,
+          },
+          // Citrine tier (95-99)
+          {
+            name: "Citrine I",
+            color: "#E4D00A",
+            glow: true,
+            cost: 41920,
+            bonus: 8940,
+          },
+          {
+            name: "Citrine II",
+            color: "#E4D00A",
+            glow: true,
+            cost: 42840,
+            bonus: 9130,
+          },
+          {
+            name: "Citrine III",
+            color: "#E4D00A",
+            glow: true,
+            cost: 43770,
+            bonus: 9322,
+          },
+          {
+            name: "Citrine IV",
+            color: "#E4D00A",
+            glow: true,
+            cost: 44710,
+            bonus: 9516,
+          },
+          {
+            name: "Citrine V",
+            color: "#E4D00A",
+            glow: true,
+            cost: 45660,
+            bonus: 9712,
+          },
+          // Moonstone tier (100-104)
+          {
+            name: "Moonstone I",
+            color: "#F0E6FA",
+            glow: true,
+            cost: 46620,
+            bonus: 9910,
+          },
+          {
+            name: "Moonstone II",
+            color: "#F0E6FA",
+            glow: true,
+            cost: 47590,
+            bonus: 10110,
+          },
+          {
+            name: "Moonstone III",
+            color: "#F0E6FA",
+            glow: true,
+            cost: 48570,
+            bonus: 10312,
+          },
+          {
+            name: "Moonstone IV",
+            color: "#F0E6FA",
+            glow: true,
+            cost: 49560,
+            bonus: 10516,
+          },
+          {
+            name: "Moonstone V",
+            color: "#F0E6FA",
+            glow: true,
+            cost: 50560,
+            bonus: 10722,
+          },
+          // Sunstone tier (105-109)
+          {
+            name: "Sunstone I",
+            color: "#EF5820",
+            glow: true,
+            cost: 51570,
+            bonus: 10930,
+          },
+          {
+            name: "Sunstone II",
+            color: "#EF5820",
+            glow: true,
+            cost: 52590,
+            bonus: 11140,
+          },
+          {
+            name: "Sunstone III",
+            color: "#EF5820",
+            glow: true,
+            cost: 53620,
+            bonus: 11352,
+          },
+          {
+            name: "Sunstone IV",
+            color: "#EF5820",
+            glow: true,
+            cost: 54660,
+            bonus: 11566,
+          },
+          {
+            name: "Sunstone V",
+            color: "#EF5820",
+            glow: true,
+            cost: 55710,
+            bonus: 11782,
+          },
+          // Peridot tier (110-114)
+          {
+            name: "Peridot I",
+            color: "#E6E200",
+            glow: true,
+            cost: 56770,
+            bonus: 12000,
+          },
+          {
+            name: "Peridot II",
+            color: "#E6E200",
+            glow: true,
+            cost: 57840,
+            bonus: 12220,
+          },
+          {
+            name: "Peridot III",
+            color: "#E6E200",
+            glow: true,
+            cost: 58920,
+            bonus: 12442,
+          },
+          {
+            name: "Peridot IV",
+            color: "#E6E200",
+            glow: true,
+            cost: 60010,
+            bonus: 12666,
+          },
+          {
+            name: "Peridot V",
+            color: "#E6E200",
+            glow: true,
+            cost: 61110,
+            bonus: 12892,
+          },
+          // Tanzanite tier (115-119)
+          {
+            name: "Tanzanite I",
+            color: "#4D4DFF",
+            glow: true,
+            cost: 62220,
+            bonus: 13120,
+          },
+          {
+            name: "Tanzanite II",
+            color: "#4D4DFF",
+            glow: true,
+            cost: 63340,
+            bonus: 13350,
+          },
+          {
+            name: "Tanzanite III",
+            color: "#4D4DFF",
+            glow: true,
+            cost: 64470,
+            bonus: 13582,
+          },
+          {
+            name: "Tanzanite IV",
+            color: "#4D4DFF",
+            glow: true,
+            cost: 65610,
+            bonus: 13816,
+          },
+          {
+            name: "Tanzanite V",
+            color: "#4D4DFF",
+            glow: true,
+            cost: 66760,
+            bonus: 14052,
+          },
+          // Alexandrite tier (120-124)
+          {
+            name: "Alexandrite I",
+            color: "#008B8B",
+            glow: true,
+            cost: 67920,
+            bonus: 14290,
+          },
+          {
+            name: "Alexandrite II",
+            color: "#008B8B",
+            glow: true,
+            cost: 69090,
+            bonus: 14530,
+          },
+          {
+            name: "Alexandrite III",
+            color: "#008B8B",
+            glow: true,
+            cost: 70270,
+            bonus: 14772,
+          },
+          {
+            name: "Alexandrite IV",
+            color: "#008B8B",
+            glow: true,
+            cost: 71460,
+            bonus: 15016,
+          },
+          {
+            name: "Alexandrite V",
+            color: "#008B8B",
+            glow: true,
+            cost: 72660,
+            bonus: 15262,
+          },
+          // Spinel tier (125-129)
+          {
+            name: "Spinel I",
+            color: "#FF1493",
+            glow: true,
+            cost: 73870,
+            bonus: 15510,
+          },
+          {
+            name: "Spinel II",
+            color: "#FF1493",
+            glow: true,
+            cost: 75090,
+            bonus: 15760,
+          },
+          {
+            name: "Spinel III",
+            color: "#FF1493",
+            glow: true,
+            cost: 76320,
+            bonus: 16012,
+          },
+          {
+            name: "Spinel IV",
+            color: "#FF1493",
+            glow: true,
+            cost: 77560,
+            bonus: 16266,
+          },
+          {
+            name: "Spinel V",
+            color: "#FF1493",
+            glow: true,
+            cost: 78810,
+            bonus: 16522,
+          },
+          // Zircon tier (130-134)
+          {
+            name: "Zircon I",
+            color: "#C2DFFF",
+            glow: true,
+            cost: 80070,
+            bonus: 16780,
+          },
+          {
+            name: "Zircon II",
+            color: "#C2DFFF",
+            glow: true,
+            cost: 81340,
+            bonus: 17040,
+          },
+          {
+            name: "Zircon III",
+            color: "#C2DFFF",
+            glow: true,
+            cost: 82620,
+            bonus: 17302,
+          },
+          {
+            name: "Zircon IV",
+            color: "#C2DFFF",
+            glow: true,
+            cost: 83910,
+            bonus: 17566,
+          },
+          {
+            name: "Zircon V",
+            color: "#C2DFFF",
+            glow: true,
+            cost: 85210,
+            bonus: 17832,
+          },
+          // Morganite tier (135-139)
+          {
+            name: "Morganite I",
+            color: "#FFB4C2",
+            glow: true,
+            cost: 86520,
+            bonus: 18100,
+          },
+          {
+            name: "Morganite II",
+            color: "#FFB4C2",
+            glow: true,
+            cost: 87840,
+            bonus: 18370,
+          },
+          {
+            name: "Morganite III",
+            color: "#FFB4C2",
+            glow: true,
+            cost: 89170,
+            bonus: 18642,
+          },
+          {
+            name: "Morganite IV",
+            color: "#FFB4C2",
+            glow: true,
+            cost: 90510,
+            bonus: 18916,
+          },
+          {
+            name: "Morganite V",
+            color: "#FFB4C2",
+            glow: true,
+            cost: 91860,
+            bonus: 19192,
+          },
+          // Kunzite tier (140-144)
+          {
+            name: "Kunzite I",
+            color: "#E6B8C2",
+            glow: true,
+            cost: 93220,
+            bonus: 19470,
+          },
+          {
+            name: "Kunzite II",
+            color: "#E6B8C2",
+            glow: true,
+            cost: 94590,
+            bonus: 19750,
+          },
+          {
+            name: "Kunzite III",
+            color: "#E6B8C2",
+            glow: true,
+            cost: 95970,
+            bonus: 20032,
+          },
+          {
+            name: "Kunzite IV",
+            color: "#E6B8C2",
+            glow: true,
+            cost: 97360,
+            bonus: 20316,
+          },
+          {
+            name: "Kunzite V",
+            color: "#E6B8C2",
+            glow: true,
+            cost: 98760,
+            bonus: 20602,
+          },
+          // Larimar tier (145-149)
+          {
+            name: "Larimar I",
+            color: "#87CEEB",
+            glow: true,
+            cost: 100170,
+            bonus: 20890,
+          },
+          {
+            name: "Larimar II",
+            color: "#87CEEB",
+            glow: true,
+            cost: 101590,
+            bonus: 21180,
+          },
+          {
+            name: "Larimar III",
+            color: "#87CEEB",
+            glow: true,
+            cost: 103020,
+            bonus: 21472,
+          },
+          {
+            name: "Larimar IV",
+            color: "#87CEEB",
+            glow: true,
+            cost: 104460,
+            bonus: 21766,
+          },
+          {
+            name: "Larimar V",
+            color: "#87CEEB",
+            glow: true,
+            cost: 105910,
+            bonus: 22062,
+          },
+          // Iolite tier (150-154)
+          {
+            name: "Iolite I",
+            color: "#473C8B",
+            glow: true,
+            cost: 107370,
+            bonus: 22360,
+          },
+          {
+            name: "Iolite II",
+            color: "#473C8B",
+            glow: true,
+            cost: 108840,
+            bonus: 22660,
+          },
+          {
+            name: "Iolite III",
+            color: "#473C8B",
+            glow: true,
+            cost: 110320,
+            bonus: 22962,
+          },
+          {
+            name: "Iolite IV",
+            color: "#473C8B",
+            glow: true,
+            cost: 111810,
+            bonus: 23266,
+          },
+          {
+            name: "Iolite V",
+            color: "#473C8B",
+            glow: true,
+            cost: 113310,
+            bonus: 23572,
+          },
+          // Chrysoberyl tier (155-159)
+          {
+            name: "Chrysoberyl I",
+            color: "#C9B037",
+            glow: true,
+            cost: 114820,
+            bonus: 23880,
+          },
+          {
+            name: "Chrysoberyl II",
+            color: "#C9B037",
+            glow: true,
+            cost: 116340,
+            bonus: 24190,
+          },
+          {
+            name: "Chrysoberyl III",
+            color: "#C9B037",
+            glow: true,
+            cost: 117870,
+            bonus: 24502,
+          },
+          {
+            name: "Chrysoberyl IV",
+            color: "#C9B037",
+            glow: true,
+            cost: 119410,
+            bonus: 24816,
+          },
+          {
+            name: "Chrysoberyl V",
+            color: "#C9B037",
+            glow: true,
+            cost: 120960,
+            bonus: 25132,
+          },
+          // Dumortierite tier (160-164)
+          {
+            name: "Dumortierite I",
+            color: "#1E3F66",
+            glow: true,
+            cost: 122520,
+            bonus: 25450,
+          },
+          {
+            name: "Dumortierite II",
+            color: "#1E3F66",
+            glow: true,
+            cost: 124090,
+            bonus: 25770,
+          },
+          {
+            name: "Dumortierite III",
+            color: "#1E3F66",
+            glow: true,
+            cost: 125670,
+            bonus: 26092,
+          },
+          {
+            name: "Dumortierite IV",
+            color: "#1E3F66",
+            glow: true,
+            cost: 127260,
+            bonus: 26416,
+          },
+          {
+            name: "Dumortierite V",
+            color: "#1E3F66",
+            glow: true,
+            cost: 128860,
+            bonus: 26742,
+          },
+          // Rhodolite tier (165-169)
+          {
+            name: "Rhodolite I",
+            color: "#E0115F",
+            glow: true,
+            cost: 130470,
+            bonus: 27070,
+          },
+          {
+            name: "Rhodolite II",
+            color: "#E0115F",
+            glow: true,
+            cost: 132090,
+            bonus: 27400,
+          },
+          {
+            name: "Rhodolite III",
+            color: "#E0115F",
+            glow: true,
+            cost: 133720,
+            bonus: 27732,
+          },
+          {
+            name: "Rhodolite IV",
+            color: "#E0115F",
+            glow: true,
+            cost: 135360,
+            bonus: 28066,
+          },
+          {
+            name: "Rhodolite V",
+            color: "#E0115F",
+            glow: true,
+            cost: 137010,
+            bonus: 28402,
+          },
+          // Hiddenite tier (170-174)
+          {
+            name: "Hiddenite I",
+            color: "#98FB98",
+            glow: true,
+            cost: 138670,
+            bonus: 28740,
+          },
+          {
+            name: "Hiddenite II",
+            color: "#98FB98",
+            glow: true,
+            cost: 140340,
+            bonus: 29080,
+          },
+          {
+            name: "Hiddenite III",
+            color: "#98FB98",
+            glow: true,
+            cost: 142020,
+            bonus: 29422,
+          },
+          {
+            name: "Hiddenite IV",
+            color: "#98FB98",
+            glow: true,
+            cost: 143710,
+            bonus: 29766,
+          },
+          {
+            name: "Hiddenite V",
+            color: "#98FB98",
+            glow: true,
+            cost: 145410,
+            bonus: 30112,
+          },
+          // Sphene tier (175-179)
+          {
+            name: "Sphene I",
+            color: "#ADFF2F",
+            glow: true,
+            cost: 147120,
+            bonus: 30460,
+          },
+          {
+            name: "Sphene II",
+            color: "#ADFF2F",
+            glow: true,
+            cost: 148840,
+            bonus: 30810,
+          },
+          {
+            name: "Sphene III",
+            color: "#ADFF2F",
+            glow: true,
+            cost: 150570,
+            bonus: 31162,
+          },
+          {
+            name: "Sphene IV",
+            color: "#ADFF2F",
+            glow: true,
+            cost: 152310,
+            bonus: 31516,
+          },
+          {
+            name: "Sphene V",
+            color: "#ADFF2F",
+            glow: true,
+            cost: 154060,
+            bonus: 31872,
+          },
+          // Benitoite tier (180-184)
+          {
+            name: "Benitoite I",
+            color: "#366DFC",
+            glow: true,
+            cost: 155820,
+            bonus: 32230,
+          },
+          {
+            name: "Benitoite II",
+            color: "#366DFC",
+            glow: true,
+            cost: 157590,
+            bonus: 32590,
+          },
+          {
+            name: "Benitoite III",
+            color: "#366DFC",
+            glow: true,
+            cost: 159370,
+            bonus: 32952,
+          },
+          {
+            name: "Benitoite IV",
+            color: "#366DFC",
+            glow: true,
+            cost: 161160,
+            bonus: 33316,
+          },
+          {
+            name: "Benitoite V",
+            color: "#366DFC",
+            glow: true,
+            cost: 162960,
+            bonus: 33682,
+          },
+          // Painite tier (185-189)
+          {
+            name: "Painite I",
+            color: "#8B4513",
+            glow: true,
+            cost: 164770,
+            bonus: 34050,
+          },
+          {
+            name: "Painite II",
+            color: "#8B4513",
+            glow: true,
+            cost: 166590,
+            bonus: 34420,
+          },
+          {
+            name: "Painite III",
+            color: "#8B4513",
+            glow: true,
+            cost: 168420,
+            bonus: 34792,
+          },
+          {
+            name: "Painite IV",
+            color: "#8B4513",
+            glow: true,
+            cost: 170260,
+            bonus: 35166,
+          },
+          {
+            name: "Painite V",
+            color: "#8B4513",
+            glow: true,
+            cost: 172110,
+            bonus: 35542,
+          },
+          // Taaffeite tier (190-194)
+          {
+            name: "Taaffeite I",
+            color: "#DA70D6",
+            glow: true,
+            cost: 173970,
+            bonus: 35920,
+          },
+          {
+            name: "Taaffeite II",
+            color: "#DA70D6",
+            glow: true,
+            cost: 175840,
+            bonus: 36300,
+          },
+          {
+            name: "Taaffeite III",
+            color: "#DA70D6",
+            glow: true,
+            cost: 177720,
+            bonus: 36682,
+          },
+          {
+            name: "Taaffeite IV",
+            color: "#DA70D6",
+            glow: true,
+            cost: 179610,
+            bonus: 37066,
+          },
+          {
+            name: "Taaffeite V",
+            color: "#DA70D6",
+            glow: true,
+            cost: 181510,
+            bonus: 37452,
+          },
+          // Grandidierite tier (195-199)
+          {
+            name: "Grandidierite I",
+            color: "#1C6B6B",
+            glow: true,
+            cost: 183420,
+            bonus: 37840,
+          },
+          {
+            name: "Grandidierite II",
+            color: "#1C6B6B",
+            glow: true,
+            cost: 185340,
+            bonus: 38230,
+          },
+          {
+            name: "Grandidierite III",
+            color: "#1C6B6B",
+            glow: true,
+            cost: 187270,
+            bonus: 38622,
+          },
+          {
+            name: "Grandidierite IV",
+            color: "#1C6B6B",
+            glow: true,
+            cost: 189210,
+            bonus: 39016,
+          },
+          {
+            name: "Grandidierite V",
+            color: "#1C6B6B",
+            glow: true,
+            cost: 191160,
+            bonus: 39412,
+          },
+          // Ultimate tier (200)
+          {
+            name: "Celestial",
+            color:
+              "linear-gradient(135deg, #FFD700, #FF69B4, #00CED1, #9400D3)",
+            glow: true,
+            cost: 200000,
+            bonus: 40000,
+          },
+        ],
+
+        getUpgrade(level) {
+          return this.upgrades[Math.min(level, this.upgrades.length - 1)];
+        },
+
+        getCardBonus(cardValue) {
+          const level = PlayerAccount.cardUpgrades[cardValue] || 0;
+          return this.getUpgrade(level).bonus;
+        },
+
+        getNextUpgradeCost(cardValue) {
+          const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+          if (currentLevel >= this.upgrades.length - 1) return null;
+          return this.upgrades[currentLevel + 1].cost;
+        },
+
+        getDowngradeRefund(cardValue) {
+          const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+          if (currentLevel <= 0) return 0;
+          return Math.floor(this.upgrades[currentLevel].cost * 0.5);
+        },
+
+        upgradeCard(cardValue) {
+          const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+          if (currentLevel >= this.upgrades.length - 1) return false;
+
+          const cost = this.upgrades[currentLevel + 1].cost;
+          if (PlayerAccount.money < cost) return false;
+
+          PlayerAccount.money -= cost;
+          PlayerAccount.cardUpgrades[cardValue] = currentLevel + 1;
+          PlayerAccount.save();
+          return true;
+        },
+
+        downgradeCard(cardValue) {
+          const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+          if (currentLevel <= 0) return false;
+
+          const refund = Math.floor(this.upgrades[currentLevel].cost * 0.5);
+          PlayerAccount.money += refund;
+          PlayerAccount.cardUpgrades[cardValue] = currentLevel - 1;
+          PlayerAccount.save();
+          return refund;
+        },
+      };
+
       // ==================== LUCK SYSTEM ====================
       const LuckSystem = {
         // Convert LK to percentage bonus (for display only)
@@ -3945,6 +5929,110 @@
       }
 
       // Upgrade modal functions
+      // ==================== CARD UPGRADES UI ====================
+      function showCardUpgrades() {
+        document.getElementById("menuScreen").style.display = "none";
+        document.getElementById("cardUpgradesScreen").classList.add("active");
+        updateCardUpgradesDisplay();
+      }
+
+      function closeCardUpgrades() {
+        document
+          .getElementById("cardUpgradesScreen")
+          .classList.remove("active");
+        document.getElementById("menuScreen").style.display = "flex";
+        updateAccountDisplay();
+      }
+
+      function updateCardUpgradesDisplay() {
+        document.getElementById("upgradesBalance").textContent =
+          PlayerAccount.money;
+
+        const cards = ["9", "10", "J", "Q", "K", "A"];
+        cards.forEach((card) => {
+          const level = PlayerAccount.cardUpgrades[card] || 0;
+          const upgrade = CardUpgradeSystem.getUpgrade(level);
+          const nextCost = CardUpgradeSystem.getNextUpgradeCost(card);
+
+          // Update tier name
+          document.getElementById(`cardTier${card}`).textContent = upgrade.name;
+
+          // Update bonus
+          document.getElementById(`cardBonus${card}`).textContent =
+            upgrade.bonus;
+
+          // Update cost
+          const costEl = document.getElementById(`cardCost${card}`);
+          if (nextCost !== null) {
+            costEl.textContent = `Cost: ${nextCost} LUP`;
+          } else {
+            costEl.textContent = "MAX LEVEL";
+          }
+
+          // Update card styling
+          const cardFront = document.querySelector(
+            `#upgradeCard${card} .upgrade-card-front`
+          );
+          cardFront.className = "upgrade-card-front";
+          cardFront.style.borderColor = upgrade.color;
+          cardFront.style.color = upgrade.color;
+
+          // Set tier class for styling
+          if (level >= 1 && level <= 3) {
+            cardFront.classList.add("tier-bronze");
+          } else if (level >= 4 && level <= 6) {
+            cardFront.classList.add("tier-silver");
+          } else if (level >= 7 && level <= 9) {
+            cardFront.classList.add("tier-gold");
+          }
+
+          if (upgrade.glow) {
+            cardFront.classList.add("tier-glow");
+            cardFront.style.setProperty("color", upgrade.color);
+          }
+
+          // Update button states
+          const upgradeBtn = document.querySelector(
+            `.upgrade-card-container[data-card="${card}"] .card-upgrade-btn`
+          );
+          const downgradeBtn = document.querySelector(
+            `.upgrade-card-container[data-card="${card}"] .card-downgrade-btn`
+          );
+
+          if (upgradeBtn) {
+            upgradeBtn.disabled =
+              nextCost === null || PlayerAccount.money < nextCost;
+          }
+          if (downgradeBtn) {
+            downgradeBtn.disabled = level <= 0;
+          }
+        });
+      }
+
+      function flipUpgradeCard(card) {
+        const cardInner = document.getElementById(`upgradeCard${card}`);
+        cardInner.classList.toggle("flipped");
+      }
+
+      function upgradeCardAction(card) {
+        if (CardUpgradeSystem.upgradeCard(card)) {
+          SoundManager.play("win");
+          updateCardUpgradesDisplay();
+        } else {
+          SoundManager.play("lose");
+        }
+      }
+
+      function downgradeCardAction(card) {
+        const refund = CardUpgradeSystem.downgradeCard(card);
+        if (refund > 0) {
+          SoundManager.play("card");
+          updateCardUpgradesDisplay();
+          // Show refund message
+          alert(`Refund: +${refund} LUP (50%)`);
+        }
+      }
+
       function showUpgradeModal() {
         document.getElementById("upgradeModal").classList.add("active");
         document.getElementById("upgradeCurrent").textContent =
@@ -4211,13 +6299,21 @@
           let selectedCards = [];
 
           // Card values sorted by points (best first)
+          // Points include upgrade bonus for player 0 (human)
+          const getCardPoints = (value, basePoints) => {
+            if (playerIndex === 0) {
+              return basePoints + CardUpgradeSystem.getCardBonus(value);
+            }
+            return basePoints;
+          };
+
           const cardValues = [
-            { value: "A", points: 250 },
-            { value: "K", points: 200 },
-            { value: "Q", points: 150 },
-            { value: "J", points: 100 },
-            { value: "10", points: 50 },
-            { value: "9", points: 25 },
+            { value: "A", basePoints: 250 },
+            { value: "K", basePoints: 200 },
+            { value: "Q", basePoints: 150 },
+            { value: "J", basePoints: 100 },
+            { value: "10", basePoints: 50 },
+            { value: "9", basePoints: 25 },
           ];
           const suits = ["♠", "♥", "♦", "♣"];
 
@@ -4225,7 +6321,13 @@
           if (this.tooEarly) {
             for (let i = 0; i < cardsNeeded; i++) {
               const suit = suits[Math.floor(Math.random() * suits.length)];
-              selectedCards.push({ value: "9", suit: suit, points: 25 });
+              const points = getCardPoints("9", 25);
+              selectedCards.push({
+                value: "9",
+                suit: suit,
+                points: points,
+                basePoints: 25,
+              });
             }
           } else {
             // LK gives time bonus: 1 LK = 1ms bonus
@@ -4258,10 +6360,12 @@
                   Math.floor(Math.random() * availableValues.length)
                 ];
               const suit = suits[Math.floor(Math.random() * suits.length)];
+              const points = getCardPoints(cardType.value, cardType.basePoints);
               selectedCards.push({
                 value: cardType.value,
                 suit: suit,
-                points: cardType.points,
+                points: points,
+                basePoints: cardType.basePoints,
               });
             }
           }
