@@ -3855,99 +3855,11 @@
     <div class="modal-overlay" id="instructionsModal">
       <div class="modal">
         <button class="close-modal" onclick="closeInstructions()">×</button>
-        <h2>📜 INSTRUKCJA GRY</h2>
+        <h2 data-i18n="instructionsTitle">📜 INSTRUKCJA GRY</h2>
 
-        <h3>🎯 Cel gry</h3>
-        <p>
-          Zdobądź wymaganą liczbę punktów (5,320 / 7,980 / 10,640). Karty
-          generują się na podstawie Twojego czasu reakcji!
-        </p>
-
-        <h3>⚡ System reakcji</h3>
-        <ul>
-          <li>Kliknij "WYSTAW KARTY" - pojawi się czerwona kropka</li>
-          <li>Czekaj aż zmieni kolor na ZIELONY</li>
-          <li>Kliknij jak najszybciej!</li>
-          <li>Im szybsza reakcja, tym lepsze karty dostaniesz</li>
-          <li>Kliknięcie przed zielonym = najgorsze karty (same 9-ki)!</li>
-        </ul>
-
-        <h3>🃏 Wartość kart</h3>
-        <div class="points-table">
-          <div class="points-row"><span>As (A)</span><span>250 pkt</span></div>
-          <div class="points-row">
-            <span>Król (K)</span><span>200 pkt</span>
-          </div>
-          <div class="points-row">
-            <span>Królowa (Q)</span><span>150 pkt</span>
-          </div>
-          <div class="points-row">
-            <span>Walet (J)</span><span>50 pkt</span>
-          </div>
-          <div class="points-row">
-            <span>Dziesiątka (10)</span><span>10 pkt</span>
-          </div>
-          <div class="points-row">
-            <span>Dziewiątka (9)</span><span>5 pkt</span>
-          </div>
+        <div class="instructions-content" id="instructionsContent">
+          <!-- Content will be set by JavaScript based on language -->
         </div>
-
-        <h3>💰 LUP (Luck & Upgrade Points)</h3>
-        <ul>
-          <li>Waluta gry - zaczynasz ze 100 LUP</li>
-          <li>Wygrana online = +LUP (zależne od różnicy LK)</li>
-          <li>Przegrana online = -LUP</li>
-          <li>Użyj LUP do ulepszania LK lub kart</li>
-        </ul>
-
-        <h3>🍀 LK (Luck / Szczęście)</h3>
-        <ul>
-          <li>1 LK = 1ms bonus do czasu reakcji</li>
-          <li>
-            Przykład: masz 200 LK i reagujesz w 300ms → efektywny czas = 100ms!
-          </li>
-          <li>Wyższy LK = lepsze karty przy wolniejszej reakcji</li>
-          <li>Max LK: 2000 (= 2 sekundy bonusu!)</li>
-          <li>Ulepszaj LK za LUP w menu głównym</li>
-        </ul>
-
-        <h3>🃏 Card Upgrades (Ulepszenia kart)</h3>
-        <ul>
-          <li>Każda karta (9, 10, J, Q, K, A) ma osobny poziom</li>
-          <li>Upgrade dodaje BONUS PUNKTÓW do karty</li>
-          <li>200 poziomów: Bronze → Silver → Gold → ... → Celestial</li>
-          <li>Kliknij kartę żeby zobaczyć bonus z tyłu</li>
-          <li>Downgrade = zwrot 50% kosztów</li>
-          <li>Bonusy działają tylko dla Ciebie (nie dla bota/przeciwnika)</li>
-        </ul>
-
-        <h3>🎮 Przebieg rundy</h3>
-        <ul>
-          <li>Każdy gracz wystawia 4 karty</li>
-          <li>Gracz z większą liczbą punktów wygrywa rundę</li>
-          <li>Zwycięzca zdobywa punkty swoje ORAZ przeciwnika</li>
-          <li>Przegrany traci swoje punkty z rundy</li>
-        </ul>
-
-        <h3>⚔️ Dogrywka</h3>
-        <ul>
-          <li>Przy remisie - każdy wyciąga 2 karty</li>
-          <li>Kolejny remis - każdy wyciąga 1 kartę</li>
-          <li>Dogrywki trwają aż do rozstrzygnięcia</li>
-        </ul>
-
-        <h3>🌐 Gra Online</h3>
-        <ul>
-          <li>Wymaga założenia konta (wpisz nazwę w menu)</li>
-          <li>Twój LK i Card Upgrades działają online</li>
-          <li>Wyślij link znajomemu - dołączy automatycznie</li>
-        </ul>
-
-        <h3>🎹 Sterowanie</h3>
-        <ul>
-          <li><strong>Gracz 1:</strong> Spacja lub klik przycisku/kropki</li>
-          <li><strong>Gracz 2:</strong> Strzałka w górę (↑) lub klik</li>
-        </ul>
       </div>
     </div>
 
@@ -4094,6 +4006,84 @@
           loses: "traci",
           pts: "pkt",
           instructionsTitle: "📜 INSTRUKCJA GRY",
+          instructionsContent: `
+                    <h3>🎯 Cel gry</h3>
+                    <p>Zdobądź wymaganą liczbę punktów (5,320 / 7,980 / 10,640). Karty generują się na podstawie Twojego czasu reakcji!</p>
+
+                    <h3>⚡ System reakcji</h3>
+                    <ul>
+                        <li>Kliknij "WYSTAW KARTY" - pojawi się czerwona kropka</li>
+                        <li>Czekaj aż zmieni kolor na ZIELONY</li>
+                        <li>Kliknij jak najszybciej!</li>
+                        <li>Im szybsza reakcja, tym lepsze karty dostaniesz</li>
+                        <li>Kliknięcie przed zielonym = najgorsze karty (same 9-ki)!</li>
+                    </ul>
+
+                    <h3>🃏 Wartość kart</h3>
+                    <div class="points-table">
+                        <div class="points-row"><span>As (A)</span><span>250 pkt</span></div>
+                        <div class="points-row"><span>Król (K)</span><span>200 pkt</span></div>
+                        <div class="points-row"><span>Królowa (Q)</span><span>150 pkt</span></div>
+                        <div class="points-row"><span>Walet (J)</span><span>50 pkt</span></div>
+                        <div class="points-row"><span>Dziesiątka (10)</span><span>10 pkt</span></div>
+                        <div class="points-row"><span>Dziewiątka (9)</span><span>5 pkt</span></div>
+                    </div>
+
+                    <h3>💰 LUP (Luck & Upgrade Points)</h3>
+                    <ul>
+                        <li>Waluta gry - zaczynasz ze 100 LUP</li>
+                        <li>Wygrana online = +LUP (zależne od różnicy LK)</li>
+                        <li>Przegrana online = -LUP</li>
+                        <li>Użyj LUP do ulepszania LK lub kart</li>
+                    </ul>
+
+                    <h3>🍀 LK (Luck / Szczęście)</h3>
+                    <ul>
+                        <li>1 LK = 1ms bonus do czasu reakcji</li>
+                        <li>Przykład: masz 200 LK i reagujesz w 300ms → efektywny czas = 100ms!</li>
+                        <li>Wyższy LK = lepsze karty przy wolniejszej reakcji</li>
+                        <li>Max LK: 2000 (= 2 sekundy bonusu!)</li>
+                        <li>Ulepszaj LK za LUP w menu głównym</li>
+                    </ul>
+
+                    <h3>🃏 Ulepszenia kart</h3>
+                    <ul>
+                        <li>Każda karta (9, 10, J, Q, K, A) ma osobny poziom</li>
+                        <li>Upgrade dodaje BONUS PUNKTÓW do karty</li>
+                        <li>200 poziomów: Bronze → Silver → Gold → ... → Celestial</li>
+                        <li>Kliknij kartę żeby zobaczyć bonus z tyłu</li>
+                        <li>Downgrade = zwrot 50% kosztów</li>
+                        <li>Bonusy działają tylko dla Ciebie (nie dla bota/przeciwnika)</li>
+                    </ul>
+
+                    <h3>🎮 Przebieg rundy</h3>
+                    <ul>
+                        <li>Każdy gracz wystawia 4 karty</li>
+                        <li>Gracz z większą liczbą punktów wygrywa rundę</li>
+                        <li>Zwycięzca zdobywa punkty swoje ORAZ przeciwnika</li>
+                        <li>Przegrany traci swoje punkty z rundy</li>
+                    </ul>
+
+                    <h3>⚔️ Dogrywka</h3>
+                    <ul>
+                        <li>Przy remisie - każdy wyciąga 2 karty</li>
+                        <li>Kolejny remis - każdy wyciąga 1 kartę</li>
+                        <li>Dogrywki trwają aż do rozstrzygnięcia</li>
+                    </ul>
+
+                    <h3>🌐 Gra Online</h3>
+                    <ul>
+                        <li>Wymaga założenia konta (wpisz nazwę w menu)</li>
+                        <li>Twój LK i ulepszenia kart działają online</li>
+                        <li>Wyślij link znajomemu - dołączy automatycznie</li>
+                    </ul>
+
+                    <h3>🎹 Sterowanie</h3>
+                    <ul>
+                        <li><strong>Gracz 1:</strong> Spacja lub klik przycisku/kropki</li>
+                        <li><strong>Gracz 2:</strong> Strzałka w górę (↑) lub klik</li>
+                    </ul>
+                `,
           goal: "🎯 Cel gry",
           goalText: "Zdobądź",
           goalTextEnd: "punktów jako pierwszy!",
@@ -4236,6 +4226,84 @@
           loses: "loses",
           pts: "pts",
           instructionsTitle: "📜 GAME INSTRUCTIONS",
+          instructionsContent: `
+                    <h3>🎯 Goal</h3>
+                    <p>Reach the required points (5,320 / 7,980 / 10,640). Cards are generated based on your reaction time!</p>
+
+                    <h3>⚡ Reaction System</h3>
+                    <ul>
+                        <li>Click "PLAY CARDS" - a red dot will appear</li>
+                        <li>Wait until it turns GREEN</li>
+                        <li>Click as fast as you can!</li>
+                        <li>Faster reaction = better cards</li>
+                        <li>Clicking before green = worst cards (only 9s)!</li>
+                    </ul>
+
+                    <h3>🃏 Card Values</h3>
+                    <div class="points-table">
+                        <div class="points-row"><span>Ace (A)</span><span>250 pts</span></div>
+                        <div class="points-row"><span>King (K)</span><span>200 pts</span></div>
+                        <div class="points-row"><span>Queen (Q)</span><span>150 pts</span></div>
+                        <div class="points-row"><span>Jack (J)</span><span>50 pts</span></div>
+                        <div class="points-row"><span>Ten (10)</span><span>10 pts</span></div>
+                        <div class="points-row"><span>Nine (9)</span><span>5 pts</span></div>
+                    </div>
+
+                    <h3>💰 LUP (Luck & Upgrade Points)</h3>
+                    <ul>
+                        <li>Game currency - you start with 100 LUP</li>
+                        <li>Win online = +LUP (based on LK difference)</li>
+                        <li>Lose online = -LUP</li>
+                        <li>Use LUP to upgrade LK or cards</li>
+                    </ul>
+
+                    <h3>🍀 LK (Luck)</h3>
+                    <ul>
+                        <li>1 LK = 1ms reaction time bonus</li>
+                        <li>Example: you have 200 LK and react in 300ms → effective time = 100ms!</li>
+                        <li>Higher LK = better cards with slower reaction</li>
+                        <li>Max LK: 2000 (= 2 seconds bonus!)</li>
+                        <li>Upgrade LK for LUP in main menu</li>
+                    </ul>
+
+                    <h3>🃏 Card Upgrades</h3>
+                    <ul>
+                        <li>Each card (9, 10, J, Q, K, A) has its own level</li>
+                        <li>Upgrade adds BONUS POINTS to card</li>
+                        <li>200 levels: Bronze → Silver → Gold → ... → Celestial</li>
+                        <li>Click card to see bonus on the back</li>
+                        <li>Downgrade = 50% cost refund</li>
+                        <li>Bonuses only work for you (not for bot/opponent)</li>
+                    </ul>
+
+                    <h3>🎮 Round Flow</h3>
+                    <ul>
+                        <li>Each player plays 4 cards</li>
+                        <li>Player with more points wins the round</li>
+                        <li>Winner gets their points AND opponent's points</li>
+                        <li>Loser loses their points from the round</li>
+                    </ul>
+
+                    <h3>⚔️ Tiebreaker</h3>
+                    <ul>
+                        <li>On tie - each player draws 2 cards</li>
+                        <li>Another tie - each draws 1 card</li>
+                        <li>Tiebreakers continue until resolved</li>
+                    </ul>
+
+                    <h3>🌐 Online Game</h3>
+                    <ul>
+                        <li>Requires account (enter name in menu)</li>
+                        <li>Your LK and card upgrades work online</li>
+                        <li>Send link to friend - they join automatically</li>
+                    </ul>
+
+                    <h3>🎹 Controls</h3>
+                    <ul>
+                        <li><strong>Player 1:</strong> Space or click button/dot</li>
+                        <li><strong>Player 2:</strong> Arrow Up (↑) or click</li>
+                    </ul>
+                `,
           goal: "🎯 Goal",
           goalText: "Be the first to reach",
           goalTextEnd: "points!",
@@ -6498,6 +6566,12 @@
         if (gameState.gameOver) return;
         if (gameState.playersReady[playerIndex]) return;
 
+        // In local mode, block the other player's button during reaction test
+        if (gameState.mode === "local") {
+          document.getElementById("playBtn1").disabled = true;
+          document.getElementById("playBtn2").disabled = true;
+        }
+
         // Start reaction test
         ReactionSystem.start(playerIndex);
       }
@@ -6791,6 +6865,9 @@
       }
 
       function showInstructions() {
+        document.getElementById("instructionsContent").innerHTML = t(
+          "instructionsContent"
+        );
         document.getElementById("instructionsModal").classList.add("active");
       }
 
