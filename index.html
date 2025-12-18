@@ -7380,8 +7380,22 @@
           setTimeout(() => {
             calculateRoundResult();
           }, revealTime);
+        } else if (gameState.mode === "online") {
+          // In online mode, host calculates and broadcasts result
+          const totalCards = gameState.cardsToPlay;
+          const animationTime = totalCards * 400 + 800;
+
+          if (onlineState.isHost) {
+            // Host waits for animations, then calculates and broadcasts
+            setTimeout(() => {
+              const result = calculateRoundResultData();
+              broadcastToAll({ type: "showResult", result: result });
+              showRoundResult(result);
+            }, animationTime);
+          }
+          // Non-host players wait for 'showResult' message
         } else {
-          // Other modes - cards already visible
+          // Bot mode - cards already visible
           const totalCards = gameState.cardsToPlay;
           const animationTime = totalCards * 400 + 800;
           setTimeout(() => {
@@ -7391,6 +7405,11 @@
       }
 
       function calculateRoundResult() {
+        const result = calculateRoundResultData();
+        showRoundResult(result);
+      }
+
+      function calculateRoundResultData() {
         const maxPlayers = gameState.maxPlayers || 2;
 
         // Calculate points for all players
@@ -7401,16 +7420,6 @@
             0
           );
         }
-
-        gameState.roundPoints = points;
-
-        // Display result (for 2 players)
-        document.getElementById("roundPoints1").textContent = points[0];
-        document.getElementById("roundPoints2").textContent = points[1] || 0;
-
-        let resultTitle = t("roundResult");
-        let winner = "";
-        let penalty = "";
 
         // Collect all played cards from this round
         let thisRoundCards = [];
@@ -7431,39 +7440,73 @@
           .map((p, i) => (p === maxPoints ? i : -1))
           .filter((i) => i >= 0);
 
+        let newScores = [...gameState.scores];
+        let winnerIndex = -1;
+        let isTie = false;
+
         if (winners.length === 1) {
-          // Single winner
-          const winnerIndex = winners[0];
+          winnerIndex = winners[0];
+
+          if (maxPlayers === 2) {
+            const loserIndex = 1 - winnerIndex;
+            newScores[loserIndex] = Math.max(
+              0,
+              newScores[loserIndex] - points[loserIndex]
+            );
+          } else {
+            for (let i = 0; i < maxPlayers; i++) {
+              if (i !== winnerIndex) {
+                newScores[i] = Math.max(0, newScores[i] - points[i]);
+              }
+            }
+          }
+          newScores[winnerIndex] += totalPotPoints;
+        } else {
+          isTie = true;
+        }
+
+        return {
+          points: points,
+          winners: winners,
+          winnerIndex: winnerIndex,
+          isTie: isTie,
+          newScores: newScores,
+          totalPotPoints: totalPotPoints,
+          allCardsToWin: allCardsToWin,
+        };
+      }
+
+      function showRoundResult(result) {
+        const maxPlayers = gameState.maxPlayers || 2;
+        const points = result.points;
+
+        gameState.roundPoints = points;
+        gameState.scores = result.newScores;
+
+        // Display result (for 2 players)
+        document.getElementById("roundPoints1").textContent = points[0];
+        document.getElementById("roundPoints2").textContent = points[1] || 0;
+
+        let resultTitle = t("roundResult");
+        let winner = "";
+        let penalty = "";
+
+        if (!result.isTie) {
+          const winnerIndex = result.winnerIndex;
           const winnerName = gameState.playerNames[winnerIndex];
 
           if (maxPlayers === 2) {
-            // 2 players: winner gets points, loser loses points
-            // Loser loses their points
             const loserIndex = 1 - winnerIndex;
-            gameState.scores[loserIndex] = Math.max(
-              0,
-              gameState.scores[loserIndex] - points[loserIndex]
-            );
             penalty = `${gameState.playerNames[loserIndex]} ${t("loses")} ${
               points[loserIndex]
             } ${t("pts")}`;
           } else {
-            // 4 players: All losers lose their points
-            for (let i = 0; i < maxPlayers; i++) {
-              if (i !== winnerIndex) {
-                gameState.scores[i] = Math.max(
-                  0,
-                  gameState.scores[i] - points[i]
-                );
-              }
-            }
             penalty =
               currentLang === "pl"
                 ? "Przegrani tracą swoje punkty"
                 : "Losers lose their points";
           }
 
-          gameState.scores[winnerIndex] += totalPotPoints;
           winner = `🏆 ${winnerName} ${t("winsRound")}`;
           gameState.tiebreakerPot = [];
           resetTiebreaker();
@@ -7483,7 +7526,6 @@
             SoundManager.play("win");
             // Award money for winning - ONLY in online mode
             if (gameState.mode === "online") {
-              // Win = get the LK difference
               const earnings = Math.max(1, lkDiff);
               PlayerAccount.addMoney(earnings);
               updateAccountDisplay();
@@ -7492,7 +7534,6 @@
             SoundManager.play("lose");
             // Deduct money for losing - ONLY in online mode
             if (gameState.mode === "online") {
-              // Lose = lose 20% of LK difference (minimum 0)
               const loss = Math.floor(lkDiff * 0.2);
               if (loss > 0) {
                 PlayerAccount.removeMoney(loss);
@@ -7504,13 +7545,13 @@
           // Tie - tiebreaker
           SoundManager.play("tie");
           resultTitle = t("tiebreaker");
-          const winnerNames = winners
+          const winnerNames = result.winners
             .map((i) => gameState.playerNames[i])
             .join(currentLang === "pl" ? " i " : " and ");
           winner = `${winnerNames} - ${
             currentLang === "pl" ? "dogrywka" : "tiebreaker"
           }!`;
-          gameState.tiebreakerPot = allCardsToWin;
+          gameState.tiebreakerPot = result.allCardsToWin;
           startTiebreaker();
         }
 
@@ -8680,6 +8721,11 @@
             if (onlineState.isHost) {
               broadcastToOthers(conn ? conn.peer : null, data);
             }
+            break;
+
+          case "showResult":
+            // Show result at the same time as host
+            showRoundResult(data.result);
             break;
 
           case "rematchStart":
