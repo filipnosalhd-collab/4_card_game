@@ -1217,25 +1217,33 @@
           position: static;
           transform: none;
           margin: 0 auto 1rem;
-          display: flex;
-          gap: 1rem;
-          align-items: center;
+          flex-direction: column;
+          gap: 0.3rem;
+          align-items: stretch;
           padding: 0.5rem 1rem;
+          max-width: 95%;
         }
 
         .live-scores-title {
-          margin-bottom: 0;
-          margin-right: 0.5rem;
+          margin-bottom: 0.3rem;
+          text-align: center;
         }
 
         .live-score-row {
-          border-bottom: none;
-          padding: 0 0.5rem;
-          border-right: 1px solid rgba(212, 175, 55, 0.2);
+          display: flex;
+          justify-content: space-between;
+          border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+          border-right: none;
+          padding: 0.3rem 0;
         }
 
-        .live-score-row:last-child {
-          border-right: none;
+        .live-score-row:last-of-type {
+          border-bottom: none;
+        }
+
+        .surrender-btn {
+          width: 100%;
+          margin-top: 0.5rem;
         }
       }
 
@@ -4694,7 +4702,7 @@
 
         // Start game immediately
         document.getElementById("gameScreen").classList.add("active");
-        document.getElementById("liveScores").style.display = "flex";
+        document.getElementById("liveScores").style.display = "block";
         document.getElementById("playBtn1").disabled = false;
 
         if (gameState.mode === "local") {
@@ -6317,7 +6325,7 @@
         document.getElementById("onlineLobby").classList.remove("active");
         document.getElementById("menuScreen").style.display = "flex";
 
-        // Reset lobby UI :)
+        // Reset lobby UI
         document.getElementById("onlineChoiceSection").style.display = "block";
         document.getElementById("hostLobbySection").style.display = "none";
         document.getElementById("guestLobbySection").style.display = "none";
