@@ -995,8 +995,70 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
       }
 
+      /* Upgraded card styles in game */
+      .card.tier-bronze {
+        background: linear-gradient(
+          135deg,
+          #f5e6d3 0%,
+          #d4a574 50%,
+          #c4956a 100%
+        ) !important;
+        border-color: #cd7f32 !important;
+        box-shadow: 0 4px 15px rgba(205, 127, 50, 0.4);
+      }
+      .card.tier-bronze .card-value,
+      .card.tier-bronze .card-corner,
+      .card.tier-bronze .card-suit {
+        color: #8b4513 !important;
+      }
+
+      .card.tier-silver {
+        background: linear-gradient(
+          135deg,
+          #f8f8f8 0%,
+          #c0c0c0 50%,
+          #a8a8a8 100%
+        ) !important;
+        border-color: #c0c0c0 !important;
+        box-shadow: 0 4px 15px rgba(192, 192, 192, 0.5);
+      }
+      .card.tier-silver .card-value,
+      .card.tier-silver .card-corner,
+      .card.tier-silver .card-suit {
+        color: #4a4a4a !important;
+      }
+
+      .card.tier-gold {
+        background: linear-gradient(
+          135deg,
+          #fff9e6 0%,
+          #ffd700 50%,
+          #daa520 100%
+        ) !important;
+        border-color: #ffd700 !important;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+      }
+      .card.tier-gold .card-value,
+      .card.tier-gold .card-corner,
+      .card.tier-gold .card-suit {
+        color: #8b6914 !important;
+      }
+
       .card.tier-glow {
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #16213e 50%,
+          #0f3460 100%
+        ) !important;
+        border-color: var(--glow-color, var(--gold)) !important;
         animation: cardGlowGame 2s ease-in-out infinite;
+      }
+      .card.tier-glow .card-value,
+      .card.tier-glow .card-corner,
+      .card.tier-glow .card-suit {
+        color: var(--glow-color, var(--gold)) !important;
+        text-shadow: 0 0 10px var(--glow-color, var(--gold));
       }
 
       @keyframes cardGlowGame {
@@ -2808,37 +2870,66 @@
 
       /* Card tiers styling */
       .upgrade-card-front.tier-bronze {
+        background: linear-gradient(
+          135deg,
+          #f5e6d3 0%,
+          #d4a574 50%,
+          #c4956a 100%
+        );
         border-color: #cd7f32;
         box-shadow: 0 0 15px rgba(205, 127, 50, 0.4);
       }
       .upgrade-card-front.tier-bronze .upgrade-card-corner,
       .upgrade-card-front.tier-bronze .upgrade-card-center,
       .upgrade-card-front.tier-bronze .upgrade-card-tier {
-        color: #cd7f32;
+        color: #8b4513;
       }
 
       .upgrade-card-front.tier-silver {
+        background: linear-gradient(
+          135deg,
+          #f8f8f8 0%,
+          #c0c0c0 50%,
+          #a8a8a8 100%
+        );
         border-color: #c0c0c0;
         box-shadow: 0 0 15px rgba(192, 192, 192, 0.4);
       }
       .upgrade-card-front.tier-silver .upgrade-card-corner,
       .upgrade-card-front.tier-silver .upgrade-card-center,
       .upgrade-card-front.tier-silver .upgrade-card-tier {
-        color: #c0c0c0;
+        color: #4a4a4a;
       }
 
       .upgrade-card-front.tier-gold {
+        background: linear-gradient(
+          135deg,
+          #fff9e6 0%,
+          #ffd700 50%,
+          #daa520 100%
+        );
         border-color: #ffd700;
         box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
       }
       .upgrade-card-front.tier-gold .upgrade-card-corner,
       .upgrade-card-front.tier-gold .upgrade-card-center,
       .upgrade-card-front.tier-gold .upgrade-card-tier {
-        color: #ffd700;
+        color: #8b6914;
       }
 
       .upgrade-card-front.tier-glow {
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #16213e 50%,
+          #0f3460 100%
+        );
         animation: cardGlow 2s ease-in-out infinite alternate;
+      }
+      .upgrade-card-front.tier-glow .upgrade-card-corner,
+      .upgrade-card-front.tier-glow .upgrade-card-center,
+      .upgrade-card-front.tier-glow .upgrade-card-tier {
+        text-shadow: 0 0 10px currentColor;
       }
 
       @keyframes cardGlow {
