@@ -698,12 +698,6 @@
         color: var(--gold);
       }
 
-      .deck-info {
-        font-size: 0.9rem;
-        color: var(--cream);
-        opacity: 0.7;
-      }
-
       .player-deck {
         position: relative;
         width: 100px;
@@ -1976,6 +1970,105 @@
         text-align: center;
       }
 
+      /* Reaction system */
+      .reaction-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 3000;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .reaction-overlay.active {
+        display: flex;
+      }
+
+      .reaction-dot {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: #7f1d1d;
+        cursor: pointer;
+        transition: background 0.1s, transform 0.1s, box-shadow 0.1s;
+        box-shadow: 0 0 20px rgba(127, 29, 29, 0.5);
+      }
+
+      .reaction-dot.ready {
+        background: #4ade80;
+        box-shadow: 0 0 60px rgba(74, 222, 128, 0.9),
+          0 0 120px rgba(74, 222, 128, 0.5);
+        animation: pulse-green 0.3s ease-in-out infinite;
+      }
+
+      .reaction-dot.clicked {
+        transform: scale(0.9);
+        background: #3b82f6;
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+      }
+
+      @keyframes pulse-green {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.08);
+        }
+      }
+
+      .reaction-text {
+        color: var(--cream);
+        font-family: "Cinzel", serif;
+        font-size: 1.5rem;
+        margin-top: 2rem;
+        text-align: center;
+      }
+
+      .reaction-time {
+        color: var(--gold);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-top: 1rem;
+      }
+
+      /* Small reaction dot for opponent view */
+      .reaction-mini {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #7f1d1d;
+        z-index: 100;
+      }
+
+      .reaction-mini.active {
+        display: block;
+      }
+
+      .reaction-mini.ready {
+        background: #4ade80;
+        box-shadow: 0 0 30px rgba(74, 222, 128, 0.8);
+      }
+
+      .reaction-mini.clicked {
+        background: #3b82f6;
+      }
+
+      /* Hide controls during reaction */
+      .game-controls.reaction-mode {
+        display: none !important;
+      }
+
       /* Language button - right corner */
       .lang-btn {
         position: fixed;
@@ -2281,10 +2374,6 @@
         .played-row {
           gap: 0.3rem;
           min-height: 80px;
-        }
-
-        .deck-info {
-          font-size: 0.75rem;
         }
 
         .deck-card {
@@ -2608,6 +2697,19 @@
     </style>
   </head>
   <body>
+    <!-- Reaction Overlay (fullscreen for current player) -->
+    <div class="reaction-overlay" id="reactionOverlay">
+      <div
+        class="reaction-dot"
+        id="reactionDot"
+        onclick="handleReactionClick()"
+      ></div>
+      <div class="reaction-text" id="reactionText" data-i18n="waitForGreen">
+        Czekaj na zielone...
+      </div>
+      <div class="reaction-time" id="reactionTime"></div>
+    </div>
+
     <!-- Sound Button -->
     <button class="sound-btn" id="soundBtn" onclick="toggleSound()">
       <span class="sound-icon">🔊</span>
@@ -2778,18 +2880,26 @@
             <button
               class="option-btn selected"
               data-option="target"
-              data-value="2660"
+              data-value="5320"
               onclick="selectOption(this)"
             >
-              2660 pkt
+              5,320 pkt
             </button>
             <button
               class="option-btn"
               data-option="target"
-              data-value="3100"
+              data-value="7980"
               onclick="selectOption(this)"
             >
-              3100 pkt
+              7,980 pkt
+            </button>
+            <button
+              class="option-btn"
+              data-option="target"
+              data-value="10640"
+              onclick="selectOption(this)"
+            >
+              10,640 pkt
             </button>
           </div>
         </div>
@@ -2816,6 +2926,42 @@
               maxlength="12"
               style="display: none"
             />
+          </div>
+        </div>
+
+        <!-- Bot Difficulty -->
+        <div class="setup-group" id="botDifficultyGroup">
+          <label class="setup-label" data-i18n="botDifficulty"
+            >Poziom bota:</label
+          >
+          <div class="option-buttons">
+            <button
+              class="option-btn"
+              data-option="botDifficulty"
+              data-value="easy"
+              onclick="selectOption(this)"
+              data-i18n="easy"
+            >
+              Łatwy
+            </button>
+            <button
+              class="option-btn selected"
+              data-option="botDifficulty"
+              data-value="medium"
+              onclick="selectOption(this)"
+              data-i18n="medium"
+            >
+              Średni
+            </button>
+            <button
+              class="option-btn"
+              data-option="botDifficulty"
+              data-value="hard"
+              onclick="selectOption(this)"
+              data-i18n="hard"
+            >
+              Trudny
+            </button>
           </div>
         </div>
 
@@ -2904,11 +3050,12 @@
         <!-- Initial choice: Create or Join -->
         <div id="onlineChoiceSection">
           <div class="setup-group">
-            <label class="setup-label">Twoja nazwa:</label>
+            <label class="setup-label" data-i18n="yourName">Twoja nazwa:</label>
             <input
               type="text"
               class="name-input"
               id="onlinePlayerName"
+              data-i18n-placeholder="enterName"
               placeholder="Wpisz nazwę..."
               maxlength="12"
             />
@@ -2922,21 +3069,22 @@
               color: var(--velvet);
             "
             onclick="createRoom()"
+            data-i18n="createRoom"
           >
             UTWÓRZ POKÓJ
           </button>
 
           <div class="setup-group" style="margin-top: 2rem">
-            <label class="setup-label" data-i18n="joinRoom"
-              >Lub dołącz do istniejącego pokoju:</label
+            <label class="setup-label" data-i18n="joinRoomLink"
+              >Lub wklej link do pokoju:</label
             >
             <div class="join-room-box">
               <input
                 type="text"
                 class="name-input"
                 id="joinRoomCode"
-                data-i18n-placeholder="enterCodeOrLink"
-                placeholder="Wklej link lub kod (np. C4-ABC123)"
+                data-i18n-placeholder="pasteLink"
+                placeholder="Wklej link do gry..."
                 style="text-transform: none"
               />
               <button
@@ -2953,6 +3101,7 @@
             class="menu-btn"
             style="margin-top: 2rem"
             onclick="backToMenu()"
+            data-i18n="back"
           >
             POWRÓT
           </button>
@@ -2983,23 +3132,33 @@
           </div>
 
           <div class="setup-group">
-            <label class="setup-label">Cel punktowy:</label>
+            <label class="setup-label" data-i18n="targetScore"
+              >Cel punktowy:</label
+            >
             <div class="option-buttons">
               <button
                 class="option-btn selected"
                 data-option="onlineTarget"
-                data-value="2660"
+                data-value="5320"
                 onclick="selectOption(this)"
               >
-                2660 pkt
+                5,320 pkt
               </button>
               <button
                 class="option-btn"
                 data-option="onlineTarget"
-                data-value="3100"
+                data-value="7980"
                 onclick="selectOption(this)"
               >
-                3100 pkt
+                7,980 pkt
+              </button>
+              <button
+                class="option-btn"
+                data-option="onlineTarget"
+                data-value="10640"
+                onclick="selectOption(this)"
+              >
+                10,640 pkt
               </button>
             </div>
           </div>
@@ -3192,18 +3351,19 @@
 
       <div class="game-area">
         <!-- Player 2 (Top) -->
-        <div class="player-area top">
+        <div class="player-area top" id="playerArea2">
           <span class="turn-label" id="turnLabel2"
             >👇 <span data-i18n="yourTurn">TWOJA KOLEJ!</span></span
           >
+          <div
+            class="reaction-mini"
+            id="reactionMini2"
+            onclick="handleReactionClick()"
+          ></div>
           <div class="player-deck" id="deck2">
             <div class="deck-card">
               <div class="deck-pattern"></div>
             </div>
-          </div>
-          <div class="deck-info">
-            <span data-i18n="cardsInDeck">Kart w talii:</span>
-            <span id="deckCount2">12</span>
           </div>
           <div class="played-row" id="playedCards2"></div>
         </div>
@@ -3218,12 +3378,12 @@
             >
           </div>
 
-          <div class="game-controls">
+          <div class="game-controls" id="gameControls">
             <div id="player1ControlWrapper">
               <button
                 class="control-btn"
                 id="playBtn1"
-                onclick="playCards(1)"
+                onclick="startReaction(0)"
                 data-i18n="playCards"
               >
                 WYSTAW KARTY
@@ -3236,7 +3396,7 @@
               <button
                 class="control-btn"
                 id="playBtn2"
-                onclick="playCards(2)"
+                onclick="startReaction(1)"
                 data-i18n="playCards"
               >
                 WYSTAW KARTY
@@ -3247,15 +3407,16 @@
         </div>
 
         <!-- Player 1 (Bottom) -->
-        <div class="player-area">
+        <div class="player-area" id="playerArea1">
           <span class="turn-label" id="turnLabel1"
             >👆 <span data-i18n="yourTurn">TWOJA KOLEJ!</span></span
           >
+          <div
+            class="reaction-mini"
+            id="reactionMini1"
+            onclick="handleReactionClick()"
+          ></div>
           <div class="played-row" id="playedCards1"></div>
-          <div class="deck-info">
-            <span data-i18n="cardsInDeck">Kart w talii:</span>
-            <span id="deckCount1">12</span>
-          </div>
           <div class="player-deck" id="deck1">
             <div class="deck-card">
               <div class="deck-pattern"></div>
@@ -3572,7 +3733,6 @@
           playCards: "WYSTAW KARTY",
           player1Key: "Gracz 1: Spacja",
           player2Key: "Gracz 2: ↑",
-          cardsInDeck: "Kart w talii:",
           roundResult: "WYNIK RUNDY",
           continue: "DALEJ",
           results: "WYNIKI",
@@ -3627,10 +3787,6 @@
             "Kolejny remis - każdy wyciąga 1 kartę",
             "Dogrywki trwają aż do rozstrzygnięcia",
           ],
-          noCards: "🔄 Brak kart",
-          noCardsList: [
-            "Gdy skończą ci się karty, przeciwnik daje ci 4 karty z góry swojej talii",
-          ],
           controls: "🎹 Sterowanie",
           controlsList: [
             "Gracz 1: Spacja lub klik przycisku",
@@ -3657,6 +3813,18 @@
           invalidCodeAlert: "Nieprawidłowy kod lub link!",
           codeAlreadyUsed: "Ten kod został już wykorzystany!",
           promoCodeSuccess: "🎉 Wygrałeś 100 Ⱡ!",
+          waitForGreen: "Czekaj na zielone...",
+          clickNow: "KLIKNIJ!",
+          tooEarly: "Za wcześnie!",
+          reactionTime: "Czas reakcji:",
+          botDifficulty: "Poziom bota:",
+          easy: "Łatwy",
+          medium: "Średni",
+          hard: "Trudny",
+          joinRoomLink: "Lub wklej link do pokoju:",
+          pasteLink: "Wklej link do gry...",
+          enterLinkAlert: "Wklej link do pokoju!",
+          invalidLinkAlert: "Nieprawidłowy link! Wklej pełny link do gry.",
         },
         en: {
           subtitle: "Four Cards Game",
@@ -3706,7 +3874,6 @@
           playCards: "PLAY CARDS",
           player1Key: "Player 1: Space",
           player2Key: "Player 2: ↑",
-          cardsInDeck: "Cards in deck:",
           roundResult: "ROUND RESULT",
           continue: "CONTINUE",
           results: "RESULTS",
@@ -3762,10 +3929,6 @@
             "Another tie - each player draws 1 card",
             "Tiebreakers continue until resolved",
           ],
-          noCards: "🔄 No Cards",
-          noCardsList: [
-            "When you run out of cards, opponent gives you 4 cards from top of their deck",
-          ],
           controls: "🎹 Controls",
           controlsList: [
             "Player 1: Space or click button",
@@ -3792,6 +3955,18 @@
           invalidCodeAlert: "Invalid code or link!",
           codeAlreadyUsed: "This code has already been used!",
           promoCodeSuccess: "🎉 You won 100 Ⱡ!",
+          waitForGreen: "Wait for green...",
+          clickNow: "CLICK!",
+          tooEarly: "Too early!",
+          reactionTime: "Reaction time:",
+          botDifficulty: "Bot difficulty:",
+          easy: "Easy",
+          medium: "Medium",
+          hard: "Hard",
+          joinRoomLink: "Or paste game link:",
+          pasteLink: "Paste game link...",
+          enterLinkAlert: "Paste game link!",
+          invalidLinkAlert: "Invalid link! Paste full game link.",
         },
       };
 
@@ -4106,6 +4281,306 @@
         updateAccountDisplay();
       });
 
+      // ==================== REACTION SYSTEM ====================
+      const ReactionSystem = {
+        active: false,
+        playerIndex: 0,
+        startTime: 0,
+        timeout: null,
+        isReady: false,
+        tooEarly: false,
+
+        // Start reaction test for player
+        start(playerIndex) {
+          this.active = true;
+          this.playerIndex = playerIndex;
+          this.isReady = false;
+          this.tooEarly = false;
+
+          const isOnline = gameState.mode === "online";
+          const isMyTurn = isOnline
+            ? playerIndex === onlineState.myPlayerIndex
+            : true;
+
+          // Hide game controls
+          document
+            .getElementById("gameControls")
+            .classList.add("reaction-mode");
+
+          if (isOnline && isMyTurn) {
+            // Fullscreen for current player in online
+            document.getElementById("reactionOverlay").classList.add("active");
+            document
+              .getElementById("reactionDot")
+              .classList.remove("ready", "clicked");
+            document.getElementById("reactionText").textContent =
+              t("waitForGreen");
+            document.getElementById("reactionTime").textContent = "";
+          } else {
+            // Mini dot for local/bot or opponent view
+            const miniDot = document.getElementById(
+              `reactionMini${playerIndex + 1}`
+            );
+            miniDot.classList.add("active");
+            miniDot.classList.remove("ready", "clicked");
+          }
+
+          // Random delay 1-3 seconds before turning green
+          const delay = 1000 + Math.random() * 2000;
+          this.timeout = setTimeout(() => this.setReady(), delay);
+        },
+
+        setReady() {
+          if (!this.active) return;
+
+          this.isReady = true;
+          this.startTime = performance.now();
+
+          const isOnline = gameState.mode === "online";
+          const isMyTurn = isOnline
+            ? this.playerIndex === onlineState.myPlayerIndex
+            : true;
+
+          SoundManager.play("click");
+
+          if (isOnline && isMyTurn) {
+            document.getElementById("reactionDot").classList.add("ready");
+            document.getElementById("reactionText").textContent = t("clickNow");
+          } else {
+            const miniDot = document.getElementById(
+              `reactionMini${this.playerIndex + 1}`
+            );
+            miniDot.classList.add("ready");
+          }
+
+          // Bot auto-reacts after random time based on difficulty
+          if (gameState.mode === "bot" && this.playerIndex === 1) {
+            let botReactionTime;
+            switch (gameState.botDifficulty) {
+              case "easy":
+                botReactionTime = 350 + Math.random() * 300; // 350-650ms
+                break;
+              case "hard":
+                botReactionTime = 100 + Math.random() * 150; // 100-250ms
+                break;
+              default: // medium
+                botReactionTime = 200 + Math.random() * 250; // 200-450ms
+            }
+            setTimeout(() => this.handleClick(), botReactionTime);
+          }
+        },
+
+        handleClick() {
+          if (!this.active) return;
+
+          if (!this.isReady) {
+            // Clicked too early!
+            this.tooEarly = true;
+            clearTimeout(this.timeout);
+            this.end(999999); // Penalty - worst cards
+            return;
+          }
+
+          const reactionTime = performance.now() - this.startTime;
+          this.end(reactionTime);
+        },
+
+        end(reactionTime) {
+          this.active = false;
+          clearTimeout(this.timeout);
+
+          const isOnline = gameState.mode === "online";
+          const isMyTurn = isOnline
+            ? this.playerIndex === onlineState.myPlayerIndex
+            : true;
+
+          // Mark as clicked
+          if (isOnline && isMyTurn) {
+            document.getElementById("reactionDot").classList.add("clicked");
+            document.getElementById("reactionDot").classList.remove("ready");
+
+            if (this.tooEarly) {
+              document.getElementById("reactionText").textContent =
+                t("tooEarly");
+              document.getElementById("reactionTime").textContent = "❌";
+            } else {
+              document.getElementById("reactionText").textContent =
+                t("reactionTime");
+              document.getElementById("reactionTime").textContent =
+                Math.round(reactionTime) + " ms";
+            }
+          } else {
+            const miniDot = document.getElementById(
+              `reactionMini${this.playerIndex + 1}`
+            );
+            miniDot.classList.add("clicked");
+            miniDot.classList.remove("ready");
+          }
+
+          // Calculate cards based on reaction time and LK
+          setTimeout(() => {
+            this.cleanup();
+            this.selectCardsBasedOnReaction(reactionTime);
+          }, 800);
+        },
+
+        cleanup() {
+          document.getElementById("reactionOverlay").classList.remove("active");
+          document
+            .getElementById("reactionMini1")
+            .classList.remove("active", "ready", "clicked");
+          document
+            .getElementById("reactionMini2")
+            .classList.remove("active", "ready", "clicked");
+          document
+            .getElementById("gameControls")
+            .classList.remove("reaction-mode");
+        },
+
+        selectCardsBasedOnReaction(reactionTime) {
+          const playerIndex = this.playerIndex;
+          const luck = gameState.playerLuck[playerIndex] || 0;
+
+          const cardsNeeded = gameState.cardsToPlay;
+          let selectedCards = [];
+
+          // If clicked too early - only 9s (worst cards)
+          if (this.tooEarly) {
+            // Find all 9s in deck
+            const nines = gameState.decks[playerIndex].filter(
+              (c) => c.value === "9"
+            );
+
+            // Take as many 9s as needed, fill rest with worst available
+            const availableCards = [...gameState.decks[playerIndex]];
+            availableCards.sort((a, b) => a.points - b.points); // Worst first
+
+            for (let i = 0; i < cardsNeeded && availableCards.length > 0; i++) {
+              selectedCards.push(availableCards.shift());
+            }
+          } else {
+            // Normal selection based on reaction time
+            // LK gives time bonus: 1 LK = 1ms bonus (so 100 LK = 100ms faster, 200 LK = 200ms faster)
+            const luckBonus = luck;
+            const effectiveTime = Math.max(0, reactionTime - luckBonus);
+
+            // Sort available cards by points (best first)
+            const availableCards = [...gameState.decks[playerIndex]];
+            availableCards.sort((a, b) => b.points - a.points);
+
+            // Reaction time brackets (effective time after LK bonus):
+            // 0-150ms: top 25% cards
+            // 150-250ms: top 50% cards
+            // 250-400ms: top 75% cards
+            // 400ms+: random cards
+
+            for (let i = 0; i < cardsNeeded && availableCards.length > 0; i++) {
+              let pickRange;
+
+              if (effectiveTime < 150) {
+                pickRange = Math.ceil(availableCards.length * 0.25);
+              } else if (effectiveTime < 250) {
+                pickRange = Math.ceil(availableCards.length * 0.5);
+              } else if (effectiveTime < 400) {
+                pickRange = Math.ceil(availableCards.length * 0.75);
+              } else {
+                pickRange = availableCards.length;
+              }
+
+              pickRange = Math.max(1, pickRange);
+              const idx = Math.floor(Math.random() * pickRange);
+              selectedCards.push(availableCards.splice(idx, 1)[0]);
+            }
+          }
+
+          // Sort selected cards by points (best on left)
+          selectedCards.sort((a, b) => b.points - a.points);
+
+          // Remove selected cards from deck
+          selectedCards.forEach((card) => {
+            const deckIdx = gameState.decks[playerIndex].findIndex(
+              (c) => c.value === card.value && c.suit === card.suit
+            );
+            if (deckIdx !== -1) {
+              gameState.decks[playerIndex].splice(deckIdx, 1);
+            }
+          });
+
+          // Play the cards
+          gameState.playedCards[playerIndex] = selectedCards;
+          gameState.playersReady[playerIndex] = true;
+
+          // Disable button
+          document.getElementById(`playBtn${playerIndex + 1}`).disabled = true;
+
+          // Display cards
+          displayPlayedCards(playerIndex, selectedCards);
+          updateDisplay();
+
+          // Handle turn order in local mode
+          if (gameState.mode === "local") {
+            if (!gameState.waitingForSecondPlayer) {
+              gameState.waitingForSecondPlayer = true;
+              gameState.currentTurn = playerIndex === 0 ? 2 : 1;
+              document.getElementById(
+                `playBtn${gameState.currentTurn}`
+              ).disabled = false;
+              updateTurnIndicator();
+            }
+          }
+
+          // Bot plays after player in bot mode
+          if (
+            gameState.mode === "bot" &&
+            playerIndex === 0 &&
+            !gameState.playersReady[1]
+          ) {
+            // Wait a bit then start bot reaction
+            setTimeout(() => {
+              if (!gameState.playersReady[1]) {
+                startReaction(1);
+              }
+            }, 1000);
+          }
+
+          // Send to online opponent
+          if (gameState.mode === "online") {
+            const message = {
+              type: "playCards",
+              playerIndex: playerIndex,
+              cards: selectedCards,
+              remainingDeck: gameState.decks[playerIndex],
+            };
+
+            if (onlineState.isHost) {
+              broadcastToAll(message);
+            } else if (onlineState.connections.length > 0) {
+              onlineState.connections[0].send(message);
+            }
+          }
+
+          // Check round end
+          const animationTime = cardsNeeded * 500 + 500;
+          setTimeout(() => checkRoundEnd(), animationTime);
+        },
+      };
+
+      function startReaction(playerIndex) {
+        // Check if can play
+        if (gameState.gameOver) return;
+        if (gameState.playersReady[playerIndex]) return;
+
+        // Check if has cards
+        if (gameState.decks[playerIndex].length < gameState.cardsToPlay) return;
+
+        // Start reaction test
+        ReactionSystem.start(playerIndex);
+      }
+
+      function handleReactionClick() {
+        ReactionSystem.handleClick();
+      }
+
       // ==================== SOUND SYSTEM ====================
       const SoundManager = {
         ctx: null,
@@ -4283,7 +4758,8 @@
       // Game State
       const gameState = {
         mode: "bot", // 'bot' or 'local' or 'online'
-        targetScore: 2660,
+        botDifficulty: "medium", // 'easy', 'medium', 'hard'
+        targetScore: 5320,
         scores: [0, 0],
         decks: [[], []],
         playedCards: [[], []],
@@ -4410,21 +4886,27 @@
 
         if (option === "mode") {
           gameState.mode = value;
-          // Show/hide second player name input
+          // Show/hide second player name input and bot difficulty
           const player2Input = document.getElementById("player2NameInput");
           const player2LuckLabel = document.getElementById("player2LuckLabel");
+          const botDifficultyGroup =
+            document.getElementById("botDifficultyGroup");
 
           if (value === "local") {
             player2Input.style.display = "block";
             if (player2LuckLabel)
               player2LuckLabel.textContent =
                 currentLang === "pl" ? "Gracz 2:" : "Player 2:";
+            if (botDifficultyGroup) botDifficultyGroup.style.display = "none";
           } else {
             player2Input.style.display = "none";
             if (player2LuckLabel) player2LuckLabel.textContent = "Bot:";
+            if (botDifficultyGroup) botDifficultyGroup.style.display = "block";
           }
         } else if (option === "target") {
           gameState.targetScore = parseInt(value);
+        } else if (option === "botDifficulty") {
+          gameState.botDifficulty = value;
         }
       }
 
@@ -4641,10 +5123,6 @@
       function updateDisplay() {
         document.getElementById("score1").textContent = gameState.scores[0];
         document.getElementById("score2").textContent = gameState.scores[1];
-        document.getElementById("deckCount1").textContent =
-          gameState.decks[0].length;
-        document.getElementById("deckCount2").textContent =
-          gameState.decks[1].length;
 
         // Update live scores with animation
         const liveScore1 = document.getElementById("liveScore1");
@@ -4682,8 +5160,6 @@
         if (gameState.mode === "online") {
           const myIndex = onlineState.myPlayerIndex;
           if (gameState.playersReady[myIndex]) return;
-
-          checkAndTransferCards(myIndex);
 
           const cardsNeeded = gameState.cardsToPlay;
           if (gameState.decks[myIndex].length < cardsNeeded) return;
@@ -4727,9 +5203,6 @@
           if (playerNum === 2 && !gameState.waitingForSecondPlayer) return;
         }
 
-        // Check if player needs cards from opponent
-        checkAndTransferCards(playerIndex);
-
         const cardsNeeded = gameState.cardsToPlay;
         if (gameState.decks[playerIndex].length < cardsNeeded) {
           return;
@@ -4764,56 +5237,6 @@
               checkRoundEnd();
             }, gameState.cardsToPlay * 500 + 500);
           }
-        }
-      }
-
-      function checkAndTransferCards(playerIndex) {
-        const maxPlayers = gameState.maxPlayers || 2;
-        const cardsNeeded = gameState.cardsToPlay;
-
-        if (gameState.decks[playerIndex].length >= cardsNeeded) return true;
-
-        if (maxPlayers === 2) {
-          // 2 players: get cards from opponent
-          const opponentIndex = 1 - playerIndex;
-          const opponentCards = gameState.decks[opponentIndex].length;
-
-          if (opponentCards >= 4) {
-            // Transfer 4 cards
-            const transferCards = gameState.decks[opponentIndex].splice(0, 4);
-            gameState.decks[playerIndex].push(...transferCards);
-            updateDisplay();
-            return true;
-          } else if (opponentCards > 0) {
-            // Transfer all remaining cards
-            const transferCards = gameState.decks[opponentIndex].splice(
-              0,
-              opponentCards
-            );
-            gameState.decks[playerIndex].push(...transferCards);
-            updateDisplay();
-            return gameState.decks[playerIndex].length >= cardsNeeded;
-          } else {
-            // No cards to transfer - check if we still have enough
-            return gameState.decks[playerIndex].length >= cardsNeeded;
-          }
-        } else {
-          // 4 players: get cards from wonCardsPile
-          if (gameState.wonCardsPile.length >= 4) {
-            const transferCards = gameState.wonCardsPile.splice(0, 4);
-            gameState.decks[playerIndex].push(...transferCards);
-            updateDisplay();
-            return true;
-          } else if (gameState.wonCardsPile.length > 0) {
-            const transferCards = gameState.wonCardsPile.splice(
-              0,
-              gameState.wonCardsPile.length
-            );
-            gameState.decks[playerIndex].push(...transferCards);
-            updateDisplay();
-            return gameState.decks[playerIndex].length >= cardsNeeded;
-          }
-          return gameState.decks[playerIndex].length >= cardsNeeded;
         }
       }
 
@@ -4857,8 +5280,6 @@
 
       function botPlay() {
         if (gameState.playersReady[1]) return;
-
-        checkAndTransferCards(1);
 
         const cardsNeeded = gameState.cardsToPlay;
         if (gameState.decks[1].length < cardsNeeded) return;
@@ -5115,20 +5536,14 @@
         gameState.cardsToPlay = 4;
         gameState.waitingForSecondPlayer = false;
 
-        // Check if players have cards (transfer if needed)
-        for (let i = 0; i < (gameState.maxPlayers || 2); i++) {
-          checkAndTransferCards(i);
-        }
-
-        // Check if game should end (no more cards anywhere)
+        // Check if need to regenerate decks
         const totalCards = gameState.decks.reduce(
           (sum, deck) => sum + deck.length,
           0
         );
         if (totalCards < gameState.cardsToPlay * 2) {
-          // Not enough cards to play - end game, highest score wins
-          endGame();
-          return;
+          // Regenerate decks - deal new cards
+          dealCards();
         }
 
         // Enable buttons based on mode
@@ -5537,6 +5952,19 @@
 
       // Keyboard controls
       document.addEventListener("keydown", function (e) {
+        // Handle reaction click
+        if (ReactionSystem.active) {
+          if (
+            e.code === "Space" ||
+            e.code === "ArrowUp" ||
+            e.code === "Enter"
+          ) {
+            e.preventDefault();
+            handleReactionClick();
+          }
+          return;
+        }
+
         // Ignore if modal is open
         if (
           document.getElementById("surrenderModal").classList.contains("active")
@@ -5572,17 +6000,17 @@
               !gameState.waitingForSecondPlayer &&
               !gameState.playersReady[0]
             ) {
-              playCards(1);
+              startReaction(0);
             }
           } else {
             if (!gameState.playersReady[0]) {
-              playCards(1);
+              startReaction(0);
             }
           }
         } else if (e.code === "ArrowUp" && gameState.mode === "local") {
           e.preventDefault();
           if (gameState.waitingForSecondPlayer && !gameState.playersReady[1]) {
-            playCards(2);
+            startReaction(1);
           }
         }
       });
@@ -5678,7 +6106,7 @@
         let input = codeInput.value.trim();
 
         if (!input) {
-          alert(t("enterCodeAlert"));
+          alert(t("enterLinkAlert"));
           return;
         }
 
@@ -5703,7 +6131,7 @@
 
         let code = "";
 
-        // Check if it's a full URL with ?room= parameter
+        // Must be a URL with ?room= parameter
         if (input.includes("?room=")) {
           try {
             const url = new URL(input);
@@ -5719,12 +6147,10 @@
           if (match) {
             code = match[1];
           }
-        } else {
-          code = input.toUpperCase();
         }
 
         if (!code) {
-          alert(t("invalidCodeAlert"));
+          alert(t("invalidLinkAlert"));
           return;
         }
 
@@ -5863,7 +6289,7 @@
             maxPlayers: onlineState.maxPlayers,
             targetScore: parseInt(
               document.querySelector('[data-option="onlineTarget"].selected')
-                ?.dataset.value || "2660"
+                ?.dataset.value || "5320"
             ),
             players: [
               { name: onlineState.myName || t("host"), index: 0 },
@@ -6304,7 +6730,7 @@
         // Get target score
         const targetScore = parseInt(
           document.querySelector('[data-option="onlineTarget"].selected')
-            ?.dataset.value || "2660"
+            ?.dataset.value || "5320"
         );
 
         // Create deck and deal
