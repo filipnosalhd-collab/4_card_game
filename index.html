@@ -1212,184 +1212,6 @@
         }
       }
 
-      /* Shuffle animation */
-      .shuffle-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        z-index: 300;
-      }
-
-      .shuffle-overlay.active {
-        display: flex;
-      }
-
-      .shuffle-title {
-        font-family: "Cinzel", serif;
-        font-size: 2rem;
-        color: var(--gold);
-        margin-bottom: 2rem;
-        text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
-      }
-
-      .shuffle-deck-container {
-        position: relative;
-        width: 200px;
-        height: 280px;
-        perspective: 1000px;
-      }
-
-      .shuffle-card {
-        position: absolute;
-        width: 100px;
-        height: 140px;
-        background: linear-gradient(
-          135deg,
-          var(--crimson) 0%,
-          var(--crimson-light) 100%
-        );
-        border: 2px solid var(--gold-dark);
-        border-radius: 8px;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .shuffle-card::after {
-        content: "4C";
-        font-family: "Cinzel", serif;
-        font-size: 1.5rem;
-        color: var(--gold-dark);
-      }
-
-      .shuffle-card.shuffling {
-        animation: shuffleCard 0.3s ease-in-out;
-      }
-
-      @keyframes shuffleCard {
-        0% {
-          transform: translate(-50%, -50%) rotateY(0) translateX(0);
-        }
-        25% {
-          transform: translate(-50%, -50%) rotateY(15deg) translateX(30px);
-        }
-        50% {
-          transform: translate(-50%, -50%) rotateY(-15deg) translateX(-30px);
-        }
-        75% {
-          transform: translate(-50%, -50%) rotateY(10deg) translateX(20px);
-        }
-        100% {
-          transform: translate(-50%, -50%) rotateY(0) translateX(0);
-        }
-      }
-
-      /* Deal animation overlay */
-      .deal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        z-index: 250;
-        pointer-events: none;
-      }
-
-      .deal-overlay.active {
-        display: flex;
-      }
-
-      .deal-title {
-        font-family: "Cinzel", serif;
-        font-size: 1.5rem;
-        color: var(--gold);
-        margin-bottom: 1rem;
-      }
-
-      .deal-card {
-        position: absolute;
-        width: 80px;
-        height: 112px;
-        background: linear-gradient(
-          135deg,
-          var(--crimson) 0%,
-          var(--crimson-light) 100%
-        );
-        border: 2px solid var(--gold-dark);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-      }
-
-      .deal-card::after {
-        content: "4C";
-        font-family: "Cinzel", serif;
-        font-size: 1.2rem;
-        color: var(--gold-dark);
-      }
-
-      .deal-card.dealing-to-p1 {
-        animation: dealToPlayer1 0.5s ease-out forwards;
-      }
-
-      .deal-card.dealing-to-p2 {
-        animation: dealToPlayer2 0.5s ease-out forwards;
-      }
-
-      @keyframes dealToPlayer1 {
-        0% {
-          opacity: 1;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) scale(0.8);
-        }
-        100% {
-          opacity: 0;
-          top: 85%;
-          left: 50%;
-          transform: translate(-50%, -50%) scale(1);
-        }
-      }
-
-      @keyframes dealToPlayer2 {
-        0% {
-          opacity: 1;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) scale(0.8);
-        }
-        100% {
-          opacity: 0;
-          top: 15%;
-          left: 50%;
-          transform: translate(-50%, -50%) scale(1);
-        }
-      }
-
-      .deal-counter {
-        font-family: "Cinzel", serif;
-        font-size: 3rem;
-        color: var(--gold);
-        margin-top: 1rem;
-      }
-
       @media (max-width: 900px) {
         .live-scores {
           position: static;
@@ -3658,30 +3480,6 @@
       ?
     </button>
 
-    <!-- Shuffle Overlay -->
-    <div class="shuffle-overlay" id="shuffleOverlay">
-      <h2 class="shuffle-title" data-i18n="shuffling">TASOWANIE KART...</h2>
-      <div class="shuffle-deck-container">
-        <div class="shuffle-card" id="shuffleCard1"></div>
-        <div
-          class="shuffle-card"
-          id="shuffleCard2"
-          style="transform: translate(-48%, -48%)"
-        ></div>
-        <div
-          class="shuffle-card"
-          id="shuffleCard3"
-          style="transform: translate(-52%, -52%)"
-        ></div>
-      </div>
-    </div>
-
-    <!-- Deal Overlay -->
-    <div class="deal-overlay" id="dealOverlay">
-      <h2 class="deal-title" id="dealTitle">ROZDAWANIE KART</h2>
-      <div class="deal-counter" id="dealCounter">24</div>
-    </div>
-
     <script>
       // ==================== TRANSLATIONS ====================
       const translations = {
@@ -3795,8 +3593,6 @@
           waitingFor: "Oczekiwanie na",
           yourTurn: "Twoja kolej!",
           guestWaiting: "Oczekiwanie na rozpoczęcie gry przez hosta...",
-          dealing: "ROZDAWANIE KART",
-          shuffling: "TASOWANIE KART...",
           // LK System
           luck: "Szczęście",
           upgradeLuck: "ULEPSZ LK",
@@ -3937,8 +3733,6 @@
           waitingFor: "Waiting for",
           yourTurn: "Your turn!",
           guestWaiting: "Waiting for host to start the game...",
-          dealing: "DEALING CARDS",
-          shuffling: "SHUFFLING CARDS...",
           // LK System
           luck: "Luck",
           upgradeLuck: "UPGRADE LK",
@@ -4106,50 +3900,14 @@
 
       // ==================== LUCK SYSTEM ====================
       const LuckSystem = {
-        // Convert LK to percentage bonus
-        // 0 LK = 0%, 500 LK = 25%, 1000 LK = 50%, 2000 LK = 80%
+        // Convert LK to percentage bonus (for display only)
         getLuckBonus(lk) {
-          // Linear scaling with soft cap
           return Math.min(80, lk / 25);
         },
 
-        // Apply luck when drawing cards - higher LK = better cards go to top of deck
-        applyLuckToDeck(deck, luck) {
-          if (luck <= 0) return deck;
-
-          const bonus = this.getLuckBonus(luck) / 100; // Convert to 0-0.8
-
-          // Sort deck by points (highest first)
-          const sorted = [...deck].sort((a, b) => b.points - a.points);
-          const result = [];
-
-          // For each card, decide if we pick from top (good) or random
-          for (let i = 0; i < deck.length; i++) {
-            if (sorted.length === 0) break;
-
-            const roll = Math.random();
-
-            if (roll < bonus && sorted.length > 1) {
-              // Pick from top 25% of remaining cards (better cards)
-              const topCount = Math.max(1, Math.floor(sorted.length * 0.25));
-              const idx = Math.floor(Math.random() * topCount);
-              result.push(sorted.splice(idx, 1)[0]);
-            } else {
-              // Pick randomly from remaining
-              const idx = Math.floor(Math.random() * sorted.length);
-              result.push(sorted.splice(idx, 1)[0]);
-            }
-          }
-
-          return result;
-        },
-
         // Calculate money earned from winning (online only)
-        // You get the difference between opponent's LK and your LK
         calculateWinnings(winnerLK, loserLK) {
-          // You earn the difference (if opponent has more LK, you earn more)
           const diff = loserLK - winnerLK;
-          // Minimum 1 Ⱡ, plus the difference if positive
           return Math.max(1, diff);
         },
       };
@@ -4444,67 +4202,64 @@
           const cardsNeeded = gameState.cardsToPlay;
           let selectedCards = [];
 
-          // If clicked too early - only 9s (worst cards)
+          // Card values sorted by points (best first)
+          const cardValues = [
+            { value: "A", points: 250 },
+            { value: "K", points: 200 },
+            { value: "Q", points: 150 },
+            { value: "J", points: 100 },
+            { value: "10", points: 50 },
+            { value: "9", points: 25 },
+          ];
+          const suits = ["♠", "♥", "♦", "♣"];
+
+          // If clicked too early - only 9s
           if (this.tooEarly) {
-            // Find all 9s in deck
-            const nines = gameState.decks[playerIndex].filter(
-              (c) => c.value === "9"
-            );
-
-            // Take as many 9s as needed, fill rest with worst available
-            const availableCards = [...gameState.decks[playerIndex]];
-            availableCards.sort((a, b) => a.points - b.points); // Worst first
-
-            for (let i = 0; i < cardsNeeded && availableCards.length > 0; i++) {
-              selectedCards.push(availableCards.shift());
+            for (let i = 0; i < cardsNeeded; i++) {
+              const suit = suits[Math.floor(Math.random() * suits.length)];
+              selectedCards.push({ value: "9", suit: suit, points: 25 });
             }
           } else {
-            // Normal selection based on reaction time
-            // LK gives time bonus: 1 LK = 1ms bonus (so 100 LK = 100ms faster, 200 LK = 200ms faster)
+            // LK gives time bonus: 1 LK = 1ms bonus
             const luckBonus = luck;
             const effectiveTime = Math.max(0, reactionTime - luckBonus);
 
-            // Sort available cards by points (best first)
-            const availableCards = [...gameState.decks[playerIndex]];
-            availableCards.sort((a, b) => b.points - a.points);
+            // Generate cards based on effective time
+            // 0-100ms: best cards (A, K)
+            // 100-200ms: good cards (A, K, Q)
+            // 200-300ms: medium cards (K, Q, J)
+            // 300-400ms: below average (Q, J, 10)
+            // 400ms+: worst cards (J, 10, 9)
 
-            // Reaction time brackets (effective time after LK bonus):
-            // 0-150ms: top 25% cards
-            // 150-250ms: top 50% cards
-            // 250-400ms: top 75% cards
-            // 400ms+: random cards
+            let availableValues;
+            if (effectiveTime < 100) {
+              availableValues = cardValues.slice(0, 2); // A, K
+            } else if (effectiveTime < 200) {
+              availableValues = cardValues.slice(0, 3); // A, K, Q
+            } else if (effectiveTime < 300) {
+              availableValues = cardValues.slice(1, 4); // K, Q, J
+            } else if (effectiveTime < 400) {
+              availableValues = cardValues.slice(2, 5); // Q, J, 10
+            } else {
+              availableValues = cardValues.slice(3, 6); // J, 10, 9
+            }
 
-            for (let i = 0; i < cardsNeeded && availableCards.length > 0; i++) {
-              let pickRange;
-
-              if (effectiveTime < 150) {
-                pickRange = Math.ceil(availableCards.length * 0.25);
-              } else if (effectiveTime < 250) {
-                pickRange = Math.ceil(availableCards.length * 0.5);
-              } else if (effectiveTime < 400) {
-                pickRange = Math.ceil(availableCards.length * 0.75);
-              } else {
-                pickRange = availableCards.length;
-              }
-
-              pickRange = Math.max(1, pickRange);
-              const idx = Math.floor(Math.random() * pickRange);
-              selectedCards.push(availableCards.splice(idx, 1)[0]);
+            for (let i = 0; i < cardsNeeded; i++) {
+              const cardType =
+                availableValues[
+                  Math.floor(Math.random() * availableValues.length)
+                ];
+              const suit = suits[Math.floor(Math.random() * suits.length)];
+              selectedCards.push({
+                value: cardType.value,
+                suit: suit,
+                points: cardType.points,
+              });
             }
           }
 
           // Sort selected cards by points (best on left)
           selectedCards.sort((a, b) => b.points - a.points);
-
-          // Remove selected cards from deck
-          selectedCards.forEach((card) => {
-            const deckIdx = gameState.decks[playerIndex].findIndex(
-              (c) => c.value === card.value && c.suit === card.suit
-            );
-            if (deckIdx !== -1) {
-              gameState.decks[playerIndex].splice(deckIdx, 1);
-            }
-          });
 
           // Play the cards
           gameState.playedCards[playerIndex] = selectedCards;
@@ -4549,7 +4304,6 @@
               type: "playCards",
               playerIndex: playerIndex,
               cards: selectedCards,
-              remainingDeck: gameState.decks[playerIndex],
             };
 
             if (onlineState.isHost) {
@@ -4569,9 +4323,6 @@
         // Check if can play
         if (gameState.gameOver) return;
         if (gameState.playersReady[playerIndex]) return;
-
-        // Check if has cards
-        if (gameState.decks[playerIndex].length < gameState.cardsToPlay) return;
 
         // Start reaction test
         ReactionSystem.start(playerIndex);
@@ -4761,7 +4512,6 @@
         botDifficulty: "medium", // 'easy', 'medium', 'hard'
         targetScore: 5320,
         scores: [0, 0],
-        decks: [[], []],
         playedCards: [[], []],
         roundPoints: [0, 0],
         cardsToPlay: 4,
@@ -4770,7 +4520,6 @@
         inTiebreaker: false,
         tiebreakerLevel: 0,
         tiebreakerPot: [],
-        wonCardsPile: [],
         gameOver: false,
         playerNames: ["Gracz 1", "BOT"],
         playerLuck: [0, 0], // LK for each player
@@ -4780,8 +4529,7 @@
         isAnimating: false,
       };
 
-      // Card definitions - standard deck from 9 up (9, 10, J, Q, K, A)
-      // ONE shared deck: 6 values x 4 suits = 24 cards total, split between players (12 each)
+      // Card definitions
       const CARD_VALUES = {
         A: 250,
         K: 200,
@@ -4793,48 +4541,6 @@
 
       const SUITS = ["♠", "♥", "♦", "♣"];
       const VALUES = ["A", "K", "Q", "J", "10", "9"];
-      const TOTAL_CARDS = 24; // Total cards in the deck
-      const CARDS_PER_PLAYER = 12; // Each player gets half
-
-      // Create a single deck - each card appears exactly once
-      function createDeck() {
-        const deck = [];
-        for (const suit of SUITS) {
-          for (const value of VALUES) {
-            deck.push({
-              value,
-              suit,
-              points: CARD_VALUES[value],
-              id: `${value}${suit}`,
-            });
-          }
-        }
-        return shuffleDeck(deck);
-      }
-
-      // Deal cards to both players from a single shuffled deck
-      function dealCards() {
-        const fullDeck = createDeck();
-        let deck1 = fullDeck.slice(0, CARDS_PER_PLAYER); // First 12 cards to player 1
-        let deck2 = fullDeck.slice(CARDS_PER_PLAYER); // Last 12 cards to player 2
-
-        // Apply luck to decks - higher LK = better card arrangement
-        deck1 = LuckSystem.applyLuckToDeck(deck1, gameState.playerLuck[0]);
-        deck2 = LuckSystem.applyLuckToDeck(deck2, gameState.playerLuck[1]);
-
-        gameState.decks[0] = deck1;
-        gameState.decks[1] = deck2;
-      }
-
-      // Shuffle deck
-      function shuffleDeck(deck) {
-        for (let i = deck.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [deck[i], deck[j]] = [deck[j], deck[i]];
-        }
-        return deck;
-      }
-
       // UI Functions
       function showSetup() {
         document.getElementById("menuScreen").style.display = "none";
@@ -4939,7 +4645,6 @@
 
         // Reset game state
         gameState.scores = [0, 0];
-        gameState.decks = [[], []]; // Will be filled after shuffle animation
         gameState.playedCards = [[], []];
         gameState.roundPoints = [0, 0];
         gameState.cardsToPlay = 4;
@@ -4951,7 +4656,6 @@
         gameState.gameOver = false;
         gameState.currentTurn = 1;
         gameState.waitingForSecondPlayer = false;
-        gameState.tiebreakerPot = []; // Reset tiebreaker pot
 
         // Update UI
         document.getElementById("setupScreen").classList.remove("active");
@@ -4988,108 +4692,17 @@
         document.getElementById("liveTarget").textContent =
           gameState.targetScore;
 
-        // Start shuffle animation
-        startShuffleAnimation();
-      }
+        // Start game immediately
+        document.getElementById("gameScreen").classList.add("active");
+        document.getElementById("liveScores").style.display = "flex";
+        document.getElementById("playBtn1").disabled = false;
 
-      function startShuffleAnimation() {
-        SoundManager.play("shuffle");
-        const shuffleOverlay = document.getElementById("shuffleOverlay");
-        shuffleOverlay.classList.add("active");
+        if (gameState.mode === "local") {
+          document.getElementById("player2Controls").style.display = "block";
+          document.getElementById("playBtn2").disabled = true;
+        }
 
-        const cards = [
-          document.getElementById("shuffleCard1"),
-          document.getElementById("shuffleCard2"),
-          document.getElementById("shuffleCard3"),
-        ];
-
-        let shuffleCount = 0;
-        const maxShuffles = 8;
-
-        const shuffleInterval = setInterval(() => {
-          cards.forEach((card, index) => {
-            setTimeout(() => {
-              card.classList.remove("shuffling");
-              void card.offsetWidth; // Trigger reflow
-              card.classList.add("shuffling");
-            }, index * 100);
-          });
-
-          shuffleCount++;
-          if (shuffleCount >= maxShuffles) {
-            clearInterval(shuffleInterval);
-            setTimeout(() => {
-              shuffleOverlay.classList.remove("active");
-              // Create and deal cards from single deck
-              dealCards();
-              startDealAnimation();
-            }, 500);
-          }
-        }, 400);
-      }
-
-      function startDealAnimation() {
-        const dealOverlay = document.getElementById("dealOverlay");
-        const dealCounter = document.getElementById("dealCounter");
-        const dealTitle = document.getElementById("dealTitle");
-
-        dealOverlay.classList.add("active");
-        dealTitle.textContent = t("dealing");
-
-        let cardsDealt = 0;
-        const totalCardsToShow = TOTAL_CARDS; // 24 cards total
-        let currentPlayer = 0; // Alternate between players
-
-        dealCounter.textContent = CARDS_PER_PLAYER; // Start at 12
-
-        const dealInterval = setInterval(() => {
-          // Create flying card
-          const card = document.createElement("div");
-          card.className = "deal-card";
-          card.classList.add(
-            currentPlayer === 0 ? "dealing-to-p1" : "dealing-to-p2"
-          );
-          dealOverlay.appendChild(card);
-
-          // Remove card after animation
-          setTimeout(() => {
-            card.remove();
-          }, 500);
-
-          cardsDealt++;
-          // Update counter - shows cards remaining for each player
-          dealCounter.textContent =
-            CARDS_PER_PLAYER - Math.ceil(cardsDealt / 2);
-
-          // Alternate players
-          currentPlayer = 1 - currentPlayer;
-
-          if (cardsDealt >= totalCardsToShow) {
-            clearInterval(dealInterval);
-            setTimeout(() => {
-              dealOverlay.classList.remove("active");
-              // Now show game screen
-              document.getElementById("gameScreen").classList.add("active");
-              document.getElementById("liveScores").style.display = "block";
-
-              // Setup controls for local mode
-              if (gameState.mode === "local") {
-                document.getElementById("player2Controls").style.display =
-                  "none";
-                document.getElementById("player1ControlWrapper").style.display =
-                  "block";
-                updateTurnIndicator();
-              } else {
-                document.getElementById("player2Controls").style.display =
-                  "none";
-                document.getElementById("player1ControlWrapper").style.display =
-                  "block";
-              }
-
-              updateDisplay();
-            }, 300);
-          }
-        }, 80);
+        updateDisplay();
       }
 
       function updateTurnIndicator() {
@@ -5141,103 +4754,6 @@
           void liveScore2.offsetWidth; // Trigger reflow
           liveScore2.classList.add("updated");
         }
-
-        // Update deck visibility
-        document.getElementById("deck1").style.opacity =
-          gameState.decks[0].length > 0 ? 1 : 0.3;
-        document.getElementById("deck2").style.opacity =
-          gameState.decks[1].length > 0 ? 1 : 0.3;
-      }
-
-      function playCards(playerNum) {
-        const playerIndex = playerNum - 1;
-
-        // Basic guards
-        if (gameState.gameOver) return;
-        if (gameState.playersReady[playerIndex]) return;
-
-        // In online mode, only allow playing as yourself
-        if (gameState.mode === "online") {
-          const myIndex = onlineState.myPlayerIndex;
-          if (gameState.playersReady[myIndex]) return;
-
-          const cardsNeeded = gameState.cardsToPlay;
-          if (gameState.decks[myIndex].length < cardsNeeded) return;
-
-          // Draw cards
-          const drawnCards = gameState.decks[myIndex].splice(0, cardsNeeded);
-          gameState.playedCards[myIndex] = drawnCards;
-          gameState.playersReady[myIndex] = true;
-
-          // Disable button
-          document.getElementById("playBtn1").disabled = true;
-
-          // Display cards
-          displayPlayedCards(myIndex, drawnCards);
-          updateDisplay();
-
-          // Send to all other players
-          const message = {
-            type: "playCards",
-            playerIndex: myIndex,
-            cards: drawnCards,
-            remainingDeck: gameState.decks[myIndex],
-          };
-
-          if (onlineState.isHost) {
-            broadcastToAll(message);
-          } else if (onlineState.connections.length > 0) {
-            onlineState.connections[0].send(message);
-          }
-
-          // Check round end after animation
-          setTimeout(function () {
-            checkRoundEnd();
-          }, gameState.cardsToPlay * 500 + 500);
-          return;
-        }
-
-        // In local mode, enforce turn order
-        if (gameState.mode === "local") {
-          if (playerNum === 1 && gameState.waitingForSecondPlayer) return;
-          if (playerNum === 2 && !gameState.waitingForSecondPlayer) return;
-        }
-
-        const cardsNeeded = gameState.cardsToPlay;
-        if (gameState.decks[playerIndex].length < cardsNeeded) {
-          return;
-        }
-
-        // Draw cards
-        const drawnCards = gameState.decks[playerIndex].splice(0, cardsNeeded);
-        gameState.playedCards[playerIndex] = drawnCards;
-        gameState.playersReady[playerIndex] = true;
-
-        // Disable button
-        document.getElementById(`playBtn${playerNum}`).disabled = true;
-
-        // Display cards with animation
-        displayPlayedCards(playerIndex, drawnCards);
-        updateDisplay();
-
-        if (gameState.mode === "bot") {
-          // Bot plays after animation
-          setTimeout(function () {
-            botPlay();
-          }, gameState.cardsToPlay * 500 + 1000);
-        } else if (gameState.mode === "local") {
-          if (playerNum === 1) {
-            gameState.waitingForSecondPlayer = true;
-            setTimeout(function () {
-              updateTurnIndicator();
-            }, gameState.cardsToPlay * 500 + 800);
-          } else {
-            gameState.waitingForSecondPlayer = false;
-            setTimeout(function () {
-              checkRoundEnd();
-            }, gameState.cardsToPlay * 500 + 500);
-          }
-        }
       }
 
       function displayPlayedCards(playerIndex, cards) {
@@ -5276,22 +4792,6 @@
             `;
 
         return cardEl;
-      }
-
-      function botPlay() {
-        if (gameState.playersReady[1]) return;
-
-        const cardsNeeded = gameState.cardsToPlay;
-        if (gameState.decks[1].length < cardsNeeded) return;
-
-        const drawnCards = gameState.decks[1].splice(0, cardsNeeded);
-        gameState.playedCards[1] = drawnCards;
-        gameState.playersReady[1] = true;
-
-        displayPlayedCards(1, drawnCards);
-        updateDisplay();
-
-        checkRoundEnd();
       }
 
       function checkRoundEnd() {
@@ -5353,9 +4853,7 @@
           const winnerName = gameState.playerNames[winnerIndex];
 
           if (maxPlayers === 2) {
-            // 2 players: winner takes cards to their deck
-            gameState.decks[winnerIndex].push(...allCardsToWin);
-
+            // 2 players: winner gets points, loser loses points
             // Loser loses their points
             const loserIndex = 1 - winnerIndex;
             gameState.scores[loserIndex] = Math.max(
@@ -5366,10 +4864,7 @@
               points[loserIndex]
             } ${t("pts")}`;
           } else {
-            // 4 players: cards go to separate pile
-            gameState.wonCardsPile.push(...allCardsToWin);
-
-            // All losers lose their points
+            // 4 players: All losers lose their points
             for (let i = 0; i < maxPlayers; i++) {
               if (i !== winnerIndex) {
                 gameState.scores[i] = Math.max(
@@ -5502,18 +4997,6 @@
           gameState.cardsToPlay = 1;
         }
 
-        // Check if players need cards for tiebreaker
-        for (let i = 0; i < 2; i++) {
-          if (gameState.decks[i].length < gameState.cardsToPlay) {
-            // Each opponent gives 2 cards
-            const opponentIndex = 1 - i;
-            if (gameState.decks[opponentIndex].length >= 2) {
-              const transferCards = gameState.decks[opponentIndex].splice(0, 2);
-              gameState.decks[i].push(...transferCards);
-            }
-          }
-        }
-
         // Enable buttons based on mode
         document.getElementById("playBtn1").disabled = false;
         if (gameState.mode === "local") {
@@ -5535,16 +5018,6 @@
         gameState.playersReady = [false, false];
         gameState.cardsToPlay = 4;
         gameState.waitingForSecondPlayer = false;
-
-        // Check if need to regenerate decks
-        const totalCards = gameState.decks.reduce(
-          (sum, deck) => sum + deck.length,
-          0
-        );
-        if (totalCards < gameState.cardsToPlay * 2) {
-          // Regenerate decks - deal new cards
-          dealCards();
-        }
 
         // Enable buttons based on mode
         document.getElementById("playBtn1").disabled = false;
@@ -5792,12 +5265,8 @@
         gameState.inTiebreaker = false;
         gameState.tiebreakerLevel = 0;
         gameState.tiebreakerPot = [];
-        gameState.wonCardsPile = [];
         gameState.gameOver = false;
         gameState.waitingForSecondPlayer = false;
-
-        // Deal new cards
-        dealCards();
 
         // Clear played cards display
         document.getElementById("playedCards1").innerHTML = "";
@@ -5893,17 +5362,13 @@
         gameState.inTiebreaker = false;
         gameState.tiebreakerLevel = 0;
         gameState.tiebreakerPot = [];
-        gameState.wonCardsPile = [];
         gameState.gameOver = false;
 
-        // If host, create new deck and send to all
+        // If host, send rematch signal
         if (onlineState.isHost) {
-          dealCards();
-
           // Send new game state to all players
           broadcastToAll({
             type: "rematchStart",
-            decks: gameState.decks,
             playerNames: gameState.playerNames,
           });
         }
@@ -5923,7 +5388,6 @@
         document.getElementById("gameOverScreen").classList.remove("active");
 
         // Reset game state
-        gameState.decks = data.decks;
         gameState.playerNames = data.playerNames;
         gameState.scores = new Array(gameState.maxPlayers || 2).fill(0);
         gameState.playedCards = new Array(gameState.maxPlayers || 2)
@@ -5937,7 +5401,6 @@
         gameState.inTiebreaker = false;
         gameState.tiebreakerLevel = 0;
         gameState.tiebreakerPot = [];
-        gameState.wonCardsPile = [];
         gameState.gameOver = false;
 
         // Clear played cards display
@@ -6733,19 +6196,10 @@
             ?.dataset.value || "5320"
         );
 
-        // Create deck and deal
-        const fullDeck = createDeck();
-        const cardsPerPlayer = Math.floor(TOTAL_CARDS / onlineState.maxPlayers);
-
-        // Prepare player names and decks
+        // Prepare player names
         const playerNames = [onlineState.myName];
-        const decks = [fullDeck.slice(0, cardsPerPlayer)];
-
-        onlineState.players.forEach((p, i) => {
+        onlineState.players.forEach((p) => {
           playerNames.push(p.name);
-          decks.push(
-            fullDeck.slice((i + 1) * cardsPerPlayer, (i + 2) * cardsPerPlayer)
-          );
         });
 
         // Send game start to all players
@@ -6753,14 +6207,12 @@
           type: "startGame",
           targetScore: targetScore,
           playerNames: playerNames,
-          decks: decks,
           maxPlayers: onlineState.maxPlayers,
         });
 
         // Setup local game state
         gameState.targetScore = targetScore;
         gameState.playerNames = playerNames;
-        gameState.decks = decks;
         gameState.mode = "online";
         gameState.maxPlayers = onlineState.maxPlayers;
         onlineState.myPlayerIndex = 0;
@@ -6771,7 +6223,6 @@
       function receiveGameStart(data) {
         gameState.targetScore = data.targetScore;
         gameState.playerNames = data.playerNames;
-        gameState.decks = data.decks;
         gameState.mode = "online";
         gameState.maxPlayers = data.maxPlayers;
 
@@ -6795,7 +6246,6 @@
         gameState.inTiebreaker = false;
         gameState.tiebreakerLevel = 0;
         gameState.tiebreakerPot = [];
-        gameState.wonCardsPile = []; // For 4 player mode
         gameState.gameOver = false;
 
         // Update UI for player count
@@ -6819,7 +6269,6 @@
         const playerIndex = data.playerIndex;
         gameState.playedCards[playerIndex] = data.cards;
         gameState.playersReady[playerIndex] = true;
-        gameState.decks[playerIndex] = data.remainingDeck;
 
         displayPlayedCards(playerIndex, data.cards);
         updateDisplay();
