@@ -405,6 +405,36 @@
       }
 
       /* Online Lobby Styles */
+      .online-account-info {
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--gold);
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .online-account-name {
+        font-family: "Cinzel", serif;
+        font-size: 1.5rem;
+        color: var(--gold);
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .online-account-stats {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--cream);
+      }
+
+      .online-account-stats span {
+        background: rgba(212, 175, 55, 0.2);
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+      }
+
       .lobby-info {
         width: 100%;
         margin: 1rem 0;
@@ -3347,15 +3377,16 @@
         <!-- Initial choice: Create or Join -->
         <div id="onlineChoiceSection">
           <div class="setup-group">
-            <label class="setup-label" data-i18n="yourName">Twoja nazwa:</label>
-            <input
-              type="text"
-              class="name-input"
-              id="onlinePlayerName"
-              data-i18n-placeholder="enterName"
-              placeholder="Wpisz nazwę..."
-              maxlength="12"
-            />
+            <label class="setup-label" data-i18n="yourAccount"
+              >Twoje konto:</label
+            >
+            <div class="online-account-info">
+              <div class="online-account-name" id="onlineAccountName">-</div>
+              <div class="online-account-stats">
+                <span>LK: <span id="onlineAccountLK">0</span></span>
+                <span>LUP: <span id="onlineAccountLUP">0</span></span>
+              </div>
+            </div>
           </div>
 
           <button
@@ -3975,6 +4006,7 @@
           startGame: "ROZPOCZNIJ GRĘ",
           back: "POWRÓT",
           yourName: "Twoja nazwa:",
+          yourAccount: "Twoje konto:",
           enterName: "Wpisz nazwę...",
           createRoom: "UTWÓRZ POKÓJ",
           joinRoom: "Lub dołącz do istniejącego pokoju:",
@@ -4115,6 +4147,7 @@
           startGame: "START GAME",
           back: "BACK",
           yourName: "Your name:",
+          yourAccount: "Your account:",
           enterName: "Enter name...",
           createRoom: "CREATE ROOM",
           joinRoom: "Or join an existing room:",
@@ -7652,6 +7685,18 @@
         document.getElementById("menuScreen").style.display = "none";
 
         if (type === "online") {
+          // Check if player has account
+          if (!PlayerAccount.name || PlayerAccount.name.trim() === "") {
+            alert(
+              currentLang === "pl"
+                ? "Musisz najpierw utworzyć konto! Wpisz swoją nazwę w menu głównym."
+                : "You need to create an account first! Enter your name in the main menu."
+            );
+            document.getElementById("menuScreen").style.display = "flex";
+            document.getElementById("accountNameInput").focus();
+            return;
+          }
+
           document.getElementById("onlineLobby").classList.add("active");
           // Show initial choice section
           document.getElementById("onlineChoiceSection").style.display =
@@ -7659,11 +7704,13 @@
           document.getElementById("hostLobbySection").style.display = "none";
           document.getElementById("guestLobbySection").style.display = "none";
 
-          // Set player name from account
-          const nameInput = document.getElementById("onlinePlayerName");
-          if (nameInput && PlayerAccount.name) {
-            nameInput.value = PlayerAccount.name;
-          }
+          // Display account info (not editable)
+          document.getElementById("onlineAccountName").textContent =
+            PlayerAccount.name;
+          document.getElementById("onlineAccountLK").textContent =
+            PlayerAccount.luck;
+          document.getElementById("onlineAccountLUP").textContent =
+            PlayerAccount.money;
         } else {
           document.getElementById("setupScreen").classList.add("active");
           initLuckSliders();
@@ -7909,12 +7956,10 @@
         document.getElementById("guestLobbyStatus").textContent =
           t("connectingToRoom") + " " + roomId + "...";
 
-        // Set guest name
-        const myName =
-          document.getElementById("onlinePlayerName").value.trim() ||
-          t("player2");
-        onlineState.myName = myName;
-        document.getElementById("guestPlayer2Name").textContent = myName;
+        // Set guest name from account
+        onlineState.myName = PlayerAccount.name || t("player2");
+        document.getElementById("guestPlayer2Name").textContent =
+          onlineState.myName;
 
         // Wait for PeerJS to load
         const checkPeer = setInterval(() => {
@@ -8227,8 +8272,8 @@
       }
 
       function updateMyNameInLobby() {
-        const nameInput = document.getElementById("onlinePlayerName");
-        onlineState.myName = nameInput.value.trim() || t("player1");
+        // Use name from account (not editable in online)
+        onlineState.myName = PlayerAccount.name || t("player1");
 
         if (onlineState.isHost) {
           document.getElementById("lobbyPlayer1Name").textContent =
@@ -8240,24 +8285,10 @@
         }
       }
 
-      // Update name when typing
-      document
-        .getElementById("onlinePlayerName")
-        ?.addEventListener("input", () => {
-          updateMyNameInLobby();
-          if (onlineState.isHost) {
-            broadcastToAll({
-              type: "playerNameUpdate",
-              playerIndex: 0,
-              name: onlineState.myName,
-            });
-          } else if (onlineState.connections.length > 0) {
-            onlineState.connections[0].send({
-              type: "nameUpdate",
-              name: onlineState.myName,
-            });
-          }
-        });
+      // Player LK is also taken from account for online games
+      function getMyLuckForOnline() {
+        return PlayerAccount.luck;
+      }
 
       function copyLink() {
         const linkText = document.getElementById("lobbyLinkText").textContent;
@@ -8471,21 +8502,51 @@
           const roomId = urlParams.get("room");
 
           if (roomId) {
-            // Auto-join room from link
-            document.getElementById("menuScreen").style.display = "none";
-            document.getElementById("onlineLobby").classList.add("active");
-            document.getElementById("onlineChoiceSection").style.display =
-              "block";
-            document.getElementById("joinRoomCode").value = roomId;
-
-            // Show message
-            setTimeout(() => {
+            // Check if player has account (name set)
+            if (!PlayerAccount.name || PlayerAccount.name.trim() === "") {
+              // No name - show account setup first
               alert(
-                "Dołączasz do pokoju: " +
-                  roomId +
-                  "\n\nWpisz swoją nazwę i kliknij DOŁĄCZ!"
+                currentLang === "pl"
+                  ? "Musisz najpierw utworzyć konto! Wpisz swoją nazwę."
+                  : "You need to create an account first! Enter your name."
               );
-            }, 500);
+              // Focus on name input
+              setTimeout(() => {
+                document.getElementById("accountNameInput").focus();
+              }, 100);
+              // Store room ID for later
+              sessionStorage.setItem("pendingRoom", roomId);
+            } else {
+              // Has account - auto join room
+              document.getElementById("menuScreen").style.display = "none";
+              document.getElementById("onlineLobby").classList.add("active");
+              document.getElementById("onlineChoiceSection").style.display =
+                "none";
+              document.getElementById("hostSection").style.display = "none";
+
+              // Set name from account and join
+              onlineState.myName = PlayerAccount.name;
+              joinRoom(roomId);
+            }
+          } else {
+            // No room in URL - check if there's a pending room from before
+            const pendingRoom = sessionStorage.getItem("pendingRoom");
+            if (
+              pendingRoom &&
+              PlayerAccount.name &&
+              PlayerAccount.name.trim() !== ""
+            ) {
+              // Has name now and pending room - join it
+              sessionStorage.removeItem("pendingRoom");
+              document.getElementById("menuScreen").style.display = "none";
+              document.getElementById("onlineLobby").classList.add("active");
+              document.getElementById("onlineChoiceSection").style.display =
+                "none";
+              document.getElementById("hostSection").style.display = "none";
+
+              onlineState.myName = PlayerAccount.name;
+              joinRoom(pendingRoom);
+            }
           }
         } catch (e) {
           console.log("Could not check URL params:", e);
