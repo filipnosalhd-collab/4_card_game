@@ -981,6 +981,35 @@
         box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
       }
 
+      .card-bonus-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        color: white;
+        padding: 0.1rem 0.3rem;
+        border-radius: 8px;
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 0.6rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      .card.tier-glow {
+        animation: cardGlowGame 2s ease-in-out infinite;
+      }
+
+      @keyframes cardGlowGame {
+        0%,
+        100% {
+          box-shadow: 0 0 10px var(--glow-color, var(--gold));
+        }
+        50% {
+          box-shadow: 0 0 25px var(--glow-color, var(--gold)),
+            0 0 35px var(--glow-color, var(--gold));
+        }
+      }
+
       @keyframes pointsPopup {
         0% {
           opacity: 0;
@@ -1203,6 +1232,47 @@
 
       .waiting-indicator.active {
         display: block;
+      }
+
+      .player-selecting-info {
+        text-align: center;
+        padding: 1.5rem;
+        background: rgba(212, 175, 55, 0.2);
+        border: 2px solid var(--gold);
+        border-radius: 10px;
+        margin: 1rem auto;
+        max-width: 400px;
+        font-family: "Cinzel", serif;
+        font-size: 1.3rem;
+        color: var(--gold);
+        animation: selectingPulse 1s ease-in-out infinite;
+      }
+
+      .selecting-animation {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        animation: cardShuffle 0.5s ease-in-out infinite;
+      }
+
+      @keyframes selectingPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.02);
+          box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+      }
+
+      @keyframes cardShuffle {
+        0%,
+        100% {
+          transform: rotate(-5deg);
+        }
+        50% {
+          transform: rotate(5deg);
+        }
       }
 
       @keyframes waitingPulse {
@@ -3735,6 +3805,16 @@
             >
           </div>
 
+          <div
+            class="player-selecting-info"
+            id="playerSelectingInfo"
+            style="display: none"
+          >
+            <div class="selecting-animation">🎴</div>
+            <span id="selectingPlayerName">Gracz</span>
+            <span data-i18n="isSelectingCards">wybiera karty...</span>
+          </div>
+
           <div class="game-controls" id="gameControls">
             <div id="player1ControlWrapper">
               <button
@@ -4007,6 +4087,7 @@
           retryConnect: "SPRÓBUJ PONOWNIE",
           roomNotFound: "Pokój nie istnieje lub host się rozłączył",
           playCards: "WYSTAW KARTY",
+          isSelectingCards: "wybiera karty...",
           player1Key: "Gracz 1: Spacja",
           player2Key: "Gracz 2: ↑",
           roundResult: "WYNIK RUNDY",
@@ -4226,6 +4307,7 @@
           retryConnect: "TRY AGAIN",
           roomNotFound: "Room does not exist or host disconnected",
           playCards: "PLAY CARDS",
+          isSelectingCards: "is selecting cards...",
           player1Key: "Player 1: Space",
           player2Key: "Player 2: ↑",
           roundResult: "ROUND RESULT",
@@ -6322,7 +6404,20 @@
             .getElementById("gameControls")
             .classList.add("reaction-mode");
 
-          // Show fullscreen overlay for human players
+          // In online mode, notify others that I started selecting cards
+          if (isOnline && isMyTurn) {
+            const message = {
+              type: "playerSelecting",
+              playerIndex: playerIndex,
+            };
+            if (onlineState.isHost) {
+              broadcastToAll(message);
+            } else if (onlineState.connections.length > 0) {
+              onlineState.connections[0].send(message);
+            }
+          }
+
+          // Show fullscreen overlay for human players (my turn)
           if (
             isLocal ||
             (isOnline && isMyTurn) ||
@@ -6499,9 +6594,14 @@
           let selectedCards = [];
 
           // Card values sorted by points (best first)
-          // Points include upgrade bonus for player 0 (human)
+          // Points include upgrade bonus for the local player (me)
+          const isMyCards =
+            gameState.mode === "online"
+              ? playerIndex === onlineState.myPlayerIndex
+              : playerIndex === 0; // In local/bot mode, player 0 is always human
+
           const getCardPoints = (value, basePoints) => {
-            if (playerIndex === 0) {
+            if (isMyCards) {
               return basePoints + CardUpgradeSystem.getCardBonus(value);
             }
             return basePoints;
@@ -6521,12 +6621,18 @@
           if (this.tooEarly) {
             for (let i = 0; i < cardsNeeded; i++) {
               const suit = suits[Math.floor(Math.random() * suits.length)];
+              const bonus = isMyCards ? CardUpgradeSystem.getCardBonus("9") : 0;
+              const upgradeLevel = isMyCards
+                ? PlayerAccount.cardUpgrades["9"] || 0
+                : 0;
               const points = getCardPoints("9", 25);
               selectedCards.push({
                 value: "9",
                 suit: suit,
                 points: points,
                 basePoints: 25,
+                bonus: bonus,
+                upgradeLevel: upgradeLevel,
               });
             }
           } else {
@@ -6560,12 +6666,20 @@
                   Math.floor(Math.random() * availableValues.length)
                 ];
               const suit = suits[Math.floor(Math.random() * suits.length)];
+              const bonus = isMyCards
+                ? CardUpgradeSystem.getCardBonus(cardType.value)
+                : 0;
+              const upgradeLevel = isMyCards
+                ? PlayerAccount.cardUpgrades[cardType.value] || 0
+                : 0;
               const points = getCardPoints(cardType.value, cardType.basePoints);
               selectedCards.push({
                 value: cardType.value,
                 suit: suit,
                 points: points,
                 basePoints: cardType.basePoints,
+                bonus: bonus,
+                upgradeLevel: upgradeLevel,
               });
             }
           }
@@ -6661,7 +6775,13 @@
       function startReactionForMe() {
         // In online mode, use my player index
         if (gameState.mode === "online") {
-          startReaction(onlineState.myPlayerIndex);
+          const myIndex = onlineState.myPlayerIndex;
+          // Check if it's my turn (I haven't played yet)
+          if (gameState.playersReady[myIndex]) {
+            console.log("Already played this round");
+            return;
+          }
+          startReaction(myIndex);
         } else {
           // In local/bot mode, player 1 button is always player 0
           startReaction(0);
@@ -7203,16 +7323,46 @@
         });
       }
 
-      function createCardElement(card) {
+      function createCardElement(card, playerIndex = null) {
         const cardEl = document.createElement("div");
         const isRed = card.suit === "♥" || card.suit === "♦";
         cardEl.className = `card ${isRed ? "red" : "black"}`;
+
+        // Check if this card has upgrade (only for the card owner)
+        // In online, we receive upgradeLevel with the card data
+        let upgradeLevel = card.upgradeLevel || 0;
+
+        // Apply upgrade styling if has upgrade
+        if (upgradeLevel > 0) {
+          const upgrade = CardUpgradeSystem.upgrades[upgradeLevel];
+          if (upgrade) {
+            // Add tier class for styling
+            if (upgradeLevel >= 1 && upgradeLevel <= 3) {
+              cardEl.classList.add("tier-bronze");
+            } else if (upgradeLevel >= 4 && upgradeLevel <= 6) {
+              cardEl.classList.add("tier-silver");
+            } else if (upgradeLevel >= 7 && upgradeLevel <= 9) {
+              cardEl.classList.add("tier-gold");
+            } else if (upgradeLevel >= 10) {
+              cardEl.classList.add("tier-glow");
+              cardEl.style.setProperty("--glow-color", upgrade.color);
+              cardEl.style.borderColor = upgrade.color;
+            }
+          }
+        }
+
+        // Show bonus if card has bonus points
+        const bonusText =
+          card.bonus && card.bonus > 0
+            ? `<div class="card-bonus-indicator">+${card.bonus}</div>`
+            : "";
 
         cardEl.innerHTML = `
                 <div class="card-corner top">${card.value}<br>${card.suit}</div>
                 <div class="card-value">${card.value}</div>
                 <div class="card-suit">${card.suit}</div>
                 <div class="card-corner bottom">${card.value}<br>${card.suit}</div>
+                ${bonusText}
             `;
 
         return cardEl;
@@ -8197,6 +8347,7 @@
             id: conn.peer,
             name: t("player1").replace("1", String(playerIndex + 1)),
             conn: conn,
+            luck: 0, // Will be updated when they send their name
           });
 
           // Send current lobby state
@@ -8209,10 +8360,15 @@
                 ?.dataset.value || "5320"
             ),
             players: [
-              { name: onlineState.myName || t("host"), index: 0 },
+              {
+                name: onlineState.myName || t("host"),
+                index: 0,
+                luck: PlayerAccount.luck,
+              },
               ...onlineState.players.map((p, i) => ({
                 name: p.name,
                 index: i + 1,
+                luck: p.luck || 0,
               })),
             ],
           });
@@ -8320,8 +8476,12 @@
                 .getElementById("guestLobbyStatus")
                 .classList.add("connected");
 
-              // Send my name
-              conn.send({ type: "name", name: onlineState.myName });
+              // Send my name and LK
+              conn.send({
+                type: "name",
+                name: onlineState.myName,
+                luck: PlayerAccount.luck,
+              });
             });
 
             conn.on("data", (data) => handleOnlineMessage(data, conn));
@@ -8446,12 +8606,14 @@
               const player = onlineState.players.find((p) => p.conn === conn);
               if (player) {
                 player.name = data.name || "Gracz";
+                player.luck = data.luck || 0; // Save player's LK
                 updateLobbyUI();
                 // Broadcast name change to others
                 broadcastToOthers(conn.peer, {
                   type: "playerNameUpdate",
                   playerIndex: onlineState.players.indexOf(player) + 1,
                   name: player.name,
+                  luck: player.luck,
                 });
               }
             }
@@ -8495,6 +8657,11 @@
 
           case "playCards":
             receivePlayedCards(data);
+            break;
+
+          case "playerSelecting":
+            // Another player is selecting cards - show info and disable button
+            showPlayerSelectingInfo(data.playerIndex);
             break;
 
           case "continue":
@@ -8644,10 +8811,12 @@
             ?.dataset.value || "5320"
         );
 
-        // Prepare player names
+        // Prepare player names and LK
         const playerNames = [onlineState.myName];
+        const playerLucks = [PlayerAccount.luck]; // Host's LK
         onlineState.players.forEach((p) => {
           playerNames.push(p.name);
+          playerLucks.push(p.luck || 0); // Player's LK received when they joined
         });
 
         // Send game start to all players
@@ -8655,12 +8824,14 @@
           type: "startGame",
           targetScore: targetScore,
           playerNames: playerNames,
+          playerLucks: playerLucks,
           maxPlayers: onlineState.maxPlayers,
         });
 
         // Setup local game state
         gameState.targetScore = targetScore;
         gameState.playerNames = playerNames;
+        gameState.playerLuck = playerLucks;
         gameState.mode = "online";
         gameState.maxPlayers = onlineState.maxPlayers;
         onlineState.myPlayerIndex = 0;
@@ -8671,6 +8842,7 @@
       function receiveGameStart(data) {
         gameState.targetScore = data.targetScore;
         gameState.playerNames = data.playerNames;
+        gameState.playerLuck = data.playerLucks || [0, 0];
         gameState.mode = "online";
         gameState.maxPlayers = data.maxPlayers;
 
@@ -8718,9 +8890,36 @@
         gameState.playedCards[playerIndex] = data.cards;
         gameState.playersReady[playerIndex] = true;
 
+        // Hide selecting info when cards are played
+        hidePlayerSelectingInfo();
+
         displayPlayedCards(playerIndex, data.cards);
         updateDisplay();
         checkRoundEnd();
+      }
+
+      function showPlayerSelectingInfo(playerIndex) {
+        const playerName =
+          gameState.playerNames[playerIndex] || `Gracz ${playerIndex + 1}`;
+        document.getElementById("selectingPlayerName").textContent = playerName;
+        document.getElementById("playerSelectingInfo").style.display = "block";
+        document.getElementById("gameControls").style.display = "none";
+
+        // Disable my button while someone else is selecting
+        document.getElementById("playBtn1").disabled = true;
+      }
+
+      function hidePlayerSelectingInfo() {
+        document.getElementById("playerSelectingInfo").style.display = "none";
+        document.getElementById("gameControls").style.display = "block";
+
+        // Re-enable button if I haven't played yet
+        if (gameState.mode === "online") {
+          const myIndex = onlineState.myPlayerIndex;
+          if (!gameState.playersReady[myIndex]) {
+            document.getElementById("playBtn1").disabled = false;
+          }
+        }
       }
 
       function updateOnlinePlayerNames() {
