@@ -7028,7 +7028,11 @@
         document.getElementById("playBtn1").disabled = false;
 
         if (gameState.mode === "local") {
-          document.getElementById("player2Controls").style.display = "block";
+          // Start: only player 1 controls visible
+          document.getElementById("player1ControlWrapper").style.display =
+            "block";
+          document.getElementById("player2Controls").style.display = "none";
+          document.getElementById("playBtn1").disabled = false;
           document.getElementById("playBtn2").disabled = true;
         }
 
