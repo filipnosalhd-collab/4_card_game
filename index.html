@@ -21,10 +21,19 @@
         --gold-dark: #b8860b;
         --crimson: #8b0000;
         --crimson-light: #a52a2a;
-        --velvet: #1a0a0a;
-        --velvet-light: #2d1515;
+        --velvet: #0d0d0d;
+        --velvet-light: #1a1a2e;
+        --velvet-mid: #16213e;
         --cream: #faf3e0;
         --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        --bg-gradient: linear-gradient(
+          135deg,
+          #0d0d0d 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #1a1a2e 75%,
+          #0d0d0d 100%
+        );
       }
 
       * {
@@ -40,18 +49,15 @@
 
       body {
         font-family: "Crimson Pro", Georgia, serif;
-        background: radial-gradient(
-          ellipse at center,
-          var(--velvet-light) 0%,
-          var(--velvet) 100%
-        );
+        background: var(--bg-gradient);
+        background-attachment: fixed;
         min-height: 100vh;
         min-height: -webkit-fill-available;
         color: var(--cream);
         overflow-x: hidden;
       }
 
-      /* Texture overlay */
+      /* Animated background particles */
       body::before {
         content: "";
         position: fixed;
@@ -59,10 +65,51 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-        opacity: 0.03;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(212, 175, 55, 0.03) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(212, 175, 55, 0.03) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(139, 0, 0, 0.02) 0%,
+            transparent 70%
+          );
         pointer-events: none;
-        z-index: 1000;
+        z-index: 0;
+        animation: bgPulse 10s ease-in-out infinite alternate;
+      }
+
+      @keyframes bgPulse {
+        0% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      /* Subtle grid pattern overlay */
+      body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            rgba(212, 175, 55, 0.02) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: 0;
       }
 
       /* Main Menu */
@@ -74,15 +121,24 @@
         min-height: 100vh;
         padding: 2rem;
         position: relative;
+        z-index: 1;
       }
 
       .logo {
         font-family: "Cinzel", serif;
         font-size: clamp(3rem, 8vw, 6rem);
         font-weight: 900;
-        color: var(--gold);
-        text-shadow: 0 0 60px rgba(212, 175, 55, 0.5),
-          0 4px 8px rgba(0, 0, 0, 0.8);
+        background: linear-gradient(
+          180deg,
+          #ffd700 0%,
+          #d4af37 40%,
+          #b8860b 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8))
+          drop-shadow(0 0 40px rgba(212, 175, 55, 0.4));
         letter-spacing: 0.2em;
         margin-bottom: 0.5rem;
         animation: logoGlow 3s ease-in-out infinite alternate;
@@ -90,12 +146,12 @@
 
       @keyframes logoGlow {
         from {
-          text-shadow: 0 0 60px rgba(212, 175, 55, 0.5),
-            0 4px 8px rgba(0, 0, 0, 0.8);
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8))
+            drop-shadow(0 0 40px rgba(212, 175, 55, 0.4));
         }
         to {
-          text-shadow: 0 0 100px rgba(212, 175, 55, 0.8),
-            0 4px 8px rgba(0, 0, 0, 0.8);
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8))
+            drop-shadow(0 0 80px rgba(212, 175, 55, 0.7));
         }
       }
 
@@ -106,48 +162,92 @@
         letter-spacing: 0.5em;
         margin-bottom: 3rem;
         text-transform: uppercase;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
       }
 
       .menu-cards {
         display: flex;
-        gap: 2rem;
+        gap: 1.5rem;
         perspective: 1000px;
         margin-bottom: 3rem;
       }
 
       .menu-card {
-        width: 120px;
-        height: 170px;
+        width: 100px;
+        height: 140px;
         background: linear-gradient(
-          135deg,
-          var(--crimson) 0%,
-          var(--crimson-light) 50%,
-          var(--crimson) 100%
+          145deg,
+          #1a1a2e 0%,
+          #16213e 30%,
+          #0f3460 50%,
+          #16213e 70%,
+          #1a1a2e 100%
         );
         border: 3px solid var(--gold);
-        border-radius: 10px;
+        border-radius: 12px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         font-family: "Cinzel", serif;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         font-weight: 700;
         color: var(--gold);
-        box-shadow: var(--card-shadow);
-        transform: rotateY(calc(var(--i) * 15deg - 22.5deg)) translateZ(20px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+          inset 0 2px 10px rgba(255, 255, 255, 0.1),
+          0 0 20px rgba(212, 175, 55, 0.2);
+        transform: rotateY(calc(var(--i) * 12deg - 18deg)) translateZ(30px);
         animation: cardFloat 4s ease-in-out infinite;
-        animation-delay: calc(var(--i) * 0.2s);
+        animation-delay: calc(var(--i) * 0.15s);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .menu-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent 40%,
+          rgba(212, 175, 55, 0.1) 50%,
+          transparent 60%
+        );
+        animation: cardShine 3s ease-in-out infinite;
+        animation-delay: calc(var(--i) * 0.3s);
+      }
+
+      @keyframes cardShine {
+        0%,
+        100% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+        50% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+
+      .menu-card::after {
+        content: "♠♥♦♣";
+        position: absolute;
+        bottom: 8px;
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        opacity: 0.5;
       }
 
       @keyframes cardFloat {
         0%,
         100% {
-          transform: rotateY(calc(var(--i) * 15deg - 22.5deg)) translateZ(20px)
+          transform: rotateY(calc(var(--i) * 12deg - 18deg)) translateZ(30px)
             translateY(0);
         }
         50% {
-          transform: rotateY(calc(var(--i) * 15deg - 22.5deg)) translateZ(20px)
-            translateY(-15px);
+          transform: rotateY(calc(var(--i) * 12deg - 18deg)) translateZ(30px)
+            translateY(-12px);
         }
       }
 
@@ -165,10 +265,12 @@
         font-weight: 700;
         padding: 1.2rem 2rem;
         border: 2px solid var(--gold);
+        border-radius: 8px;
         background: linear-gradient(
           135deg,
-          rgba(212, 175, 55, 0.1) 0%,
-          rgba(212, 175, 55, 0.05) 100%
+          rgba(26, 26, 46, 0.9) 0%,
+          rgba(22, 33, 62, 0.9) 50%,
+          rgba(26, 26, 46, 0.9) 100%
         );
         color: var(--gold);
         cursor: pointer;
@@ -176,6 +278,9 @@
         letter-spacing: 0.1em;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.2);
       }
 
       .menu-btn::before {
@@ -188,7 +293,7 @@
         background: linear-gradient(
           90deg,
           transparent,
-          rgba(212, 175, 55, 0.2),
+          rgba(212, 175, 55, 0.3),
           transparent
         );
         transition: left 0.5s ease;
@@ -201,11 +306,20 @@
       .menu-btn:hover {
         background: linear-gradient(
           135deg,
-          rgba(212, 175, 55, 0.3) 0%,
-          rgba(212, 175, 55, 0.15) 100%
+          rgba(212, 175, 55, 0.2) 0%,
+          rgba(26, 26, 46, 0.95) 50%,
+          rgba(212, 175, 55, 0.2) 100%
         );
-        transform: scale(1.02);
-        box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5),
+          0 0 40px rgba(212, 175, 55, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        border-color: var(--gold-light);
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+      }
+
+      .menu-btn:active {
+        transform: translateY(0) scale(0.98);
       }
 
       /* Instructions Modal */
@@ -2911,6 +3025,10 @@
         letter-spacing: 0.1em;
       }
 
+      .upgrade-card-market-bonus {
+        margin-top: 0.3rem;
+      }
+
       /* Card tiers styling */
       .upgrade-card-front.tier-bronze {
         background: linear-gradient(
@@ -3126,10 +3244,33 @@
         </button>
         <button
           class="menu-btn"
-          onclick="showCardUpgrades()"
-          data-i18n="cardUpgrades"
+          onclick="openMarket()"
+          data-i18n="marketBtn"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(34, 197, 94, 0.3) 0%,
+              rgba(22, 163, 74, 0.2) 100%
+            );
+            border-color: #22c55e;
+          "
         >
-          🃏 CARD UPGRADES
+          📈 RYNEK KART
+        </button>
+        <button
+          class="menu-btn"
+          onclick="openCollection()"
+          data-i18n="collectionBtn"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(147, 51, 234, 0.3) 0%,
+              rgba(139, 92, 246, 0.2) 100%
+            );
+            border-color: #a855f7;
+          "
+        >
+          🃏 KOLEKCJA
         </button>
         <button
           class="menu-btn"
@@ -3198,209 +3339,49 @@
       </div>
     </div>
 
-    <!-- Card Upgrades Screen -->
-    <div class="card-upgrades-screen" id="cardUpgradesScreen">
-      <h2 class="upgrades-title">🃏 CARD UPGRADES</h2>
-      <div class="upgrades-balance">
-        <span>LUP:</span>
-        <span id="upgradesBalance">100</span>
+    <!-- Collection Screen -->
+    <div class="collection-screen" id="collectionScreen">
+      <h2 class="collection-title" data-i18n="collectionTitle">
+        🃏 KOLEKCJA KART
+      </h2>
+      <div class="collection-balance">
+        <span>💰</span>
+        <span id="collectionBalance">100</span>
+        <span>LUP</span>
       </div>
 
-      <div class="upgrades-cards-grid">
-        <!-- Card 9 -->
-        <div class="upgrade-card-container" data-card="9">
-          <div class="upgrade-card-flip" onclick="flipUpgradeCard('9')">
-            <div class="upgrade-card-inner" id="upgradeCard9">
-              <div class="upgrade-card-front">
-                <div class="upgrade-card-corner">9</div>
-                <div class="upgrade-card-center">9</div>
-                <div class="upgrade-card-tier" id="cardTier9">Base</div>
-              </div>
-              <div class="upgrade-card-back">
-                <div class="upgrade-card-bonus">
-                  +<span id="cardBonus9">0</span>
-                </div>
-                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
-              </div>
-            </div>
-          </div>
-          <div class="upgrade-card-buttons">
-            <button class="card-upgrade-btn" onclick="upgradeCardAction('9')">
-              ⬆️ UPGRADE
-            </button>
-            <button
-              class="card-downgrade-btn"
-              onclick="downgradeCardAction('9')"
-            >
-              ⬇️
-            </button>
-          </div>
-          <div class="upgrade-card-cost" id="cardCost9">Cost: 10 LUP</div>
-        </div>
-
-        <!-- Card 10 -->
-        <div class="upgrade-card-container" data-card="10">
-          <div class="upgrade-card-flip" onclick="flipUpgradeCard('10')">
-            <div class="upgrade-card-inner" id="upgradeCard10">
-              <div class="upgrade-card-front">
-                <div class="upgrade-card-corner">10</div>
-                <div class="upgrade-card-center">10</div>
-                <div class="upgrade-card-tier" id="cardTier10">Base</div>
-              </div>
-              <div class="upgrade-card-back">
-                <div class="upgrade-card-bonus">
-                  +<span id="cardBonus10">0</span>
-                </div>
-                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
-              </div>
-            </div>
-          </div>
-          <div class="upgrade-card-buttons">
-            <button class="card-upgrade-btn" onclick="upgradeCardAction('10')">
-              ⬆️ UPGRADE
-            </button>
-            <button
-              class="card-downgrade-btn"
-              onclick="downgradeCardAction('10')"
-            >
-              ⬇️
-            </button>
-          </div>
-          <div class="upgrade-card-cost" id="cardCost10">Cost: 10 LUP</div>
-        </div>
-
-        <!-- Card J -->
-        <div class="upgrade-card-container" data-card="J">
-          <div class="upgrade-card-flip" onclick="flipUpgradeCard('J')">
-            <div class="upgrade-card-inner" id="upgradeCardJ">
-              <div class="upgrade-card-front">
-                <div class="upgrade-card-corner">J</div>
-                <div class="upgrade-card-center">J</div>
-                <div class="upgrade-card-tier" id="cardTierJ">Base</div>
-              </div>
-              <div class="upgrade-card-back">
-                <div class="upgrade-card-bonus">
-                  +<span id="cardBonusJ">0</span>
-                </div>
-                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
-              </div>
-            </div>
-          </div>
-          <div class="upgrade-card-buttons">
-            <button class="card-upgrade-btn" onclick="upgradeCardAction('J')">
-              ⬆️ UPGRADE
-            </button>
-            <button
-              class="card-downgrade-btn"
-              onclick="downgradeCardAction('J')"
-            >
-              ⬇️
-            </button>
-          </div>
-          <div class="upgrade-card-cost" id="cardCostJ">Cost: 10 LUP</div>
-        </div>
-
-        <!-- Card Q -->
-        <div class="upgrade-card-container" data-card="Q">
-          <div class="upgrade-card-flip" onclick="flipUpgradeCard('Q')">
-            <div class="upgrade-card-inner" id="upgradeCardQ">
-              <div class="upgrade-card-front">
-                <div class="upgrade-card-corner">Q</div>
-                <div class="upgrade-card-center">Q</div>
-                <div class="upgrade-card-tier" id="cardTierQ">Base</div>
-              </div>
-              <div class="upgrade-card-back">
-                <div class="upgrade-card-bonus">
-                  +<span id="cardBonusQ">0</span>
-                </div>
-                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
-              </div>
-            </div>
-          </div>
-          <div class="upgrade-card-buttons">
-            <button class="card-upgrade-btn" onclick="upgradeCardAction('Q')">
-              ⬆️ UPGRADE
-            </button>
-            <button
-              class="card-downgrade-btn"
-              onclick="downgradeCardAction('Q')"
-            >
-              ⬇️
-            </button>
-          </div>
-          <div class="upgrade-card-cost" id="cardCostQ">Cost: 10 LUP</div>
-        </div>
-
-        <!-- Card K -->
-        <div class="upgrade-card-container" data-card="K">
-          <div class="upgrade-card-flip" onclick="flipUpgradeCard('K')">
-            <div class="upgrade-card-inner" id="upgradeCardK">
-              <div class="upgrade-card-front">
-                <div class="upgrade-card-corner">K</div>
-                <div class="upgrade-card-center">K</div>
-                <div class="upgrade-card-tier" id="cardTierK">Base</div>
-              </div>
-              <div class="upgrade-card-back">
-                <div class="upgrade-card-bonus">
-                  +<span id="cardBonusK">0</span>
-                </div>
-                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
-              </div>
-            </div>
-          </div>
-          <div class="upgrade-card-buttons">
-            <button class="card-upgrade-btn" onclick="upgradeCardAction('K')">
-              ⬆️ UPGRADE
-            </button>
-            <button
-              class="card-downgrade-btn"
-              onclick="downgradeCardAction('K')"
-            >
-              ⬇️
-            </button>
-          </div>
-          <div class="upgrade-card-cost" id="cardCostK">Cost: 10 LUP</div>
-        </div>
-
-        <!-- Card A -->
-        <div class="upgrade-card-container" data-card="A">
-          <div class="upgrade-card-flip" onclick="flipUpgradeCard('A')">
-            <div class="upgrade-card-inner" id="upgradeCardA">
-              <div class="upgrade-card-front">
-                <div class="upgrade-card-corner">A</div>
-                <div class="upgrade-card-center">A</div>
-                <div class="upgrade-card-tier" id="cardTierA">Base</div>
-              </div>
-              <div class="upgrade-card-back">
-                <div class="upgrade-card-bonus">
-                  +<span id="cardBonusA">0</span>
-                </div>
-                <div class="upgrade-card-bonus-label">BONUS POINTS</div>
-              </div>
-            </div>
-          </div>
-          <div class="upgrade-card-buttons">
-            <button class="card-upgrade-btn" onclick="upgradeCardAction('A')">
-              ⬆️ UPGRADE
-            </button>
-            <button
-              class="card-downgrade-btn"
-              onclick="downgradeCardAction('A')"
-            >
-              ⬇️
-            </button>
-          </div>
-          <div class="upgrade-card-cost" id="cardCostA">Cost: 10 LUP</div>
-        </div>
+      <div class="collection-grid" id="collectionGrid">
+        <!-- Dynamicznie generowane -->
       </div>
 
-      <button
-        class="menu-btn"
-        style="margin-top: 2rem"
-        onclick="closeCardUpgrades()"
+      <div
+        style="
+          display: flex;
+          gap: 1rem;
+          margin-top: 2rem;
+          flex-wrap: wrap;
+          justify-content: center;
+        "
       >
-        BACK TO MENU
-      </button>
+        <button
+          class="menu-btn"
+          onclick="openMarket()"
+          data-i18n="marketBtn"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(34, 197, 94, 0.3) 0%,
+              rgba(22, 163, 74, 0.2) 100%
+            );
+            border-color: #22c55e;
+          "
+        >
+          📈 RYNEK KART
+        </button>
+        <button class="menu-btn" onclick="closeCollection()" data-i18n="back">
+          POWRÓT
+        </button>
+      </div>
     </div>
 
     <!-- Setup Screen -->
@@ -4294,10 +4275,29 @@
                     <ul>
                         <li>Każda karta (9, 10, J, Q, K, A) ma osobny poziom</li>
                         <li>Upgrade dodaje BONUS PUNKTÓW do karty</li>
-                        <li>200 poziomów: Bronze → Silver → Gold → ... → Celestial</li>
+                        <li>200 poziomów: Base → Paper → Bronze → Silver → Gold → ... → THE ONE</li>
                         <li>Kliknij kartę żeby zobaczyć bonus z tyłu</li>
                         <li>Downgrade = zwrot 50% kosztów</li>
                         <li>Bonusy działają tylko dla Ciebie (nie dla bota/przeciwnika)</li>
+                    </ul>
+
+                    <h3>🎁 Sklep z Paczkami</h3>
+                    <ul>
+                        <li>Kupuj paczki za LUP i zdobywaj karty z różnymi tierami!</li>
+                        <li>15 paczek dostępnych w sklepie - losowy wybór</li>
+                        <li>Sklep resetuje się co 5 minut - nowe paczki!</li>
+                        <li>Typy paczek: Papierowa (30 LUP) → Legendarna (100,000 LUP) → JEDYNA (1,000,000 LUP)</li>
+                        <li>Droższe paczki = karty z wyższymi tierami</li>
+                        <li>Otwórz paczkę i zobacz animację kart!</li>
+                    </ul>
+
+                    <h3>🃏 Kolekcja Kart</h3>
+                    <ul>
+                        <li>Wszystkie karty z paczek trafiają do Twojej kolekcji</li>
+                        <li>Kliknij "Kolekcja" w sklepie żeby zobaczyć swoje karty</li>
+                        <li>Filtruj: Wszystkie / Zwykłe / Rzadkie / Specjalne / Legendarne</li>
+                        <li>Karty są sortowane od najlepszych (najwyższy tier)</li>
+                        <li>Kolekcja zapisuje się automatycznie!</li>
                     </ul>
 
                     <h3>🎮 Przebieg rundy</h3>
@@ -4392,6 +4392,102 @@
           pasteLink: "Wklej link do gry...",
           enterLinkAlert: "Wklej link do pokoju!",
           invalidLinkAlert: "Nieprawidłowy link! Wklej pełny link do gry.",
+          // Pack Shop translations
+          packShop: "SKLEP Z PACZKAMI",
+          collection: "Kolekcja",
+          myCollection: "MOJA KOLEKCJA",
+          all: "Wszystkie",
+          baseCards: "Podstawowe",
+          fromPacks: "Z paczek",
+          common: "Zwykłe",
+          rare: "Rzadkie",
+          special: "Specjalne",
+          legendary: "Legendarne",
+          close: "ZAMKNIJ",
+          cards: "kart",
+          tier: "Poziom",
+          // Market translations
+          marketTitle: "📈 RYNEK KART",
+          collectionTitle: "🃏 KOLEKCJA KART",
+          currentBonus: "Twój aktualny bonus:",
+          updatesLive: "(aktualizuje się na żywo)",
+          clickChart: "Kliknij = wykres",
+          doubleClickDetails: "Podwójne kliknięcie = szczegóły karty",
+          clickVersionChart: "Kliknij w wersję karty aby zobaczyć wykres cen",
+          current: "Aktualny:",
+          bonus: "Bonus:",
+          price: "Cena:",
+          change: "Zmiana:",
+          status: "Status:",
+          owned: "✓ Posiadasz",
+          notOwned: "✗ Nie masz",
+          currentlyUsed: "AKTUALNIE UŻYWANA",
+          sell100: "SPRZEDAJ (100%)",
+          buyNow: "KUP TERAZ",
+          buyBlack: "⚡ KUP CZARNĄ ⚡",
+          baseCard: "Karta bazowa",
+          baseCardNoSell: "Karta bazowa - nie do sprzedania",
+          clickToFlip: "Kliknij kartę aby obrócić",
+          closeBtn: "ZAMKNIJ",
+          yourCard: "TWOJA",
+          sellBtn: "SPRZEDAJ",
+          buyBtn: "KUP",
+          value: "Wartość:",
+          market: "Rynek:",
+          priceChart: "📊 Wykres cen (24h)",
+          live: "NA ŻYWO",
+          blackCard: "KARTA CZARNA",
+          autoWin: "AUTOWYGRANA",
+          autoWinRounds: "⚡ AUTOMATYCZNIE WYGRYWASZ RUNDY! ⚡",
+          purchased: "ZAKUPIONO!",
+          autoUpgrade: "AUTO-ULEPSZENIE!",
+          basePoints: "punktów bazowych!",
+          marketBonus: "Bonus rynkowy:",
+          sold: "💰 SPRZEDANO!",
+          notEnoughLup: "Nie masz wystarczająco LUP!",
+          alreadyHave: "Masz już tę lub lepszą wersję!",
+          onlyDowngrade: "Możesz tylko obniżyć tier!",
+          alreadyBlack: "⚡ Już masz kartę CZARNĄ!",
+          needLupForBlack: "Potrzebujesz %s LUP na kartę CZARNĄ!",
+          buyBlackConfirm:
+            "⚡ Kupić kartę CZARNĄ %s za %s LUP?\n\nKarta CZARNA automatycznie wygrywa rundy!",
+          sellConfirm:
+            "Sprzedać %s (%s) za %s LUP?\nKarta zostanie obniżona do: %s",
+          sellCollectionConfirm:
+            "Sprzedać %s (%s) za %s LUP?\n\nKarta wróci do wersji Bazowa.",
+          cantSellBase: "Nie możesz sprzedać karty bazowej!",
+          buyBlackTitle: "Kup CZARNĄ - Autowygrana!",
+          // Card names
+          cardAs: "As",
+          cardKing: "Król",
+          cardQueen: "Dama",
+          cardJack: "Walet",
+          cardTen: "Dziesiątka",
+          cardNine: "Dziewiątka",
+          marketBtn: "📈 RYNEK KART",
+          collectionBtn: "🃏 KOLEKCJA",
+          // Tier names
+          tierBase: "Bazowa",
+          tierCommon: "Zwykła",
+          tierCommonPlus: "Zwykła+",
+          tierUncommon: "Niezwykła",
+          tierUncommonPlus: "Niezwykła+",
+          tierRare: "Rzadka",
+          tierRarePlus: "Rzadka+",
+          tierEpic: "Epicka",
+          tierEpicPlus: "Epicka+",
+          tierLegendary: "Legendarna",
+          tierLegendaryPlus: "Legendarna+",
+          tierMythic: "Mityczna",
+          tierMythicPlus: "Mityczna+",
+          tierDivine: "Boska",
+          tierDivinePlus: "Boska+",
+          tierCelestial: "Niebiańska",
+          tierCelestialPlus: "Niebiańska+",
+          tierTranscendent: "Transcendentna",
+          tierTranscendentPlus: "Transcendentna+",
+          tierUltimate: "Ostateczna",
+          tierBlack: "CZARNA",
         },
         en: {
           subtitle: "Four Cards Game",
@@ -4515,10 +4611,29 @@
                     <ul>
                         <li>Each card (9, 10, J, Q, K, A) has its own level</li>
                         <li>Upgrade adds BONUS POINTS to card</li>
-                        <li>200 levels: Bronze → Silver → Gold → ... → Celestial</li>
+                        <li>200 levels: Base → Paper → Bronze → Silver → Gold → ... → THE ONE</li>
                         <li>Click card to see bonus on the back</li>
                         <li>Downgrade = 50% cost refund</li>
                         <li>Bonuses only work for you (not for bot/opponent)</li>
+                    </ul>
+
+                    <h3>🎁 Pack Shop</h3>
+                    <ul>
+                        <li>Buy packs with LUP and get cards with different tiers!</li>
+                        <li>15 packs available in shop - random selection</li>
+                        <li>Shop resets every 5 minutes - new packs!</li>
+                        <li>Pack types: Paper (30 LUP) → Legendary (100,000 LUP) → THE ONE (1,000,000 LUP)</li>
+                        <li>More expensive packs = higher tier cards</li>
+                        <li>Open pack and watch the card reveal animation!</li>
+                    </ul>
+
+                    <h3>🃏 Card Collection</h3>
+                    <ul>
+                        <li>All cards from packs go to your collection</li>
+                        <li>Click "Collection" in shop to see your cards</li>
+                        <li>Filter: All / Common / Rare / Special / Legendary</li>
+                        <li>Cards are sorted from best (highest tier)</li>
+                        <li>Collection saves automatically!</li>
                     </ul>
 
                     <h3>🎮 Round Flow</h3>
@@ -4613,6 +4728,102 @@
           pasteLink: "Paste game link...",
           enterLinkAlert: "Paste game link!",
           invalidLinkAlert: "Invalid link! Paste full game link.",
+          // Pack Shop translations
+          packShop: "PACK SHOP",
+          collection: "Collection",
+          myCollection: "MY COLLECTION",
+          all: "All",
+          baseCards: "Base Cards",
+          fromPacks: "From Packs",
+          common: "Common",
+          rare: "Rare",
+          special: "Special",
+          legendary: "Legendary",
+          close: "CLOSE",
+          cards: "cards",
+          tier: "Tier",
+          // Market translations
+          marketTitle: "📈 CARD MARKET",
+          collectionTitle: "🃏 CARD COLLECTION",
+          currentBonus: "Your current bonus:",
+          updatesLive: "(updates live)",
+          clickChart: "Click = chart",
+          doubleClickDetails: "Double click = card details",
+          clickVersionChart: "Click on card version to see price chart",
+          current: "Current:",
+          bonus: "Bonus:",
+          price: "Price:",
+          change: "Change:",
+          status: "Status:",
+          owned: "✓ Owned",
+          notOwned: "✗ Not owned",
+          currentlyUsed: "CURRENTLY USED",
+          sell100: "SELL (100%)",
+          buyNow: "BUY NOW",
+          buyBlack: "⚡ BUY BLACK ⚡",
+          baseCard: "Base card",
+          baseCardNoSell: "Base card - cannot sell",
+          clickToFlip: "Click card to flip",
+          closeBtn: "CLOSE",
+          yourCard: "YOURS",
+          sellBtn: "SELL",
+          buyBtn: "BUY",
+          value: "Value:",
+          market: "Market:",
+          priceChart: "📊 Price Chart (24h)",
+          live: "LIVE",
+          blackCard: "BLACK CARD",
+          autoWin: "AUTO-WIN",
+          autoWinRounds: "⚡ AUTOMATICALLY WIN ROUNDS! ⚡",
+          purchased: "PURCHASED!",
+          autoUpgrade: "AUTO-UPGRADE!",
+          basePoints: "base points!",
+          marketBonus: "Market bonus:",
+          sold: "💰 SOLD!",
+          notEnoughLup: "Not enough LUP!",
+          alreadyHave: "You already have this or better!",
+          onlyDowngrade: "You can only downgrade!",
+          alreadyBlack: "⚡ You already have BLACK card!",
+          needLupForBlack: "You need %s LUP for BLACK card!",
+          buyBlackConfirm:
+            "⚡ Buy BLACK card %s for %s LUP?\n\nBLACK card automatically wins rounds!",
+          sellConfirm:
+            "Sell %s (%s) for %s LUP?\nCard will be downgraded to: %s",
+          sellCollectionConfirm:
+            "Sell %s (%s) for %s LUP?\n\nCard will return to Base.",
+          cantSellBase: "Cannot sell base card!",
+          buyBlackTitle: "Buy BLACK - Auto-win!",
+          // Card names
+          cardAs: "Ace",
+          cardKing: "King",
+          cardQueen: "Queen",
+          cardJack: "Jack",
+          cardTen: "Ten",
+          cardNine: "Nine",
+          marketBtn: "📈 CARD MARKET",
+          collectionBtn: "🃏 COLLECTION",
+          // Tier names
+          tierBase: "Base",
+          tierCommon: "Common",
+          tierCommonPlus: "Common+",
+          tierUncommon: "Uncommon",
+          tierUncommonPlus: "Uncommon+",
+          tierRare: "Rare",
+          tierRarePlus: "Rare+",
+          tierEpic: "Epic",
+          tierEpicPlus: "Epic+",
+          tierLegendary: "Legendary",
+          tierLegendaryPlus: "Legendary+",
+          tierMythic: "Mythic",
+          tierMythicPlus: "Mythic+",
+          tierDivine: "Divine",
+          tierDivinePlus: "Divine+",
+          tierCelestial: "Celestial",
+          tierCelestialPlus: "Celestial+",
+          tierTranscendent: "Transcendent",
+          tierTranscendentPlus: "Transcendent+",
+          tierUltimate: "Ultimate",
+          tierBlack: "BLACK",
         },
       };
 
@@ -4622,6 +4833,20 @@
         currentLang = currentLang === "pl" ? "en" : "pl";
         updateLanguageButton();
         updateLanguage();
+
+        // Re-render market and collection if open
+        if (
+          document.getElementById("marketScreen").classList.contains("active")
+        ) {
+          renderMarket();
+        }
+        if (
+          document
+            .getElementById("collectionScreen")
+            .classList.contains("active")
+        ) {
+          renderCollection();
+        }
 
         // Save preference
         try {
@@ -4694,6 +4919,15 @@
           K: 0,
           A: 0,
         },
+        // Bonus % z momentu kupna karty (stały aż do sprzedaży)
+        purchaseBonus: {
+          9: 0,
+          10: 0,
+          J: 0,
+          Q: 0,
+          K: 0,
+          A: 0,
+        },
 
         load() {
           try {
@@ -4704,6 +4938,14 @@
               this.luck = data.luck || 0;
               this.money = data.money || 100;
               this.cardUpgrades = data.cardUpgrades || {
+                9: 0,
+                10: 0,
+                J: 0,
+                Q: 0,
+                K: 0,
+                A: 0,
+              };
+              this.purchaseBonus = data.purchaseBonus || {
                 9: 0,
                 10: 0,
                 J: 0,
@@ -4724,9 +4966,21 @@
                 luck: this.luck,
                 money: this.money,
                 cardUpgrades: this.cardUpgrades,
+                purchaseBonus: this.purchaseBonus,
               })
             );
           } catch (e) {}
+        },
+
+        // Pobierz całkowity bonus punktowy dla karty (bazowy + % rynkowy)
+        getCardTotalBonus(cardValue) {
+          const tierLevel = this.cardUpgrades[cardValue] || 0;
+          const baseBonus = CardUpgradeSystem.getUpgrade(tierLevel).bonus;
+          const marketBonus = this.purchaseBonus[cardValue] || 0;
+
+          // Bonus rynkowy modyfikuje bazowy bonus
+          const totalBonus = Math.floor(baseBonus * (1 + marketBonus / 100));
+          return totalBonus;
         },
 
         // Calculate upgrade cost - exponential scaling
@@ -4770,65 +5024,210 @@
 
       // ==================== CARD UPGRADE SYSTEM ====================
       const CardUpgradeSystem = {
-        // Generate upgrades dynamically - each tier has 4 levels (I-IV)
-        // Bronze, Silver, Gold = 3 levels each (no glow)
-        // All other tiers = 4 levels each (with glow)
+        // 200 unique card-themed tiers with English names
         tiers: [
           { name: "Base", color: "#666666", glow: false, levels: 1 },
-          { name: "Bronze", color: "#CD7F32", glow: false, levels: 3 },
-          { name: "Silver", color: "#C0C0C0", glow: false, levels: 3 },
-          { name: "Gold", color: "#FFD700", glow: false, levels: 3 },
-          { name: "Platinum", color: "#E5E4E2", glow: true, levels: 4 },
-          { name: "Diamond", color: "#B9F2FF", glow: true, levels: 4 },
-          { name: "Ruby", color: "#E0115F", glow: true, levels: 4 },
-          { name: "Emerald", color: "#50C878", glow: true, levels: 4 },
-          { name: "Sapphire", color: "#0F52BA", glow: true, levels: 4 },
-          { name: "Amethyst", color: "#9966CC", glow: true, levels: 4 },
-          { name: "Topaz", color: "#FFC87C", glow: true, levels: 4 },
-          { name: "Obsidian", color: "#3D3D3D", glow: true, levels: 4 },
-          { name: "Opal", color: "#A8C3BC", glow: true, levels: 4 },
-          { name: "Pearl", color: "#FDEEF4", glow: true, levels: 4 },
-          { name: "Onyx", color: "#353839", glow: true, levels: 4 },
-          { name: "Garnet", color: "#733635", glow: true, levels: 4 },
-          { name: "Aquamarine", color: "#7FFFD4", glow: true, levels: 4 },
-          { name: "Turquoise", color: "#40E0D0", glow: true, levels: 4 },
-          { name: "Coral", color: "#FF7F50", glow: true, levels: 4 },
-          { name: "Citrine", color: "#E4D00A", glow: true, levels: 4 },
-          { name: "Moonstone", color: "#F0E6FA", glow: true, levels: 4 },
-          { name: "Sunstone", color: "#EF5820", glow: true, levels: 4 },
-          { name: "Peridot", color: "#E6E200", glow: true, levels: 4 },
-          { name: "Tanzanite", color: "#4D4DFF", glow: true, levels: 4 },
-          { name: "Alexandrite", color: "#008B8B", glow: true, levels: 4 },
-          { name: "Spinel", color: "#FF1493", glow: true, levels: 4 },
-          { name: "Zircon", color: "#C2DFFF", glow: true, levels: 4 },
-          { name: "Morganite", color: "#FFB4C2", glow: true, levels: 4 },
-          { name: "Kunzite", color: "#E6B8C2", glow: true, levels: 4 },
-          { name: "Larimar", color: "#87CEEB", glow: true, levels: 4 },
-          { name: "Labradorite", color: "#6B8E8E", glow: true, levels: 4 },
-          { name: "Jasper", color: "#D73B3E", glow: true, levels: 4 },
-          { name: "Jade", color: "#00A86B", glow: true, levels: 4 },
-          { name: "Iolite", color: "#473C8B", glow: true, levels: 4 },
-          { name: "Howlite", color: "#F5F5F5", glow: true, levels: 4 },
-          { name: "Heliodor", color: "#E9D66B", glow: true, levels: 4 },
-          { name: "Fluorite", color: "#A020F0", glow: true, levels: 4 },
-          { name: "Chrysoberyl", color: "#DAA520", glow: true, levels: 4 },
-          { name: "Carnelian", color: "#B31B1B", glow: true, levels: 4 },
-          { name: "Bloodstone", color: "#346751", glow: true, levels: 4 },
-          { name: "Azurite", color: "#007FFF", glow: true, levels: 4 },
-          { name: "Amazonite", color: "#00C4B0", glow: true, levels: 4 },
-          { name: "Agate", color: "#B5651D", glow: true, levels: 4 },
-          { name: "Beryl", color: "#76FF7A", glow: true, levels: 4 },
-          { name: "Sphene", color: "#ADFF2F", glow: true, levels: 4 },
-          { name: "Sodalite", color: "#1E3F66", glow: true, levels: 4 },
-          { name: "Rhodolite", color: "#E0218A", glow: true, levels: 4 },
-          { name: "Prehnite", color: "#8CCB5E", glow: true, levels: 4 },
-          { name: "Pietersite", color: "#4A536B", glow: true, levels: 4 },
-          { name: "Paraiba", color: "#00FFEF", glow: true, levels: 4 },
-          { name: "Painite", color: "#8B0000", glow: true, levels: 4 },
-          { name: "Musgravite", color: "#556B2F", glow: true, levels: 4 },
-          { name: "Grandidierite", color: "#1C6B6B", glow: true, levels: 4 },
+          { name: "Paper", color: "#F5F5DC", glow: false, levels: 1 },
+          { name: "Cardboard", color: "#8B7355", glow: false, levels: 1 },
+          { name: "Plastic", color: "#87CEEB", glow: false, levels: 1 },
+          { name: "Wooden", color: "#DEB887", glow: false, levels: 1 },
+          { name: "Leather", color: "#8B4513", glow: false, levels: 1 },
+          { name: "Copper", color: "#B87333", glow: false, levels: 1 },
+          { name: "Bronze", color: "#CD7F32", glow: false, levels: 1 },
+          { name: "Iron", color: "#434343", glow: false, levels: 1 },
+          { name: "Steel", color: "#71797E", glow: false, levels: 1 },
+          { name: "Silver", color: "#C0C0C0", glow: false, levels: 1 },
+          { name: "Gold", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Platinum", color: "#E5E4E2", glow: true, levels: 1 },
+          { name: "Titanium", color: "#878681", glow: true, levels: 1 },
+          { name: "Palladium", color: "#CED0DD", glow: true, levels: 1 },
+          { name: "Rhodium", color: "#E2E7E1", glow: true, levels: 1 },
+          { name: "Iridium", color: "#3D3C3A", glow: true, levels: 1 },
+          { name: "Osmium", color: "#464A51", glow: true, levels: 1 },
+          { name: "Mythril", color: "#8CBED6", glow: true, levels: 1 },
+          { name: "Adamantium", color: "#4A5568", glow: true, levels: 1 },
+          { name: "Unobtanium", color: "#00CED1", glow: true, levels: 1 },
+          { name: "Spade Touched", color: "#1a1a2e", glow: true, levels: 1 },
+          { name: "Heart Blessed", color: "#DC143C", glow: true, levels: 1 },
+          { name: "Diamond Cut", color: "#40E0D0", glow: true, levels: 1 },
+          { name: "Club Forged", color: "#228B22", glow: true, levels: 1 },
+          { name: "Suited", color: "#4169E1", glow: true, levels: 1 },
+          { name: "Wild Card", color: "#FF6347", glow: true, levels: 1 },
+          { name: "Trump", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Joker", color: "#9400D3", glow: true, levels: 1 },
+          { name: "Double Joker", color: "#FF1493", glow: true, levels: 1 },
+          { name: "Royal Suit", color: "#800080", glow: true, levels: 1 },
+          { name: "High Card", color: "#708090", glow: true, levels: 1 },
+          { name: "One Pair", color: "#778899", glow: true, levels: 1 },
+          { name: "Two Pair", color: "#4682B4", glow: true, levels: 1 },
+          { name: "Three of a Kind", color: "#5F9EA0", glow: true, levels: 1 },
+          { name: "Straight", color: "#20B2AA", glow: true, levels: 1 },
+          { name: "Flush", color: "#48D1CC", glow: true, levels: 1 },
+          { name: "Full House", color: "#00CED1", glow: true, levels: 1 },
+          { name: "Four of a Kind", color: "#00BFFF", glow: true, levels: 1 },
+          { name: "Straight Flush", color: "#1E90FF", glow: true, levels: 1 },
+          { name: "Royal Flush", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Lucky Draw", color: "#32CD32", glow: true, levels: 1 },
+          { name: "Jackpot", color: "#FFD700", glow: true, levels: 1 },
+          { name: "High Roller", color: "#B8860B", glow: true, levels: 1 },
+          { name: "All In", color: "#DC143C", glow: true, levels: 1 },
+          { name: "House Edge", color: "#006400", glow: true, levels: 1 },
+          { name: "Dealer's Pick", color: "#8B0000", glow: true, levels: 1 },
+          { name: "Casino Grade", color: "#DAA520", glow: true, levels: 1 },
+          { name: "Vegas", color: "#FF4500", glow: true, levels: 1 },
+          { name: "Monte Carlo", color: "#4169E1", glow: true, levels: 1 },
+          { name: "Macau", color: "#FF0000", glow: true, levels: 1 },
+          { name: "Amber", color: "#FFBF00", glow: true, levels: 1 },
+          { name: "Topaz", color: "#FFC87C", glow: true, levels: 1 },
+          { name: "Citrine", color: "#E4D00A", glow: true, levels: 1 },
+          { name: "Peridot", color: "#E6E200", glow: true, levels: 1 },
+          { name: "Emerald", color: "#50C878", glow: true, levels: 1 },
+          { name: "Jade", color: "#00A86B", glow: true, levels: 1 },
+          { name: "Aquamarine", color: "#7FFFD4", glow: true, levels: 1 },
+          { name: "Turquoise", color: "#40E0D0", glow: true, levels: 1 },
+          { name: "Sapphire", color: "#0F52BA", glow: true, levels: 1 },
+          { name: "Tanzanite", color: "#4D4DFF", glow: true, levels: 1 },
+          { name: "Amethyst", color: "#9966CC", glow: true, levels: 1 },
+          { name: "Kunzite", color: "#E6B8C2", glow: true, levels: 1 },
+          { name: "Morganite", color: "#FFB4C2", glow: true, levels: 1 },
+          { name: "Ruby", color: "#E0115F", glow: true, levels: 1 },
+          { name: "Garnet", color: "#733635", glow: true, levels: 1 },
+          { name: "Spinel", color: "#FF1493", glow: true, levels: 1 },
+          { name: "Diamond", color: "#B9F2FF", glow: true, levels: 1 },
+          { name: "Black Diamond", color: "#0D0D0D", glow: true, levels: 1 },
+          { name: "Opal", color: "#A8C3BC", glow: true, levels: 1 },
+          { name: "Pearl", color: "#FDEEF4", glow: true, levels: 1 },
+          { name: "Vintage Deck", color: "#D2691E", glow: true, levels: 1 },
+          { name: "Classic Deck", color: "#8B4513", glow: true, levels: 1 },
+          { name: "Antique Deck", color: "#A0522D", glow: true, levels: 1 },
+          { name: "Collector's Deck", color: "#CD853F", glow: true, levels: 1 },
+          { name: "Limited Edition", color: "#DAA520", glow: true, levels: 1 },
+          { name: "Rare Print", color: "#B8860B", glow: true, levels: 1 },
+          { name: "First Edition", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Signed Deck", color: "#FFA500", glow: true, levels: 1 },
+          { name: "Sealed Deck", color: "#FF8C00", glow: true, levels: 1 },
+          { name: "Mint Condition", color: "#98FB98", glow: true, levels: 1 },
+          { name: "Museum Grade", color: "#EEE8AA", glow: true, levels: 1 },
+          { name: "Pristine", color: "#FFFAFA", glow: true, levels: 1 },
+          { name: "Flawless", color: "#F0FFFF", glow: true, levels: 1 },
+          { name: "Perfect", color: "#F5FFFA", glow: true, levels: 1 },
+          { name: "Immaculate", color: "#FFFFFF", glow: true, levels: 1 },
+          { name: "Enchanted", color: "#9370DB", glow: true, levels: 1 },
+          { name: "Mystical", color: "#8A2BE2", glow: true, levels: 1 },
+          { name: "Arcane", color: "#9400D3", glow: true, levels: 1 },
+          { name: "Sorcerer's", color: "#8B008B", glow: true, levels: 1 },
+          { name: "Wizard's", color: "#800080", glow: true, levels: 1 },
+          { name: "Warlock's", color: "#4B0082", glow: true, levels: 1 },
+          { name: "Hex", color: "#483D8B", glow: true, levels: 1 },
+          { name: "Cursed", color: "#2F4F4F", glow: true, levels: 1 },
+          { name: "Blessed", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Holy", color: "#FFFACD", glow: true, levels: 1 },
+          { name: "Sacred", color: "#FFF8DC", glow: true, levels: 1 },
+          { name: "Divine", color: "#FAFAD2", glow: true, levels: 1 },
+          { name: "Angelic", color: "#FFFAF0", glow: true, levels: 1 },
+          { name: "Seraphic", color: "#FFF5EE", glow: true, levels: 1 },
+          { name: "Celestial", color: "#F0F8FF", glow: true, levels: 1 },
+          { name: "Ancient", color: "#8B7355", glow: true, levels: 1 },
+          { name: "Prehistoric", color: "#A0522D", glow: true, levels: 1 },
+          { name: "Primordial", color: "#556B2F", glow: true, levels: 1 },
+          { name: "Timeless", color: "#C0C0C0", glow: true, levels: 1 },
+          { name: "Eternal", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Infinite", color: "#4169E1", glow: true, levels: 1 },
+          { name: "Endless", color: "#1E90FF", glow: true, levels: 1 },
+          { name: "Forever", color: "#00BFFF", glow: true, levels: 1 },
+          { name: "Everlasting", color: "#87CEEB", glow: true, levels: 1 },
+          { name: "Perpetual", color: "#ADD8E6", glow: true, levels: 1 },
+          { name: "Undying", color: "#B0E0E6", glow: true, levels: 1 },
+          { name: "Immortal", color: "#AFEEEE", glow: true, levels: 1 },
+          { name: "Genesis", color: "#E0FFFF", glow: true, levels: 1 },
+          { name: "Omega", color: "#00CED1", glow: true, levels: 1 },
+          { name: "Alpha Omega", color: "#20B2AA", glow: true, levels: 1 },
+          { name: "Noble", color: "#4169E1", glow: true, levels: 1 },
+          { name: "Baron", color: "#6A5ACD", glow: true, levels: 1 },
+          { name: "Count", color: "#7B68EE", glow: true, levels: 1 },
+          { name: "Duke", color: "#9370DB", glow: true, levels: 1 },
+          { name: "Prince", color: "#BA55D3", glow: true, levels: 1 },
+          { name: "Royal", color: "#DA70D6", glow: true, levels: 1 },
+          { name: "Regal", color: "#EE82EE", glow: true, levels: 1 },
+          { name: "Majestic", color: "#DDA0DD", glow: true, levels: 1 },
+          { name: "Imperial", color: "#D8BFD8", glow: true, levels: 1 },
+          { name: "Sovereign", color: "#E6E6FA", glow: true, levels: 1 },
+          { name: "Crown", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Throne", color: "#B8860B", glow: true, levels: 1 },
+          { name: "Kingdom", color: "#DAA520", glow: true, levels: 1 },
+          { name: "Empire", color: "#CD853F", glow: true, levels: 1 },
+          { name: "Dynasty", color: "#D2691E", glow: true, levels: 1 },
+          { name: "Flame", color: "#FF4500", glow: true, levels: 1 },
+          { name: "Inferno", color: "#FF0000", glow: true, levels: 1 },
+          { name: "Blaze", color: "#FF6347", glow: true, levels: 1 },
+          { name: "Frost", color: "#00BFFF", glow: true, levels: 1 },
+          { name: "Blizzard", color: "#E0FFFF", glow: true, levels: 1 },
+          { name: "Glacier", color: "#F0FFFF", glow: true, levels: 1 },
+          { name: "Thunder", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Lightning", color: "#FFFF00", glow: true, levels: 1 },
+          { name: "Storm", color: "#4682B4", glow: true, levels: 1 },
+          { name: "Tempest", color: "#5F9EA0", glow: true, levels: 1 },
+          { name: "Hurricane", color: "#20B2AA", glow: true, levels: 1 },
+          { name: "Tsunami", color: "#008B8B", glow: true, levels: 1 },
+          { name: "Earthquake", color: "#8B4513", glow: true, levels: 1 },
+          { name: "Volcanic", color: "#FF4500", glow: true, levels: 1 },
+          { name: "Supernova", color: "#FF69B4", glow: true, levels: 1 },
+          { name: "Lunar", color: "#F5F5F5", glow: true, levels: 1 },
+          { name: "Solar", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Stellar", color: "#87CEEB", glow: true, levels: 1 },
+          { name: "Cosmic", color: "#191970", glow: true, levels: 1 },
+          { name: "Nebula", color: "#9932CC", glow: true, levels: 1 },
+          { name: "Galaxy", color: "#4B0082", glow: true, levels: 1 },
+          { name: "Universe", color: "#000080", glow: true, levels: 1 },
+          { name: "Multiverse", color: "#483D8B", glow: true, levels: 1 },
+          { name: "Dimension", color: "#6A5ACD", glow: true, levels: 1 },
+          { name: "Void", color: "#0D0D0D", glow: true, levels: 1 },
+          { name: "Singularity", color: "#000000", glow: true, levels: 1 },
+          { name: "Big Bang", color: "#FF4500", glow: true, levels: 1 },
+          { name: "Quasar", color: "#00CED1", glow: true, levels: 1 },
+          { name: "Pulsar", color: "#00FA9A", glow: true, levels: 1 },
+          { name: "Black Hole", color: "#0D0D0D", glow: true, levels: 1 },
+          { name: "Shuffle Master", color: "#32CD32", glow: true, levels: 1 },
+          { name: "Card Shark", color: "#4682B4", glow: true, levels: 1 },
+          { name: "Deck Lord", color: "#8B0000", glow: true, levels: 1 },
+          { name: "Hand of Fate", color: "#9400D3", glow: true, levels: 1 },
+          { name: "Fortune's Favor", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Luck's Champion", color: "#00FF00", glow: true, levels: 1 },
+          { name: "Card Whisperer", color: "#DA70D6", glow: true, levels: 1 },
+          { name: "Ace Hunter", color: "#FF0000", glow: true, levels: 1 },
+          { name: "King Slayer", color: "#B8860B", glow: true, levels: 1 },
+          { name: "Queen Maker", color: "#FF69B4", glow: true, levels: 1 },
+          { name: "Jack of All", color: "#00CED1", glow: true, levels: 1 },
+          { name: "Card Virtuoso", color: "#9370DB", glow: true, levels: 1 },
+          { name: "Deck Wizard", color: "#8A2BE2", glow: true, levels: 1 },
+          { name: "Hand Master", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Card God", color: "#FFFFFF", glow: true, levels: 1 },
+          { name: "Phoenix", color: "#FF4500", glow: true, levels: 1 },
+          { name: "Dragon", color: "#FF0000", glow: true, levels: 1 },
+          { name: "Unicorn", color: "#FF69B4", glow: true, levels: 1 },
+          { name: "Griffin", color: "#DAA520", glow: true, levels: 1 },
+          { name: "Pegasus", color: "#F0F8FF", glow: true, levels: 1 },
+          { name: "Hydra", color: "#006400", glow: true, levels: 1 },
+          { name: "Leviathan", color: "#000080", glow: true, levels: 1 },
+          { name: "Kraken", color: "#008B8B", glow: true, levels: 1 },
+          { name: "Behemoth", color: "#8B4513", glow: true, levels: 1 },
+          { name: "Titan", color: "#4682B4", glow: true, levels: 1 },
+          { name: "Colossus", color: "#696969", glow: true, levels: 1 },
+          { name: "Golem", color: "#A0522D", glow: true, levels: 1 },
+          { name: "Seraph", color: "#FFFACD", glow: true, levels: 1 },
+          { name: "Archangel", color: "#FFD700", glow: true, levels: 1 },
+          { name: "Deity", color: "#FFFFFF", glow: true, levels: 1 },
+          { name: "Transcendent", color: "#E6E6FA", glow: true, levels: 1 },
+          { name: "Ascended", color: "#DDA0DD", glow: true, levels: 1 },
+          { name: "Exalted", color: "#DA70D6", glow: true, levels: 1 },
+          { name: "Glorified", color: "#EE82EE", glow: true, levels: 1 },
+          { name: "Apex", color: "#FF00FF", glow: true, levels: 1 },
+          { name: "Zenith", color: "#BA55D3", glow: true, levels: 1 },
+          { name: "Pinnacle", color: "#9932CC", glow: true, levels: 1 },
+          { name: "Ultimate", color: "#8B008B", glow: true, levels: 1 },
+          { name: "Absolute", color: "#800080", glow: true, levels: 1 },
           {
-            name: "Celestial",
+            name: "THE ONE",
             color: "#FFD700",
             glow: true,
             levels: 1,
@@ -4843,32 +5242,24 @@
           let level = 0;
           let baseCost = 10;
           let baseBonus = 5;
-          const romanNumerals = ["I", "II", "III", "IV"];
 
           for (const tier of this.tiers) {
-            for (let i = 0; i < tier.levels; i++) {
-              const levelName =
-                tier.levels === 1
-                  ? tier.name
-                  : tier.name + " " + romanNumerals[i];
-              const cost =
-                level === 0 ? 0 : Math.floor(baseCost * Math.pow(1.08, level));
-              const bonus =
-                level === 0 ? 0 : Math.floor(baseBonus * Math.pow(1.05, level));
+            const cost =
+              level === 0 ? 0 : Math.floor(baseCost * Math.pow(1.12, level));
+            const bonus =
+              level === 0 ? 0 : Math.floor(baseBonus * Math.pow(1.08, level));
 
-              this.upgrades.push({
-                name: levelName,
-                color: tier.color,
-                glow: tier.glow,
-                rainbow: tier.rainbow || false,
-                cost: cost,
-                bonus: bonus,
-              });
-              level++;
-            }
+            this.upgrades.push({
+              name: tier.name,
+              color: tier.color,
+              glow: tier.glow,
+              rainbow: tier.rainbow || false,
+              cost: cost,
+              bonus: bonus,
+            });
+            level++;
           }
         },
-
         getUpgrade(level) {
           if (!this.upgrades) this.init();
           return this.upgrades[Math.min(level, this.upgrades.length - 1)];
@@ -4992,22 +5383,33 @@
         const cards = ["9", "10", "J", "Q", "K", "A"];
         cards.forEach((card) => {
           const level = PlayerAccount.cardUpgrades[card] || 0;
-          const upgrade = CardUpgradeSystem.getUpgrade(level);
-          const nextCost = CardUpgradeSystem.getNextUpgradeCost(card);
+          const tier = CardMarket.getTier(level);
+          const currentBonus = CardMarket.getCurrentBonus(card, level);
 
           // Update tier name
-          document.getElementById(`cardTier${card}`).textContent = upgrade.name;
+          document.getElementById(`cardTier${card}`).textContent = tier.name;
 
-          // Update bonus
+          // Update bonus (aktualizowany na żywo z rynkiem)
           document.getElementById(`cardBonus${card}`).textContent =
-            upgrade.bonus;
+            currentBonus;
 
-          // Update cost
-          const costEl = document.getElementById(`cardCost${card}`);
-          if (nextCost !== null) {
-            costEl.textContent = `Cost: ${nextCost} LUP`;
-          } else {
-            costEl.textContent = "MAX LEVEL";
+          // Update market bonus display
+          const marketBonusEl = document.getElementById(
+            `cardMarketBonus${card}`
+          );
+          if (marketBonusEl) {
+            const change = parseFloat(
+              CardMarket.getPriceChange(card, level) || 0
+            );
+            if (change !== 0) {
+              marketBonusEl.innerHTML = `<span style="color:${
+                change >= 0 ? "#22c55e" : "#ef4444"
+              };font-size:0.8rem;">(${change >= 0 ? "+" : ""}${change.toFixed(
+                1
+              )}% rynek)</span>`;
+            } else {
+              marketBonusEl.innerHTML = "";
+            }
           }
 
           // Update card styling
@@ -5015,10 +5417,10 @@
             `#upgradeCard${card} .upgrade-card-front`
           );
           cardFront.className = "upgrade-card-front";
-          cardFront.style.borderColor = upgrade.color;
-          cardFront.style.color = upgrade.color;
+          cardFront.style.borderColor = tier.color;
+          cardFront.style.color = tier.color;
 
-          // Set tier class for styling
+          // Set tier class for styling based on level
           if (level >= 1 && level <= 3) {
             cardFront.classList.add("tier-bronze");
           } else if (level >= 4 && level <= 6) {
@@ -7929,6 +8331,3724 @@
           console.log("Could not check URL params:", e);
         }
       });
+
+      // ==================== PACK SHOP SYSTEM ====================
+      const PackShop = {
+        packs: [],
+        lastReset: 0,
+        resetInterval: 5 * 60 * 1000, // 5 minut
+        collection: [], // Kolekcja kart z paczek
+
+        packTypes: [
+          {
+            id: "paper",
+            name: "Papierowa Paczka",
+            nameEn: "Paper Pack",
+            price: 30,
+            cards: 3,
+            minTier: 1,
+            maxTier: 5,
+            icon: "📄",
+          },
+          {
+            id: "cardboard",
+            name: "Kartonowa Paczka",
+            nameEn: "Cardboard Pack",
+            price: 60,
+            cards: 3,
+            minTier: 2,
+            maxTier: 8,
+            icon: "📦",
+          },
+          {
+            id: "bronze",
+            name: "Brązowa Paczka",
+            nameEn: "Bronze Pack",
+            price: 150,
+            cards: 4,
+            minTier: 5,
+            maxTier: 15,
+            icon: "🥉",
+          },
+          {
+            id: "silver",
+            name: "Srebrna Paczka",
+            nameEn: "Silver Pack",
+            price: 400,
+            cards: 4,
+            minTier: 8,
+            maxTier: 25,
+            icon: "🥈",
+          },
+          {
+            id: "gold",
+            name: "Złota Paczka",
+            nameEn: "Gold Pack",
+            price: 1000,
+            cards: 5,
+            minTier: 10,
+            maxTier: 40,
+            icon: "🥇",
+          },
+          {
+            id: "platinum",
+            name: "Platynowa Paczka",
+            nameEn: "Platinum Pack",
+            price: 2500,
+            cards: 5,
+            minTier: 12,
+            maxTier: 55,
+            icon: "💎",
+          },
+          {
+            id: "diamond",
+            name: "Diamentowa Paczka",
+            nameEn: "Diamond Pack",
+            price: 5000,
+            cards: 5,
+            minTier: 15,
+            maxTier: 70,
+            icon: "💠",
+          },
+          {
+            id: "royal",
+            name: "Królewska Paczka",
+            nameEn: "Royal Pack",
+            price: 10000,
+            cards: 6,
+            minTier: 25,
+            maxTier: 90,
+            icon: "👑",
+          },
+          {
+            id: "cosmic",
+            name: "Kosmiczna Paczka",
+            nameEn: "Cosmic Pack",
+            price: 25000,
+            cards: 6,
+            minTier: 40,
+            maxTier: 120,
+            icon: "🌌",
+          },
+          {
+            id: "mythic",
+            name: "Mityczna Paczka",
+            nameEn: "Mythic Pack",
+            price: 50000,
+            cards: 6,
+            minTier: 60,
+            maxTier: 150,
+            icon: "🐉",
+          },
+          {
+            id: "legendary",
+            name: "Legendarna Paczka",
+            nameEn: "Legendary Pack",
+            price: 100000,
+            cards: 5,
+            minTier: 80,
+            maxTier: 180,
+            icon: "⭐",
+          },
+          {
+            id: "ultimate",
+            name: "Ostateczna Paczka",
+            nameEn: "Ultimate Pack",
+            price: 250000,
+            cards: 5,
+            minTier: 100,
+            maxTier: 195,
+            icon: "🏆",
+          },
+          {
+            id: "the-one",
+            name: "JEDYNA Paczka",
+            nameEn: "THE ONE Pack",
+            price: 1000000,
+            cards: 3,
+            minTier: 150,
+            maxTier: 200,
+            icon: "☀️",
+          },
+          {
+            id: "mega",
+            name: "Mega Paczka",
+            nameEn: "Mega Pack",
+            price: 3000,
+            cards: 8,
+            minTier: 8,
+            maxTier: 50,
+            icon: "📦",
+          },
+          {
+            id: "jumbo",
+            name: "Jumbo Paczka",
+            nameEn: "Jumbo Pack",
+            price: 7500,
+            cards: 10,
+            minTier: 10,
+            maxTier: 60,
+            icon: "🎰",
+          },
+        ],
+
+        init() {
+          this.load();
+          if (
+            Date.now() - this.lastReset > this.resetInterval ||
+            this.packs.length === 0
+          ) {
+            this.generatePacks();
+          }
+        },
+
+        load() {
+          try {
+            const saved = localStorage.getItem("4cards-packshop");
+            if (saved) {
+              const data = JSON.parse(saved);
+              this.packs = data.packs || [];
+              this.lastReset = data.lastReset || 0;
+              this.collection = data.collection || [];
+
+              // Sprawdź czy paczki mają poprawne dane - jeśli nie, zregeneruj
+              if (this.packs.length > 0 && !this.packs[0].id) {
+                console.log("Resetting corrupted packs");
+                this.packs = [];
+                this.lastReset = 0;
+              }
+            }
+          } catch (e) {
+            console.log("PackShop load error:", e);
+          }
+        },
+
+        save() {
+          try {
+            localStorage.setItem(
+              "4cards-packshop",
+              JSON.stringify({
+                packs: this.packs,
+                lastReset: this.lastReset,
+                collection: this.collection,
+              })
+            );
+          } catch (e) {
+            console.log("PackShop save error:", e);
+          }
+        },
+
+        generatePacks() {
+          this.packs = [];
+          this.lastReset = Date.now();
+
+          for (let i = 0; i < 15; i++) {
+            const packType =
+              this.packTypes[Math.floor(Math.random() * this.packTypes.length)];
+            this.packs.push({
+              ...packType,
+              uid: Date.now() + "_" + i,
+            });
+          }
+          this.save();
+        },
+
+        buyPack(packUid) {
+          const packIndex = this.packs.findIndex((p) => p.uid === packUid);
+          if (packIndex === -1) return null;
+
+          const pack = this.packs[packIndex];
+          if (PlayerAccount.money < pack.price) {
+            const msg =
+              currentLang === "pl"
+                ? "Nie masz wystarczająco LUP!"
+                : "Not enough LUP!";
+            alert(msg);
+            return null;
+          }
+
+          PlayerAccount.money -= pack.price;
+          PlayerAccount.save();
+
+          this.packs.splice(packIndex, 1);
+
+          // Generuj karty
+          const cards = [];
+          const cardValues = ["9", "10", "J", "Q", "K", "A"];
+          const suits = ["♠", "♥", "♦", "♣"];
+
+          for (let i = 0; i < pack.cards; i++) {
+            const tierLevel =
+              Math.floor(Math.random() * (pack.maxTier - pack.minTier + 1)) +
+              pack.minTier;
+            const tier = CardUpgradeSystem.getUpgrade(
+              Math.min(tierLevel, CardUpgradeSystem.upgrades.length - 1)
+            );
+            const value =
+              cardValues[Math.floor(Math.random() * cardValues.length)];
+            const suit = suits[Math.floor(Math.random() * suits.length)];
+
+            // AUTO-UPGRADE: Sprawdź czy ta karta jest lepsza niż aktualna
+            const currentLevel = PlayerAccount.cardUpgrades[value] || 0;
+            const wasUpgraded = tierLevel > currentLevel;
+
+            // Oblicz aktualny % rynkowy dla tej karty (jeśli CardMarket istnieje)
+            let marketPercent = 0;
+            if (
+              wasUpgraded &&
+              typeof CardMarket !== "undefined" &&
+              CardMarket.getPriceChange
+            ) {
+              marketPercent = parseFloat(
+                CardMarket.getPriceChange(value, tierLevel) || 0
+              );
+            }
+
+            if (wasUpgraded) {
+              // Automatycznie ulepsz kartę!
+              PlayerAccount.cardUpgrades[value] = tierLevel;
+              // Zapisz bonus rynkowy z momentu ulepszenia
+              PlayerAccount.purchaseBonus[value] = marketPercent;
+              PlayerAccount.save();
+            }
+
+            const card = {
+              id: Date.now() + "_" + Math.random().toString(36).substr(2, 9),
+              value: value,
+              suit: suit,
+              tier: tier.name,
+              tierLevel: tierLevel,
+              color: tier.color,
+              bonus: tier.bonus,
+              glow: tier.glow,
+              rainbow: tier.rainbow || false,
+              obtained: Date.now(),
+              wasUpgraded: wasUpgraded, // Oznacz że spowodowała upgrade
+              marketPercent: marketPercent, // Bonus rynkowy
+            };
+
+            cards.push(card);
+            this.collection.push(card); // Dodaj do kolekcji
+          }
+
+          this.save(); // Zapisz wszystko
+          return cards;
+        },
+
+        getCollectionStats() {
+          const total = this.collection.length;
+          const byTier = {};
+          this.collection.forEach((card) => {
+            byTier[card.tier] = (byTier[card.tier] || 0) + 1;
+          });
+          return { total, byTier };
+        },
+      };
+
+      // Inicjalizuj PackShop przy starcie
+      PackShop.init();
+
+      function openPackShop() {
+        PackShop.init();
+
+        // Sprawdź reset
+        if (Date.now() - PackShop.lastReset > PackShop.resetInterval) {
+          PackShop.generatePacks();
+        }
+
+        document.getElementById("menuScreen").style.display = "none";
+        document.getElementById("packShopScreen").classList.add("active");
+        renderPackShop();
+        startShopTimer();
+      }
+
+      function closePackShop() {
+        document.getElementById("packShopScreen").classList.remove("active");
+        document.getElementById("menuScreen").style.display = "flex";
+        if (shopTimerInterval) {
+          clearInterval(shopTimerInterval);
+          shopTimerInterval = null;
+        }
+        updateAccountDisplay();
+      }
+
+      let shopTimerInterval = null;
+      function startShopTimer() {
+        if (shopTimerInterval) clearInterval(shopTimerInterval);
+
+        shopTimerInterval = setInterval(() => {
+          const elapsed = Date.now() - PackShop.lastReset;
+          const remaining = Math.max(0, PackShop.resetInterval - elapsed);
+
+          if (remaining === 0) {
+            PackShop.generatePacks();
+            renderPackShop();
+          }
+
+          const min = Math.floor(remaining / 60000);
+          const sec = Math.floor((remaining % 60000) / 1000);
+          const timerEl = document.getElementById("shopTimer");
+          if (timerEl)
+            timerEl.textContent = min + ":" + sec.toString().padStart(2, "0");
+        }, 1000);
+      }
+
+      function renderPackShop() {
+        const balanceEl = document.getElementById("shopBalance");
+        if (balanceEl)
+          balanceEl.textContent = PlayerAccount.money.toLocaleString();
+
+        const collectionCountEl = document.getElementById("collectionCount");
+        if (collectionCountEl)
+          collectionCountEl.textContent = PackShop.collection.length;
+
+        const grid = document.getElementById("packGrid");
+        if (!grid) return;
+
+        grid.innerHTML = "";
+
+        if (PackShop.packs.length === 0) {
+          grid.innerHTML =
+            '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--gold);">' +
+            (currentLang === "pl"
+              ? "Brak paczek! Poczekaj na reset."
+              : "No packs! Wait for reset.") +
+            "</div>";
+          return;
+        }
+
+        PackShop.packs.forEach((pack) => {
+          const div = document.createElement("div");
+          div.className = "pack-item";
+
+          // Znajdź oryginalny typ paczki żeby mieć nazwę
+          const originalPack =
+            PackShop.packTypes.find((p) => p.id === pack.id) || pack;
+          const packName =
+            currentLang === "pl"
+              ? originalPack.name || pack.id
+              : originalPack.nameEn || pack.id;
+          const cardsText = currentLang === "pl" ? "kart" : "cards";
+          const tierText = currentLang === "pl" ? "Poziom" : "Tier";
+
+          div.innerHTML = `
+            <div class="pack-icon">${pack.icon}</div>
+            <div class="pack-name">${packName}</div>
+            <div class="pack-info">${pack.cards} ${cardsText} • ${tierText} ${
+            pack.minTier
+          }-${pack.maxTier}</div>
+            <div class="pack-price">${pack.price.toLocaleString()} LUP</div>
+          `;
+          div.onclick = () => buyAndOpenPack(pack.uid);
+          grid.appendChild(div);
+        });
+      }
+
+      function buyAndOpenPack(packUid) {
+        const cards = PackShop.buyPack(packUid);
+        if (!cards) return;
+
+        renderPackShop();
+        showPackOpening(cards);
+      }
+
+      function showPackOpening(cards) {
+        const overlay = document.getElementById("packOpeningOverlay");
+        const container = document.getElementById("packCardsContainer");
+
+        overlay.classList.add("active");
+        container.innerHTML = "";
+        document.getElementById("closePackBtn").style.display = "none";
+
+        // Track upgrades for notifications
+        const upgrades = cards.filter((c) => c.wasUpgraded);
+
+        cards.forEach((card, i) => {
+          setTimeout(() => {
+            const cardEl = document.createElement("div");
+            cardEl.className =
+              "pack-card" +
+              (card.glow ? " glow" : "") +
+              (card.rainbow ? " rainbow" : "");
+            cardEl.style.borderColor = card.color;
+            cardEl.style.setProperty("--card-color", card.color);
+            if (card.glow) {
+              cardEl.style.boxShadow = "0 0 25px " + card.color;
+            }
+            cardEl.innerHTML = `
+              ${
+                card.wasUpgraded
+                  ? '<div class="pack-card-upgraded">⬆️ ULEPSZONO!</div>'
+                  : ""
+              }
+              <div class="pack-card-value" style="color:${card.color}">${
+              card.value
+            }</div>
+              <div class="pack-card-suit" style="color: ${
+                card.suit === "♥" || card.suit === "♦" ? "#dc2626" : "#1f2937"
+              }">${card.suit}</div>
+              <div class="pack-card-tier" style="color:${card.color}">${
+              card.tier
+            }</div>
+              <div class="pack-card-bonus">+${card.bonus} pkt</div>
+            `;
+            container.appendChild(cardEl);
+            SoundManager.play("card");
+          }, i * 400);
+        });
+
+        setTimeout(() => {
+          document.getElementById("closePackBtn").style.display = "block";
+
+          // Show upgrade notifications
+          upgrades.forEach((card, i) => {
+            setTimeout(() => {
+              showUpgradeNotification(
+                card.value,
+                card.tierLevel,
+                "pack",
+                card.marketPercent || 0
+              );
+            }, i * 600);
+          });
+        }, cards.length * 400 + 500);
+      }
+
+      // Show upgrade notification
+      function showUpgradeNotification(
+        cardValue,
+        tierLevel,
+        type,
+        marketPercent = 0,
+        isBlack = false
+      ) {
+        const tier = CardMarket.getTier(tierLevel);
+        const bonusText =
+          marketPercent !== 0
+            ? `<p style="color:${
+                marketPercent >= 0 ? "#22c55e" : "#ef4444"
+              }">Bonus rynkowy: ${
+                marketPercent >= 0 ? "+" : ""
+              }${marketPercent.toFixed(2)}%</p>`
+            : "";
+
+        const notification = document.createElement("div");
+        notification.className = "upgrade-notification";
+
+        if (isBlack) {
+          notification.style.background =
+            "linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(26,26,46,0.98) 100%)";
+          notification.style.border = "3px solid #ffd700";
+          notification.style.boxShadow = "0 0 50px rgba(255,215,0,0.5)";
+          notification.innerHTML = `
+            <h3 style="color:#ffd700;text-shadow:0 0 20px #ffd700;">⚡ KARTA CZARNA! ⚡</h3>
+            <div class="card-preview">
+              <span style="font-size: 2rem; color: #fff; text-shadow: 0 0 20px #fff;">${cardValue}</span>
+              <span style="color:#ffd700">→</span>
+              <span style="color: #ffd700; text-shadow: 0 0 15px #ffd700;">CZARNA</span>
+            </div>
+            <p style="color:#ffd700;font-size:1.2rem;">⚡ AUTOMATYCZNIE WYGRYWASZ RUNDY! ⚡</p>
+          `;
+        } else {
+          notification.innerHTML = `
+            <h3>🎉 ${type === "pack" ? "AUTO-ULEPSZENIE!" : "ZAKUPIONO!"}</h3>
+            <div class="card-preview">
+              <span style="font-size: 2rem; color: ${
+                tier.color
+              }">${cardValue}</span>
+              <span>→</span>
+              <span style="color: ${tier.color}">${tier.name}</span>
+            </div>
+            <p>+${tier.bonus} punktów bazowych!</p>
+            ${bonusText}
+          `;
+        }
+
+        document.body.appendChild(notification);
+
+        setTimeout(
+          () => {
+            notification.style.opacity = "0";
+            notification.style.transform = "translateX(-50%) scale(0.8)";
+            notification.style.transition = "all 0.3s ease-out";
+            setTimeout(() => notification.remove(), 300);
+          },
+          isBlack ? 4000 : 2500
+        );
+      }
+
+      // Show sell notification
+      function showSellNotification(cardValue, fromTier, toTier, sellPrice) {
+        const fromTierData = CardMarket.getTier(fromTier);
+        const toTierData = CardMarket.getTier(toTier);
+
+        const notification = document.createElement("div");
+        notification.className = "upgrade-notification";
+        notification.style.background =
+          "linear-gradient(135deg, rgba(239,68,68,0.95) 0%, rgba(185,28,28,0.95) 100%)";
+        notification.innerHTML = `
+          <h3>💰 SPRZEDANO!</h3>
+          <div class="card-preview">
+            <span style="font-size: 1.5rem; color: ${
+              fromTierData.color
+            }">${cardValue} ${fromTierData.name}</span>
+            <span>→</span>
+            <span style="color: ${toTierData.color}">${toTierData.name}</span>
+          </div>
+          <p style="font-size:1.3rem;color:var(--gold)">+${sellPrice.toLocaleString()} LUP</p>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.style.opacity = "0";
+          notification.style.transform = "translateX(-50%) scale(0.8)";
+          notification.style.transition = "all 0.3s ease-out";
+          setTimeout(() => notification.remove(), 300);
+        }, 2500);
+      }
+
+      function closePackOpening() {
+        document
+          .getElementById("packOpeningOverlay")
+          .classList.remove("active");
+        document.getElementById("closePackBtn").style.display = "none";
+        renderPackShop();
+      }
+
+      // ==================== KOLEKCJA KART ====================
+      function openCollectionFromMenu() {
+        PackShop.init(); // Upewnij się że kolekcja jest załadowana
+        document.getElementById("menuScreen").style.display = "none";
+        document.getElementById("collectionScreen").classList.add("active");
+        renderCollection();
+      }
+
+      function openCollection() {
+        // Zapamiętaj że otwarto ze sklepu
+        document.getElementById("packShopScreen").classList.add("was-open");
+        document.getElementById("packShopScreen").classList.remove("active");
+        document.getElementById("collectionScreen").classList.add("active");
+        renderCollection();
+      }
+
+      function closeCollection() {
+        document.getElementById("collectionScreen").classList.remove("active");
+        // Wróć do odpowiedniego ekranu
+        if (
+          document
+            .getElementById("packShopScreen")
+            .classList.contains("was-open")
+        ) {
+          document
+            .getElementById("packShopScreen")
+            .classList.remove("was-open");
+          document.getElementById("packShopScreen").classList.add("active");
+        } else {
+          document.getElementById("menuScreen").style.display = "flex";
+        }
+      }
+
+      function renderCollection(filter = "all") {
+        const grid = document.getElementById("collectionGrid");
+        if (!grid) return;
+
+        grid.innerHTML = "";
+
+        // Najpierw dodaj 6 podstawowych kart (z ich aktualnymi ulepszeniami)
+        const baseCards = [];
+        const cardValues = ["9", "10", "J", "Q", "K", "A"];
+        const suits = ["♠", "♥", "♦", "♣"];
+
+        cardValues.forEach((value) => {
+          const level = PlayerAccount.cardUpgrades[value] || 0;
+          const tier = CardUpgradeSystem.getUpgrade(level);
+          // Każda wartość karty ma 4 kolory
+          suits.forEach((suit) => {
+            baseCards.push({
+              id: "base_" + value + "_" + suit,
+              value: value,
+              suit: suit,
+              tier: tier.name,
+              tierLevel: level,
+              color: tier.color,
+              bonus: tier.bonus,
+              glow: tier.glow,
+              rainbow: tier.rainbow || false,
+              isBaseCard: true, // Oznacz jako kartę podstawową
+            });
+          });
+        });
+
+        // Połącz podstawowe karty z kolekcją z paczek
+        let cards = [...baseCards, ...PackShop.collection];
+
+        // Sortuj od najlepszych (najwyższy tierLevel)
+        cards.sort((a, b) => b.tierLevel - a.tierLevel);
+
+        // Filtruj
+        if (filter !== "all") {
+          if (filter === "base") {
+            cards = cards.filter((c) => c.isBaseCard);
+          } else if (filter === "special") {
+            cards = cards.filter((c) => c.tierLevel >= 50 && !c.isBaseCard);
+          } else if (filter === "legendary") {
+            cards = cards.filter((c) => c.tierLevel >= 100);
+          } else if (filter === "common") {
+            cards = cards.filter((c) => c.tierLevel < 20);
+          } else if (filter === "rare") {
+            cards = cards.filter((c) => c.tierLevel >= 20 && c.tierLevel < 50);
+          } else if (filter === "packs") {
+            cards = cards.filter((c) => !c.isBaseCard);
+          }
+        }
+
+        // Aktualizuj przyciski filtrów
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.remove("active");
+          if (btn.dataset.filter === filter) btn.classList.add("active");
+        });
+
+        // Aktualizuj statystyki
+        const statsEl = document.getElementById("collectionStats");
+        if (statsEl) {
+          const totalPacks = PackShop.collection.length;
+          const legendary = PackShop.collection.filter(
+            (c) => c.tierLevel >= 100
+          ).length;
+          const special = PackShop.collection.filter(
+            (c) => c.tierLevel >= 50 && c.tierLevel < 100
+          ).length;
+
+          if (currentLang === "pl") {
+            statsEl.innerHTML = `Podstawowe: <b>24</b> | Z paczek: <b>${totalPacks}</b> | Specjalne: <b>${special}</b> | Legendarne: <b>${legendary}</b>`;
+          } else {
+            statsEl.innerHTML = `Base: <b>24</b> | From packs: <b>${totalPacks}</b> | Special: <b>${special}</b> | Legendary: <b>${legendary}</b>`;
+          }
+        }
+
+        if (cards.length === 0) {
+          const emptyMsg =
+            currentLang === "pl"
+              ? "Brak kart w tej kategorii"
+              : "No cards in this category";
+          grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gold);opacity:0.6;">${emptyMsg}</div>`;
+          return;
+        }
+
+        cards.forEach((card) => {
+          const cardEl = document.createElement("div");
+          cardEl.className =
+            "collection-card" +
+            (card.glow ? " glow" : "") +
+            (card.rainbow ? " rainbow" : "") +
+            (card.isBaseCard ? " base-card" : "");
+          cardEl.style.borderColor = card.color;
+          if (card.glow) {
+            cardEl.style.boxShadow = "0 0 15px " + card.color;
+          }
+          cardEl.innerHTML = `
+            <div class="collection-card-value" style="color:${card.color}">${
+            card.value
+          }</div>
+            <div class="collection-card-suit" style="color: ${
+              card.suit === "♥" || card.suit === "♦" ? "#dc2626" : "#1f2937"
+            }">${card.suit}</div>
+            <div class="collection-card-tier" style="color:${card.color}">${
+            card.tier
+          }</div>
+            <div class="collection-card-bonus">+${card.bonus}</div>
+          `;
+          grid.appendChild(cardEl);
+        });
+      }
+
+      function filterCollection(filter) {
+        renderCollection(filter);
+      }
+
+      // ==================== CARD MARKET SYSTEM ====================
+      const CardMarket = {
+        priceHistory: {},
+        lastUpdate: 0,
+        updateInterval: 60 * 1000,
+        demand: {},
+        microVariation: {},
+        recentPrices: {},
+        lastSimulationTime: 0,
+        globalUpdateInterval: null,
+
+        // Ceny bazowe dla kart (niskie, rozsądne)
+        basePrices: {
+          9: 10,
+          10: 15,
+          J: 25,
+          Q: 40,
+          K: 60,
+          A: 100,
+        },
+
+        // 20 tierów + BLACK
+        marketTiers: [
+          { nameKey: "tierBase", color: "#9ca3af", bonus: 0 },
+          { nameKey: "tierCommon", color: "#a8a8a8", bonus: 2 },
+          { nameKey: "tierCommonPlus", color: "#b8b8b8", bonus: 4 },
+          { nameKey: "tierUncommon", color: "#22c55e", bonus: 6 },
+          { nameKey: "tierUncommonPlus", color: "#16a34a", bonus: 9 },
+          { nameKey: "tierRare", color: "#3b82f6", bonus: 12 },
+          { nameKey: "tierRarePlus", color: "#2563eb", bonus: 16 },
+          { nameKey: "tierEpic", color: "#a855f7", bonus: 20 },
+          { nameKey: "tierEpicPlus", color: "#9333ea", bonus: 25 },
+          { nameKey: "tierLegendary", color: "#f59e0b", bonus: 30 },
+          { nameKey: "tierLegendaryPlus", color: "#d97706", bonus: 36 },
+          { nameKey: "tierMythic", color: "#ef4444", bonus: 42 },
+          { nameKey: "tierMythicPlus", color: "#dc2626", bonus: 50 },
+          { nameKey: "tierDivine", color: "#ec4899", bonus: 60 },
+          { nameKey: "tierDivinePlus", color: "#db2777", bonus: 72 },
+          { nameKey: "tierCelestial", color: "#06b6d4", bonus: 85 },
+          { nameKey: "tierCelestialPlus", color: "#0891b2", bonus: 100 },
+          { nameKey: "tierTranscendent", color: "#8b5cf6", bonus: 120 },
+          { nameKey: "tierTranscendentPlus", color: "#7c3aed", bonus: 145 },
+          { nameKey: "tierUltimate", color: "#fbbf24", bonus: 175, glow: true },
+          {
+            nameKey: "tierBlack",
+            color: "#000000",
+            bonus: 999,
+            glow: true,
+            isBlack: true,
+            autoWin: true,
+          },
+        ],
+
+        getTier(tierLevel) {
+          const tier =
+            this.marketTiers[Math.min(tierLevel, this.marketTiers.length - 1)];
+          return {
+            ...tier,
+            name: t(tier.nameKey),
+          };
+        },
+
+        // Oblicz aktualny bonus punktowy (bazowy + % rynkowy w czasie rzeczywistym)
+        getCurrentBonus(cardValue, tierLevel) {
+          const tier = this.getTier(tierLevel);
+          const baseBonus = tier.bonus;
+          const change = parseFloat(
+            this.getPriceChange(cardValue, tierLevel) || 0
+          );
+          // Bonus zmienia się z rynkiem - może być ujemny!
+          const calculated = baseBonus * (1 + change / 100);
+          // Zaokrąglij prawidłowo (nie floor który źle działa dla ujemnych)
+          return Math.max(0, Math.round(calculated));
+        },
+
+        init() {
+          this.load();
+
+          const cardValues = ["9", "10", "J", "Q", "K", "A"];
+          const maxTier = this.marketTiers.length;
+
+          // Inicjalizuj demand dla wszystkich tierów
+          cardValues.forEach((value) => {
+            if (!this.demand[value]) this.demand[value] = {};
+            for (let tier = 0; tier < maxTier; tier++) {
+              if (this.demand[value][tier] === undefined) {
+                this.demand[value][tier] = 1 + (Math.random() * 0.4 - 0.2);
+              }
+            }
+          });
+
+          // Inicjalizuj historię cen
+          cardValues.forEach((value) => {
+            if (!this.priceHistory[value]) this.priceHistory[value] = {};
+            for (let tier = 0; tier < maxTier; tier++) {
+              if (
+                !this.priceHistory[value][tier] ||
+                this.priceHistory[value][tier].length === 0
+              ) {
+                this.priceHistory[value][tier] = this.generateInitialHistory(
+                  value,
+                  tier
+                );
+              }
+            }
+          });
+
+          // Symuluj brakujący czas
+          this.simulateMissedTime();
+
+          this.save();
+          this.startSimulation();
+          this.startGlobalUpdates();
+          this.setupVisibilityHandler();
+        },
+
+        // Obsługa gdy strona wraca z tła
+        setupVisibilityHandler() {
+          document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+              this.simulateMissedTime();
+              this.save();
+            } else {
+              // Zapisz czas gdy wychodzimy
+              this.lastSimulationTime = Date.now();
+              this.save();
+            }
+          });
+        },
+
+        // Globalne aktualizacje wszystkich danych co 500ms
+        startGlobalUpdates() {
+          if (this.globalUpdateInterval)
+            clearInterval(this.globalUpdateInterval);
+
+          this.globalUpdateInterval = setInterval(() => {
+            const cardValues = ["9", "10", "J", "Q", "K", "A"];
+            const maxTier = this.marketTiers.length;
+
+            // Aktualizuj micro variation dla wszystkich kart/tierów
+            cardValues.forEach((value) => {
+              for (let tier = 0; tier < maxTier; tier++) {
+                this.addMicroVariation(value, tier);
+              }
+            });
+
+            // Zapisuj co 10 sekund
+            if (Date.now() % 10000 < 500) {
+              this.save();
+            }
+          }, 500);
+        },
+
+        simulateMissedTime() {
+          const now = Date.now();
+          const lastTime = this.lastSimulationTime || now;
+          const missedMinutes = Math.floor((now - lastTime) / (60 * 1000));
+
+          if (missedMinutes > 0) {
+            console.log(
+              `Symulowanie ${missedMinutes} minut danych rynkowych...`
+            );
+
+            const cardValues = ["9", "10", "J", "Q", "K", "A"];
+            const maxTier = this.marketTiers.length;
+
+            for (let m = 0; m < Math.min(missedMinutes, 1440); m++) {
+              const simulatedTime = new Date(lastTime + (m + 1) * 60 * 1000);
+
+              cardValues.forEach((value) => {
+                for (let tier = 0; tier < maxTier; tier++) {
+                  const currentDemand = this.demand[value][tier] || 1;
+                  const change = Math.random() * 0.06 - 0.03;
+                  this.demand[value][tier] = Math.max(
+                    0.5,
+                    Math.min(2, currentDemand + change)
+                  );
+
+                  if (simulatedTime.getMinutes() === 0) {
+                    const price =
+                      this.calculateBasePrice(value, tier) *
+                      this.demand[value][tier];
+
+                    if (!this.priceHistory[value][tier]) {
+                      this.priceHistory[value][tier] = [];
+                    }
+
+                    this.priceHistory[value][tier].push({
+                      time: simulatedTime.toISOString(),
+                      price: Math.floor(price),
+                    });
+
+                    if (this.priceHistory[value][tier].length > 24) {
+                      this.priceHistory[value][tier].shift();
+                    }
+                  }
+                }
+              });
+            }
+          }
+
+          this.lastSimulationTime = now;
+        },
+
+        generateInitialHistory(cardValue, tierLevel) {
+          const history = [];
+          const now = new Date();
+          const basePrice = this.calculateBasePrice(cardValue, tierLevel);
+
+          let currentPrice = basePrice;
+          let trend = (Math.random() - 0.5) * 0.1;
+
+          for (let i = 23; i >= 0; i--) {
+            const time = new Date(now.getTime() - i * 60 * 60 * 1000);
+
+            if (Math.random() < 0.2) {
+              trend = (Math.random() - 0.5) * 0.1;
+            }
+
+            const variation = trend + (Math.random() - 0.5) * 0.05;
+            currentPrice = currentPrice * (1 + variation);
+            currentPrice = Math.max(
+              basePrice * 0.5,
+              Math.min(basePrice * 2, currentPrice)
+            );
+
+            history.push({
+              time: time.toISOString(),
+              price: Math.floor(currentPrice),
+            });
+          }
+          return history;
+        },
+
+        calculateBasePrice(cardValue, tierLevel) {
+          const basePrice = this.basePrices[cardValue] || 10;
+          // Wolniejszy wzrost ceny z tierem
+          const tierMultiplier = Math.pow(1.35, tierLevel);
+          return Math.floor(basePrice * tierMultiplier);
+        },
+
+        getCardPrice(cardValue, tierLevel) {
+          const basePrice = this.calculateBasePrice(cardValue, tierLevel);
+          const demand = this.demand[cardValue]?.[tierLevel] || 1;
+          const micro = this.microVariation[cardValue]?.[tierLevel] || 0;
+          return Math.floor(basePrice * demand * (1 + micro));
+        },
+
+        getPriceChange(cardValue, tierLevel) {
+          const history = this.priceHistory[cardValue]?.[tierLevel];
+          if (!history || history.length < 2) return "0.00";
+
+          const current = this.getCardPrice(cardValue, tierLevel);
+          const hourAgo = history[Math.max(0, history.length - 2)].price;
+
+          if (hourAgo === 0) return "0.00";
+
+          const changePercent = ((current - hourAgo) / hourAgo) * 100;
+          return changePercent.toFixed(2);
+        },
+
+        addMicroVariation(cardValue, tierLevel) {
+          if (!this.microVariation[cardValue])
+            this.microVariation[cardValue] = {};
+
+          const current = this.microVariation[cardValue][tierLevel] || 0;
+          const change = (Math.random() - 0.5) * 0.008;
+          this.microVariation[cardValue][tierLevel] = Math.max(
+            -0.05,
+            Math.min(0.05, current + change)
+          );
+
+          const price = this.getCardPrice(cardValue, tierLevel);
+          this.addRecentPrice(cardValue, tierLevel, price);
+        },
+
+        addRecentPrice(cardValue, tierLevel, price) {
+          if (!this.recentPrices[cardValue]) this.recentPrices[cardValue] = {};
+          if (!this.recentPrices[cardValue][tierLevel])
+            this.recentPrices[cardValue][tierLevel] = [];
+
+          this.recentPrices[cardValue][tierLevel].push({
+            time: Date.now(),
+            price: price,
+          });
+
+          if (this.recentPrices[cardValue][tierLevel].length > 200) {
+            this.recentPrices[cardValue][tierLevel].shift();
+          }
+        },
+
+        startSimulation() {
+          setInterval(() => this.updateMarket(), this.updateInterval);
+          this.updateMarket();
+        },
+
+        updateMarket() {
+          const now = new Date();
+          const currentHour = now.getHours();
+          const lastUpdateHour = this.lastUpdate
+            ? new Date(this.lastUpdate).getHours()
+            : -1;
+
+          const cardValues = ["9", "10", "J", "Q", "K", "A"];
+          const maxTier = this.marketTiers.length;
+
+          cardValues.forEach((value) => {
+            for (let tier = 0; tier < maxTier; tier++) {
+              const currentDemand = this.demand[value][tier] || 1;
+              const change = Math.random() * 0.04 - 0.02;
+              this.demand[value][tier] = Math.max(
+                0.5,
+                Math.min(2, currentDemand + change)
+              );
+
+              if (currentHour !== lastUpdateHour) {
+                const price = this.getCardPrice(value, tier);
+                if (!this.priceHistory[value]) this.priceHistory[value] = {};
+                if (!this.priceHistory[value][tier])
+                  this.priceHistory[value][tier] = [];
+
+                this.priceHistory[value][tier].push({
+                  time: now.toISOString(),
+                  price: price,
+                });
+
+                if (this.priceHistory[value][tier].length > 24) {
+                  this.priceHistory[value][tier].shift();
+                }
+              }
+            }
+          });
+
+          this.lastUpdate = now.getTime();
+          this.lastSimulationTime = now.getTime();
+          this.save();
+        },
+
+        buyCard(cardValue, tierLevel) {
+          const price = this.getCardPrice(cardValue, tierLevel);
+
+          if (PlayerAccount.money < price) {
+            alert(t("notEnoughLup"));
+            return false;
+          }
+
+          const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+
+          if (tierLevel <= currentLevel) {
+            alert(t("alreadyHave"));
+            return false;
+          }
+
+          PlayerAccount.money -= price;
+          PlayerAccount.cardUpgrades[cardValue] = tierLevel;
+
+          const marketPercent = parseFloat(
+            this.getPriceChange(cardValue, tierLevel)
+          );
+          PlayerAccount.purchaseBonus[cardValue] = marketPercent;
+
+          PlayerAccount.save();
+
+          this.demand[cardValue][tierLevel] = Math.min(
+            2,
+            (this.demand[cardValue][tierLevel] || 1) * 1.02
+          );
+          this.save();
+
+          const tier = this.getTier(tierLevel);
+          showUpgradeNotification(
+            cardValue,
+            tierLevel,
+            "purchase",
+            marketPercent,
+            tier.isBlack
+          );
+          return true;
+        },
+
+        sellCard(cardValue, toTierLevel) {
+          const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+
+          if (toTierLevel >= currentLevel) {
+            alert(t("onlyDowngrade"));
+            return false;
+          }
+
+          if (toTierLevel < 0) toTierLevel = 0;
+
+          // Cena sprzedaży = 100% aktualnej ceny rynkowej!
+          const sellPrice = this.getCardPrice(cardValue, currentLevel);
+
+          PlayerAccount.money += sellPrice;
+          PlayerAccount.cardUpgrades[cardValue] = toTierLevel;
+
+          if (toTierLevel > 0) {
+            const newMarketPercent = parseFloat(
+              this.getPriceChange(cardValue, toTierLevel)
+            );
+            PlayerAccount.purchaseBonus[cardValue] = newMarketPercent;
+          } else {
+            PlayerAccount.purchaseBonus[cardValue] = 0;
+          }
+
+          PlayerAccount.save();
+
+          this.demand[cardValue][currentLevel] = Math.max(
+            0.5,
+            (this.demand[cardValue][currentLevel] || 1) * 0.98
+          );
+          this.save();
+
+          showSellNotification(cardValue, currentLevel, toTierLevel, sellPrice);
+          return true;
+        },
+
+        load() {
+          try {
+            const saved = localStorage.getItem("4cards-market-v3");
+            if (saved) {
+              const data = JSON.parse(saved);
+              this.priceHistory = data.priceHistory || {};
+              this.demand = data.demand || {};
+              this.lastUpdate = data.lastUpdate || 0;
+              this.lastSimulationTime = data.lastSimulationTime || 0;
+              this.recentPrices = data.recentPrices || {};
+            }
+          } catch (e) {
+            console.log("Market load error:", e);
+          }
+        },
+
+        save() {
+          try {
+            localStorage.setItem(
+              "4cards-market-v3",
+              JSON.stringify({
+                priceHistory: this.priceHistory,
+                demand: this.demand,
+                lastUpdate: this.lastUpdate,
+                lastSimulationTime: this.lastSimulationTime,
+                recentPrices: this.recentPrices,
+              })
+            );
+          } catch (e) {
+            console.log("Market save error:", e);
+          }
+        },
+      };
+
+      // ==================== MARKET UI ====================
+      let marketClockInterval = null;
+      let chartUpdateInterval = null;
+      let selectedChartCard = null;
+      let selectedChartTier = null;
+
+      function openMarket() {
+        // Zamknij wszystkie inne ekrany
+        document.getElementById("collectionScreen").classList.remove("active");
+        document.getElementById("menuScreen").style.display = "none";
+
+        CardMarket.init();
+        document.getElementById("marketScreen").classList.add("active");
+        renderMarket();
+        startMarketClock();
+        updateMarketBalance();
+      }
+
+      function closeMarket() {
+        document.getElementById("marketScreen").classList.remove("active");
+        document.getElementById("menuScreen").style.display = "flex";
+        if (marketClockInterval) {
+          clearInterval(marketClockInterval);
+          marketClockInterval = null;
+        }
+        if (chartUpdateInterval) {
+          clearInterval(chartUpdateInterval);
+          chartUpdateInterval = null;
+          selectedChartCard = null;
+          selectedChartTier = null;
+        }
+        updateAccountDisplay();
+      }
+
+      function updateMarketBalance() {
+        const el = document.getElementById("marketBalance");
+        if (el) el.textContent = PlayerAccount.money.toLocaleString();
+      }
+
+      function startMarketClock() {
+        const updateClock = () => {
+          const now = new Date();
+          const hours = now.getHours().toString().padStart(2, "0");
+          const minutes = now.getMinutes().toString().padStart(2, "0");
+          const seconds = now.getSeconds().toString().padStart(2, "0");
+
+          const clockEl = document.getElementById("marketClock");
+          if (clockEl)
+            clockEl.textContent = `🕐 ${hours}:${minutes}:${seconds}`;
+
+          const timezone =
+            Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Warsaw";
+          const tzEl = document.getElementById("marketTimezone");
+          if (tzEl) tzEl.textContent = `📍 ${timezone}`;
+        };
+
+        updateClock();
+        marketClockInterval = setInterval(updateClock, 1000);
+      }
+
+      function renderMarket() {
+        const container = document.getElementById("marketCardsList");
+        if (!container) return;
+
+        container.innerHTML = "";
+        updateMarketBalance();
+
+        const cardValues = ["A", "K", "Q", "J", "10", "9"];
+        const cardNames = {
+          A: t("cardAs"),
+          K: t("cardKing"),
+          Q: t("cardQueen"),
+          J: t("cardJack"),
+          10: t("cardTen"),
+          9: t("cardNine"),
+        };
+
+        cardValues.forEach((value) => {
+          const currentLevel = PlayerAccount.cardUpgrades[value] || 0;
+          const currentTier = CardMarket.getTier(currentLevel);
+          const currentBonus = CardMarket.getCurrentBonus(value, currentLevel);
+
+          // Cena średnia z połowy dostępnych tierów
+          const avgPrice = CardMarket.getCardPrice(
+            value,
+            Math.floor(CardMarket.marketTiers.length / 2)
+          );
+          const priceChange = parseFloat(
+            CardMarket.getPriceChange(value, currentLevel)
+          );
+          const changeDisplay =
+            priceChange >= 0
+              ? `+${priceChange.toFixed(2)}%`
+              : `${priceChange.toFixed(2)}%`;
+
+          const row = document.createElement("div");
+          row.className = "market-card-row";
+          row.dataset.card = value;
+
+          row.innerHTML = `
+            <div class="market-card-header" onclick="toggleCardExpand('${value}')">
+              <div class="market-card-main">
+                <div class="market-card-icon">
+                  <span class="value" style="color: ${
+                    currentTier.color
+                  }">${value}</span>
+                  <span class="suits">♠♥♦♣</span>
+                </div>
+                <div class="market-card-info">
+                  <h3>${cardNames[value]}</h3>
+                  <p>${t("current")} <span style="color: ${
+            currentTier.color
+          }">${
+            currentTier.name
+          }</span> (<span id="rowBonus_${value}">+${currentBonus}</span> pkt)</p>
+                </div>
+              </div>
+              <div class="market-card-price">
+                <div class="current">${avgPrice.toLocaleString()} LUP</div>
+                <div class="change ${priceChange >= 0 ? "up" : "down"}">
+                  ${priceChange >= 0 ? "▲" : "▼"} ${changeDisplay}
+                </div>
+              </div>
+              <div class="market-card-right">
+                ${
+                  value === "A"
+                    ? `
+                <div class="black-card-mini" onclick="event.stopPropagation(); buyBlackCard('${value}')" title="${t(
+                        "buyBlackTitle"
+                      )}">
+                  <span class="black-mini-value">${value}</span>
+                  <span class="black-mini-label">${
+                    currentLang === "pl" ? "CZARNA" : "BLACK"
+                  }</span>
+                </div>
+                `
+                    : ""
+                }
+                <div class="market-card-expand">▼</div>
+              </div>
+            </div>
+            <div class="market-card-versions">
+              <p style="font-size:0.85rem;color:var(--cream);opacity:0.7;margin-bottom:0.8rem;text-align:center;">
+                ${t("clickVersionChart")}
+              </p>
+              ${renderVersionsGrid(value, currentLevel)}
+            </div>
+          `;
+
+          container.appendChild(row);
+        });
+      }
+
+      function toggleCardExpand(cardValue) {
+        const row = document.querySelector(
+          `.market-card-row[data-card="${cardValue}"]`
+        );
+        if (row) {
+          const wasExpanded = row.classList.contains("expanded");
+          row.classList.toggle("expanded");
+
+          if (wasExpanded) {
+            if (chartUpdateInterval && selectedChartCard === cardValue) {
+              clearInterval(chartUpdateInterval);
+              chartUpdateInterval = null;
+              selectedChartCard = null;
+              selectedChartTier = null;
+            }
+            const chartContainer = document.getElementById(
+              `chartContainer_${cardValue}`
+            );
+            if (chartContainer) chartContainer.classList.remove("active");
+            document
+              .querySelectorAll(
+                `.market-version-item[data-card="${cardValue}"]`
+              )
+              .forEach((el) => {
+                el.classList.remove("selected");
+              });
+          }
+        }
+      }
+
+      function renderVersionsGrid(cardValue, currentLevel) {
+        const currentTier = CardMarket.getTier(currentLevel);
+        const currentRealBonus = CardMarket.getCurrentBonus(
+          cardValue,
+          currentLevel
+        );
+
+        let html = `
+          <div style="text-align:center;margin-bottom:1rem;padding:0.8rem;background:rgba(0,0,0,0.3);border-radius:8px;">
+            <span style="color:var(--cream);opacity:0.8;">${t(
+              "currentBonus"
+            )} </span>
+            <span style="color:${
+              currentTier.color
+            };font-weight:bold;font-size:1.3rem;" id="liveBonus_${cardValue}">
+              +${currentRealBonus} pkt
+            </span>
+            <span style="color:var(--cream);opacity:0.6;font-size:0.85rem;"> ${t(
+              "updatesLive"
+            )}</span>
+          </div>
+          <p style="font-size:0.75rem;color:var(--gold);opacity:0.8;text-align:center;margin-bottom:0.5rem;">
+            ${t("clickChart")} | ${t("doubleClickDetails")}
+          </p>
+        `;
+
+        html += '<div class="market-version-grid">';
+
+        // BLACK tier tylko dla Asa
+        const maxDisplay =
+          cardValue === "A"
+            ? CardMarket.marketTiers.length
+            : CardMarket.marketTiers.length - 1;
+
+        for (let tier = 0; tier < maxDisplay; tier++) {
+          const tierData = CardMarket.getTier(tier);
+          const price = CardMarket.getCardPrice(cardValue, tier);
+          const change = parseFloat(CardMarket.getPriceChange(cardValue, tier));
+          const currentBonus = CardMarket.getCurrentBonus(cardValue, tier);
+          const isOwned = tier <= currentLevel;
+          const isCurrent = tier === currentLevel;
+          const canBuy = tier > currentLevel && PlayerAccount.money >= price;
+          const isBlack = tierData.isBlack;
+
+          const changeDisplay =
+            change >= 0 ? `+${change.toFixed(2)}%` : `${change.toFixed(2)}%`;
+
+          const blackStyle = isBlack
+            ? `
+            background: linear-gradient(135deg, #000 0%, #1a1a2e 50%, #000 100%);
+            border: 2px solid #fff;
+            animation: blackPulse 2s infinite;
+          `
+            : "";
+
+          html += `
+            <div class="market-version-item ${isOwned ? "owned" : ""} ${
+            isCurrent ? "current" : ""
+          } ${isBlack ? "black-card" : ""}" 
+                 style="border-color: ${tierData.color}; ${blackStyle}"
+                 onclick="selectVersionForChart('${cardValue}', ${tier})"
+                 ondblclick="showCardDetails('${cardValue}', ${tier})"
+                 data-card="${cardValue}" data-tier="${tier}">
+              <div class="version-info">
+                <span class="version-tier" style="color: ${
+                  isBlack ? "#fff" : tierData.color
+                }; ${isBlack ? "text-shadow: 0 0 10px #fff;" : ""}">${
+            tierData.name
+          }</span>
+                <span class="version-bonus" id="tierBonus_${cardValue}_${tier}" style="${
+            isBlack ? "color:#ffd700;" : ""
+          }">
+                  ${isBlack ? `⚡ ${t("autoWin")} ⚡` : `+${currentBonus} pkt`}
+                </span>
+              </div>
+              <div class="version-price">
+                <div class="price" style="color: ${
+                  isBlack ? "#ffd700" : tierData.color
+                }">${price.toLocaleString()}</div>
+                <div class="change ${change >= 0 ? "up" : "down"}">
+                  ${change >= 0 ? "▲" : "▼"} ${changeDisplay}
+                </div>
+              </div>
+              ${
+                tier === 0 && currentLevel === 0
+                  ? `<span style="font-size:0.6rem;color:var(--cream);opacity:0.6">${
+                      currentLang === "pl" ? "BAZOWA" : "BASE"
+                    }</span>`
+                  : isCurrent
+                  ? `<span class="current-badge">${t("yourCard")}</span>`
+                  : isOwned
+                  ? `<button class="sell-btn" onclick="event.stopPropagation(); sellCardFromMarket('${cardValue}', ${tier})">${t(
+                      "sellBtn"
+                    )}</button>`
+                  : `<button class="buy-btn ${isBlack ? "black-buy" : ""}" ${
+                      !canBuy ? "disabled" : ""
+                    } onclick="event.stopPropagation(); buyCardFromMarket('${cardValue}', ${tier})">${
+                      isBlack ? "⚡" + t("buyBtn") + "⚡" : t("buyBtn")
+                    }</button>`
+              }
+            </div>
+          `;
+        }
+
+        html += "</div>";
+        html += renderPriceChart(cardValue);
+        return html;
+      }
+
+      // Modal szczegółów karty (podwójne kliknięcie)
+      function showCardDetails(cardValue, tierLevel) {
+        const tier = CardMarket.getTier(tierLevel);
+        const price = CardMarket.getCardPrice(cardValue, tierLevel);
+        const change = parseFloat(
+          CardMarket.getPriceChange(cardValue, tierLevel)
+        );
+        const currentBonus = CardMarket.getCurrentBonus(cardValue, tierLevel);
+        const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+        const isOwned = tierLevel <= currentLevel;
+        const canBuy = tierLevel > currentLevel && PlayerAccount.money >= price;
+        const isBlack = tier.isBlack;
+
+        // Usuń poprzedni modal
+        const existing = document.getElementById("cardDetailModal");
+        if (existing) existing.remove();
+
+        const modal = document.createElement("div");
+        modal.id = "cardDetailModal";
+        modal.className = "card-detail-modal";
+        modal.innerHTML = `
+          <div class="card-detail-content">
+            <div class="card-detail-flip-container" onclick="this.classList.toggle('flipped')">
+              <div class="card-detail-flipper">
+                <div class="card-detail-front" style="border-color: ${
+                  tier.color
+                }; ${
+          isBlack
+            ? "background: linear-gradient(135deg, #000 0%, #1a1a2e 100%); border-color: #ffd700;"
+            : ""
+        }">
+                  <div class="card-front-corner" style="color: ${
+                    isBlack ? "#fff" : tier.color
+                  }">${cardValue}</div>
+                  <div class="card-front-center" style="color: ${
+                    isBlack ? "#fff" : tier.color
+                  }; ${
+          isBlack ? "text-shadow: 0 0 20px #fff;" : ""
+        }">${cardValue}</div>
+                  <div class="card-front-suits">${isBlack ? "⚡" : "♠♥♦♣"}</div>
+                  <div class="card-front-tier" style="color: ${
+                    isBlack ? "#ffd700" : tier.color
+                  }">${tier.name}</div>
+                </div>
+                <div class="card-detail-back" style="border-color: ${
+                  tier.color
+                }; ${
+          isBlack
+            ? "background: linear-gradient(135deg, #000 0%, #1a1a2e 100%); border-color: #ffd700;"
+            : ""
+        }">
+                  <h3 style="color: ${isBlack ? "#ffd700" : tier.color}">${
+          tier.name
+        }</h3>
+                  <div class="card-back-stats">
+                    <div class="stat-row">
+                      <span>${t("bonus")}</span>
+                      <span style="color: ${
+                        isBlack ? "#ffd700" : "#22c55e"
+                      }" id="detailBonus_${cardValue}_${tierLevel}">
+                        ${isBlack ? t("autoWin") : `+${currentBonus} pkt`}
+                      </span>
+                    </div>
+                    <div class="stat-row">
+                      <span>${t("price")}</span>
+                      <span style="color: var(--gold)" id="detailPrice_${cardValue}_${tierLevel}">${price.toLocaleString()} LUP</span>
+                    </div>
+                    <div class="stat-row">
+                      <span>${t("change")}</span>
+                      <span style="color: ${
+                        change >= 0 ? "#22c55e" : "#ef4444"
+                      }" id="detailChange_${cardValue}_${tierLevel}">
+                        ${change >= 0 ? "▲" : "▼"} ${
+          change >= 0 ? "+" : ""
+        }${change.toFixed(2)}%
+                      </span>
+                    </div>
+                    <div class="stat-row">
+                      <span>${t("status")}</span>
+                      <span style="color: ${isOwned ? "#22c55e" : "#ef4444"}">${
+          isOwned ? t("owned") : t("notOwned")
+        }</span>
+                    </div>
+                  </div>
+                  ${
+                    tierLevel > 0
+                      ? `
+                    <div class="card-back-action">
+                      ${
+                        isOwned
+                          ? tierLevel === currentLevel
+                            ? `<span style="color:#22c55e;font-weight:bold;">${t(
+                                "currentlyUsed"
+                              )}</span>`
+                            : `<button class="sell-btn-big" onclick="event.stopPropagation(); sellCardFromMarket('${cardValue}', ${tierLevel}); closeCardDetailModal();">${t(
+                                "sell100"
+                              )}</button>`
+                          : `<button class="buy-btn-big ${
+                              isBlack ? "black-buy" : ""
+                            }" ${
+                              !canBuy ? "disabled" : ""
+                            } onclick="event.stopPropagation(); buyCardFromMarket('${cardValue}', ${tierLevel}); closeCardDetailModal();">${
+                              isBlack ? t("buyBlack") : t("buyNow")
+                            }</button>`
+                      }
+                    </div>
+                  `
+                      : `<div style="color:var(--cream);opacity:0.6;margin-top:1rem;">${t(
+                          "baseCardNoSell"
+                        )}</div>`
+                  }
+                </div>
+              </div>
+            </div>
+            <p style="text-align:center;color:var(--cream);opacity:0.7;font-size:0.8rem;margin-top:1rem;">${t(
+              "clickToFlip"
+            )}</p>
+            <button class="close-detail-btn" onclick="closeCardDetailModal()">${t(
+              "closeBtn"
+            )}</button>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Aktualizuj dane w modalu na żywo
+        startDetailUpdates(cardValue, tierLevel);
+      }
+
+      let detailUpdateInterval = null;
+
+      function startDetailUpdates(cardValue, tierLevel) {
+        if (detailUpdateInterval) clearInterval(detailUpdateInterval);
+
+        detailUpdateInterval = setInterval(() => {
+          const bonusEl = document.getElementById(
+            `detailBonus_${cardValue}_${tierLevel}`
+          );
+          const priceEl = document.getElementById(
+            `detailPrice_${cardValue}_${tierLevel}`
+          );
+          const changeEl = document.getElementById(
+            `detailChange_${cardValue}_${tierLevel}`
+          );
+
+          if (!bonusEl) {
+            clearInterval(detailUpdateInterval);
+            return;
+          }
+
+          const tier = CardMarket.getTier(tierLevel);
+          const price = CardMarket.getCardPrice(cardValue, tierLevel);
+          const change = parseFloat(
+            CardMarket.getPriceChange(cardValue, tierLevel)
+          );
+          const currentBonus = CardMarket.getCurrentBonus(cardValue, tierLevel);
+
+          if (!tier.isBlack) {
+            bonusEl.textContent = `+${currentBonus} pkt`;
+          }
+          priceEl.textContent = `${price.toLocaleString()} LUP`;
+          changeEl.innerHTML = `${change >= 0 ? "▲" : "▼"} ${
+            change >= 0 ? "+" : ""
+          }${change.toFixed(2)}%`;
+          changeEl.style.color = change >= 0 ? "#22c55e" : "#ef4444";
+        }, 500);
+      }
+
+      function closeCardDetailModal() {
+        const modal = document.getElementById("cardDetailModal");
+        if (modal) modal.remove();
+        if (detailUpdateInterval) {
+          clearInterval(detailUpdateInterval);
+          detailUpdateInterval = null;
+        }
+      }
+
+      // ==================== COLLECTION FUNCTIONS ====================
+      function openCollection() {
+        // Zamknij wszystkie inne ekrany
+        document.getElementById("marketScreen").classList.remove("active");
+        document.getElementById("menuScreen").style.display = "none";
+
+        document.getElementById("collectionScreen").classList.add("active");
+        renderCollection();
+      }
+
+      function closeCollection() {
+        document.getElementById("collectionScreen").classList.remove("active");
+        document.getElementById("menuScreen").style.display = "flex";
+      }
+
+      function renderCollection() {
+        const grid = document.getElementById("collectionGrid");
+        const balanceEl = document.getElementById("collectionBalance");
+
+        if (balanceEl)
+          balanceEl.textContent = PlayerAccount.money.toLocaleString();
+
+        const cardValues = ["A", "K", "Q", "J", "10", "9"];
+        let html = "";
+
+        cardValues.forEach((value) => {
+          const currentLevel = PlayerAccount.cardUpgrades[value] || 0;
+          const tier = CardMarket.getTier(currentLevel);
+          const currentBonus = CardMarket.getCurrentBonus(value, currentLevel);
+          const price = CardMarket.getCardPrice(value, currentLevel);
+          const change = parseFloat(
+            CardMarket.getPriceChange(value, currentLevel)
+          );
+          const isBlack = tier.isBlack;
+          const canSell = currentLevel > 0;
+
+          html += `
+            <div class="collection-card ${
+              isBlack ? "black-edition" : ""
+            }" onclick="this.classList.toggle('flipped')">
+              <div class="collection-card-inner" style="border-color: ${
+                tier.color
+              }">
+                <div class="collection-card-front" style="border-color: ${
+                  tier.color
+                }; ${
+            isBlack
+              ? "background: linear-gradient(135deg, #000 0%, #1a1a2e 100%); border-color: #ffd700;"
+              : ""
+          }">
+                  <div class="card-corner" style="color: ${
+                    isBlack ? "#fff" : tier.color
+                  }">${value}</div>
+                  <div class="card-value" style="color: ${
+                    isBlack ? "#fff" : tier.color
+                  }; ${
+            isBlack ? "text-shadow: 0 0 20px #fff;" : ""
+          }">${value}</div>
+                  <div class="card-suits" style="color: ${
+                    isBlack ? "#ffd700" : "var(--cream)"
+                  }">${isBlack ? "⚡" : "♠♥♦♣"}</div>
+                  <div class="card-tier-name" style="color: ${
+                    isBlack ? "#ffd700" : tier.color
+                  }">${tier.name}</div>
+                </div>
+                <div class="collection-card-back" style="border-color: ${
+                  tier.color
+                }; ${
+            isBlack
+              ? "background: linear-gradient(135deg, #000 0%, #1a1a2e 100%); border-color: #ffd700;"
+              : ""
+          }">
+                  <h4 style="color: ${
+                    isBlack ? "#ffd700" : tier.color
+                  }">${value} - ${tier.name}</h4>
+                  <div class="back-stats">
+                    <div class="back-stat">
+                      <span>${t("bonus")}</span>
+                      <span style="color: ${
+                        isBlack ? "#ffd700" : "#22c55e"
+                      }" id="colBonus_${value}">
+                        ${isBlack ? t("autoWin") : `+${currentBonus} pkt`}
+                      </span>
+                    </div>
+                    <div class="back-stat">
+                      <span>${t("value")}</span>
+                      <span style="color: var(--gold)" id="colPrice_${value}">${price.toLocaleString()} LUP</span>
+                    </div>
+                    <div class="back-stat">
+                      <span>${t("market")}</span>
+                      <span style="color: ${
+                        change >= 0 ? "#22c55e" : "#ef4444"
+                      }" id="colChange_${value}">
+                        ${change >= 0 ? "+" : ""}${change.toFixed(2)}%
+                      </span>
+                    </div>
+                  </div>
+                  ${
+                    canSell
+                      ? `<button class="sell-collection-btn" onclick="event.stopPropagation(); sellFromCollection('${value}')">${t(
+                          "sell100"
+                        )}</button>`
+                      : `<span style="font-size:0.7rem;color:var(--cream);opacity:0.5;">${t(
+                          "baseCard"
+                        )}</span>`
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        grid.innerHTML = html;
+      }
+
+      function sellFromCollection(cardValue) {
+        const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+        if (currentLevel <= 0) {
+          alert(t("cantSellBase"));
+          return;
+        }
+
+        const tier = CardMarket.getTier(currentLevel);
+        const price = CardMarket.getCardPrice(cardValue, currentLevel);
+
+        const confirmMsg = t("sellCollectionConfirm")
+          .replace("%s", cardValue)
+          .replace("%s", tier.name)
+          .replace("%s", price.toLocaleString());
+
+        if (confirm(confirmMsg)) {
+          if (CardMarket.sellCard(cardValue, 0)) {
+            renderCollection();
+          }
+        }
+      }
+
+      // Aktualizuj kolekcję na żywo
+      setInterval(() => {
+        const cardValues = ["9", "10", "J", "Q", "K", "A"];
+        cardValues.forEach((value) => {
+          const currentLevel = PlayerAccount.cardUpgrades[value] || 0;
+          const tier = CardMarket.getTier(currentLevel);
+
+          const bonusEl = document.getElementById(`colBonus_${value}`);
+          const priceEl = document.getElementById(`colPrice_${value}`);
+          const changeEl = document.getElementById(`colChange_${value}`);
+
+          if (bonusEl && !tier.isBlack) {
+            const currentBonus = CardMarket.getCurrentBonus(
+              value,
+              currentLevel
+            );
+            bonusEl.textContent = `+${currentBonus} pkt`;
+          }
+
+          if (priceEl) {
+            const price = CardMarket.getCardPrice(value, currentLevel);
+            priceEl.textContent = `${price.toLocaleString()} LUP`;
+          }
+
+          if (changeEl) {
+            const change = parseFloat(
+              CardMarket.getPriceChange(value, currentLevel)
+            );
+            changeEl.textContent = `${change >= 0 ? "+" : ""}${change.toFixed(
+              2
+            )}%`;
+            changeEl.style.color = change >= 0 ? "#22c55e" : "#ef4444";
+          }
+        });
+
+        // Aktualizuj saldo
+        const balanceEl = document.getElementById("collectionBalance");
+        if (balanceEl)
+          balanceEl.textContent = PlayerAccount.money.toLocaleString();
+      }, 500);
+
+      // Aktualizuj bonus na żywo co 500ms
+      setInterval(() => {
+        const cardValues = ["9", "10", "J", "Q", "K", "A"];
+        cardValues.forEach((cardValue) => {
+          const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+
+          // Aktualizuj główny bonus w rozwiniętym widoku
+          const liveBonusEl = document.getElementById(`liveBonus_${cardValue}`);
+          if (liveBonusEl) {
+            const currentBonus = CardMarket.getCurrentBonus(
+              cardValue,
+              currentLevel
+            );
+            const tier = CardMarket.getTier(currentLevel);
+            liveBonusEl.innerHTML = `+${currentBonus} pkt`;
+            liveBonusEl.style.color = tier.color;
+          }
+
+          // Aktualizuj bonus w nagłówku karty
+          const rowBonusEl = document.getElementById(`rowBonus_${cardValue}`);
+          if (rowBonusEl) {
+            const currentBonus = CardMarket.getCurrentBonus(
+              cardValue,
+              currentLevel
+            );
+            rowBonusEl.textContent = `+${currentBonus}`;
+          }
+
+          // Aktualizuj wszystkie tiery na liście
+          const maxTier = CardMarket.marketTiers.length;
+          for (let tier = 0; tier < maxTier; tier++) {
+            const tierBonusEl = document.getElementById(
+              `tierBonus_${cardValue}_${tier}`
+            );
+            if (tierBonusEl) {
+              const tierData = CardMarket.getTier(tier);
+              if (!tierData.isBlack) {
+                const bonus = CardMarket.getCurrentBonus(cardValue, tier);
+                tierBonusEl.textContent = `+${bonus} pkt`;
+              }
+            }
+          }
+        });
+      }, 500);
+
+      function renderPriceChart(cardValue) {
+        return `
+          <div class="chart-container" id="chartContainer_${cardValue}">
+            <div class="chart-header">
+              <span class="chart-title">${t("priceChart")}</span>
+              <div class="chart-info">
+                <span class="chart-time" id="chartTime_${cardValue}">--:--:--</span>
+                <span class="chart-live"><span class="chart-live-dot"></span> ${t(
+                  "live"
+                )}</span>
+              </div>
+            </div>
+            <div class="chart-canvas-container">
+              <canvas class="chart-canvas" id="chart_${cardValue}"></canvas>
+            </div>
+            <div class="chart-labels" id="chartLabels_${cardValue}"></div>
+            <div class="chart-current-price" id="livePrice_${cardValue}">
+              <span class="price-value">--- LUP</span>
+            </div>
+          </div>
+        `;
+      }
+
+      function selectVersionForChart(cardValue, tierLevel) {
+        document.querySelectorAll(".market-version-item").forEach((el) => {
+          el.classList.remove("selected");
+        });
+
+        const selectedEl = document.querySelector(
+          `.market-version-item[data-card="${cardValue}"][data-tier="${tierLevel}"]`
+        );
+        if (selectedEl) {
+          selectedEl.classList.add("selected");
+        }
+
+        const chartContainer = document.getElementById(
+          `chartContainer_${cardValue}`
+        );
+        if (chartContainer) {
+          chartContainer.classList.add("active");
+        }
+
+        selectedChartCard = cardValue;
+        selectedChartTier = tierLevel;
+
+        startRealtimeChart(cardValue, tierLevel);
+      }
+
+      function startRealtimeChart(cardValue, tierLevel) {
+        if (chartUpdateInterval) {
+          clearInterval(chartUpdateInterval);
+        }
+
+        renderChartCanvas(cardValue, tierLevel);
+        updateLivePrice(cardValue, tierLevel);
+
+        // Update every 500ms (half second)
+        chartUpdateInterval = setInterval(() => {
+          if (
+            selectedChartCard === cardValue &&
+            selectedChartTier === tierLevel
+          ) {
+            CardMarket.addMicroVariation(cardValue, tierLevel);
+            renderChartCanvas(cardValue, tierLevel);
+            updateLivePrice(cardValue, tierLevel);
+          }
+        }, 500);
+      }
+
+      function updateLivePrice(cardValue, tierLevel) {
+        const price = CardMarket.getCardPrice(cardValue, tierLevel);
+        const change = parseFloat(
+          CardMarket.getPriceChange(cardValue, tierLevel)
+        );
+        const changeDisplay =
+          change >= 0 ? `+${change.toFixed(2)}%` : `${change.toFixed(2)}%`;
+
+        const priceEl = document.getElementById(`livePrice_${cardValue}`);
+        if (priceEl) {
+          priceEl.innerHTML = `
+            <span class="price-value">${price.toLocaleString()} LUP</span>
+            <span class="price-change ${change >= 0 ? "up" : "down"}">
+              ${change >= 0 ? "▲" : "▼"} ${changeDisplay}
+            </span>
+          `;
+        }
+
+        const timeEl = document.getElementById(`chartTime_${cardValue}`);
+        if (timeEl) {
+          const now = new Date();
+          timeEl.textContent = `${now.getHours()}:${now
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+        }
+      }
+
+      function renderChartCanvas(cardValue, tierLevel) {
+        const canvas = document.getElementById(`chart_${cardValue}`);
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d");
+
+        // Pobierz dane - najpierw recent prices, potem history
+        let prices = [];
+        const recentData =
+          CardMarket.recentPrices[cardValue]?.[tierLevel] || [];
+
+        if (recentData.length >= 5) {
+          prices = recentData.map((p) => p.price);
+        } else {
+          // Użyj historii godzinowej
+          const history = CardMarket.priceHistory[cardValue]?.[tierLevel] || [];
+          prices = history.map((h) => h.price);
+
+          // Jeśli brak historii, wygeneruj bazową
+          if (prices.length < 2) {
+            const currentPrice = CardMarket.getCardPrice(cardValue, tierLevel);
+            prices = [];
+            for (let i = 0; i < 24; i++) {
+              prices.push(currentPrice * (0.95 + Math.random() * 0.1));
+            }
+          }
+        }
+
+        // Upewnij się że mamy wystarczająco punktów
+        if (prices.length < 2) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+
+        const width = rect.width;
+        const height = rect.height;
+        const padding = 15;
+
+        const minPrice = Math.min(...prices) * 0.99;
+        const maxPrice = Math.max(...prices) * 1.01;
+        const priceRange = maxPrice - minPrice || 1;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Rysuj siatkę
+        ctx.strokeStyle = "rgba(212, 175, 55, 0.1)";
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i <= 4; i++) {
+          const y = padding + ((height - 2 * padding) * i) / 4;
+          ctx.beginPath();
+          ctx.moveTo(padding, y);
+          ctx.lineTo(width - padding, y);
+          ctx.stroke();
+        }
+
+        // Oblicz punkty wykresu
+        const points = prices.map((price, i) => ({
+          x: padding + ((width - 2 * padding) * i) / (prices.length - 1),
+          y:
+            height -
+            padding -
+            ((price - minPrice) / priceRange) * (height - 2 * padding),
+        }));
+
+        // Rysuj wygładzoną linię (krzywa Beziera)
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+
+        // Użyj krzywych Beziera dla płynności
+        for (let i = 0; i < points.length - 1; i++) {
+          const p0 = points[Math.max(0, i - 1)];
+          const p1 = points[i];
+          const p2 = points[i + 1];
+          const p3 = points[Math.min(points.length - 1, i + 2)];
+
+          // Punkty kontrolne dla płynnej krzywej
+          const cp1x = p1.x + (p2.x - p0.x) / 6;
+          const cp1y = p1.y + (p2.y - p0.y) / 6;
+          const cp2x = p2.x - (p3.x - p1.x) / 6;
+          const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+        }
+
+        // Styl linii z efektem glow
+        ctx.strokeStyle = "#d4af37";
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.shadowColor = "#d4af37";
+        ctx.shadowBlur = 8;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Gradient wypełnienia pod krzywą
+        const lastPoint = points[points.length - 1];
+        ctx.lineTo(lastPoint.x, height - padding);
+        ctx.lineTo(points[0].x, height - padding);
+        ctx.closePath();
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, "rgba(212, 175, 55, 0.3)");
+        gradient.addColorStop(0.5, "rgba(212, 175, 55, 0.1)");
+        gradient.addColorStop(1, "rgba(212, 175, 55, 0)");
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // Rysuj kropkę na końcu (aktualna cena)
+        ctx.beginPath();
+        ctx.arc(lastPoint.x, lastPoint.y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = "#d4af37";
+        ctx.shadowColor = "#d4af37";
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Biała obwódka kropki
+        ctx.beginPath();
+        ctx.arc(lastPoint.x, lastPoint.y, 6, 0, Math.PI * 2);
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Pulsująca animacja kropki (wewnętrzna)
+        ctx.beginPath();
+        ctx.arc(lastPoint.x, lastPoint.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+
+        // Aktualizuj etykiety
+        const labelsEl = document.getElementById(`chartLabels_${cardValue}`);
+        if (labelsEl) {
+          const tier = CardMarket.getTier(tierLevel);
+          labelsEl.innerHTML = `
+            <span style="color:${tier.color}">${tier.name}</span>
+            <span>${Math.floor(minPrice).toLocaleString()} - ${Math.ceil(
+            maxPrice
+          ).toLocaleString()} LUP</span>
+            <span style="color:#22c55e">● ${t("live")}</span>
+          `;
+        }
+      }
+
+      function buyCardFromMarket(cardValue, tierLevel) {
+        if (CardMarket.buyCard(cardValue, tierLevel)) {
+          renderMarket();
+          updateMarketBalance();
+          updateAccountDisplay();
+        }
+      }
+
+      // Szybki zakup karty BLACK z mini karty w nagłówku
+      function buyBlackCard(cardValue) {
+        // BLACK tylko dla Asa
+        if (cardValue !== "A") {
+          alert(
+            currentLang === "pl"
+              ? "Karta CZARNA dostępna tylko dla Asa!"
+              : "BLACK card only available for Ace!"
+          );
+          return;
+        }
+
+        const blackTierLevel = CardMarket.marketTiers.length - 1;
+        const price = CardMarket.getCardPrice(cardValue, blackTierLevel);
+        const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+
+        if (currentLevel >= blackTierLevel) {
+          alert(t("alreadyBlack"));
+          return;
+        }
+
+        if (PlayerAccount.money < price) {
+          alert(t("needLupForBlack").replace("%s", price.toLocaleString()));
+          return;
+        }
+
+        const confirmMsg = t("buyBlackConfirm")
+          .replace("%s", cardValue)
+          .replace("%s", price.toLocaleString());
+
+        if (confirm(confirmMsg)) {
+          if (CardMarket.buyCard(cardValue, blackTierLevel)) {
+            renderMarket();
+            updateMarketBalance();
+            updateAccountDisplay();
+          }
+        }
+      }
+
+      function sellCardFromMarket(cardValue, toTierLevel) {
+        const currentLevel = PlayerAccount.cardUpgrades[cardValue] || 0;
+        const currentTier = CardMarket.getTier(currentLevel);
+        const toTier = CardMarket.getTier(toTierLevel);
+        const sellPrice = CardMarket.getCardPrice(cardValue, currentLevel);
+
+        const confirmMsg = t("sellConfirm")
+          .replace("%s", cardValue)
+          .replace("%s", currentTier.name)
+          .replace("%s", sellPrice.toLocaleString())
+          .replace("%s", toTier.name);
+
+        if (confirm(confirmMsg)) {
+          if (CardMarket.sellCard(cardValue, toTierLevel)) {
+            renderMarket();
+            updateMarketBalance();
+            updateAccountDisplay();
+          }
+        }
+      }
     </script>
+
+    <!-- Market Screen -->
+    <div class="market-screen" id="marketScreen">
+      <button class="menu-btn back-btn-fixed" onclick="closeMarket()">
+        ← <span data-i18n="back">POWRÓT</span>
+      </button>
+
+      <h2 class="shop-title" data-i18n="marketTitle">📈 RYNEK KART</h2>
+
+      <div class="shop-header-info">
+        <div class="shop-stat-box">
+          💰 <span id="marketBalance">0</span> LUP
+        </div>
+        <div class="shop-stat-box" id="marketClock">🕐 --:--</div>
+        <div class="shop-stat-box" id="marketTimezone">📍 Czas lokalny</div>
+      </div>
+
+      <div class="market-content">
+        <div class="market-cards-list" id="marketCardsList"></div>
+      </div>
+    </div>
+
+    <!-- Pack Shop Screen -->
+    <div class="pack-shop-screen" id="packShopScreen">
+      <button class="menu-btn back-btn-fixed" onclick="closePackShop()">
+        ← <span data-i18n="back">POWRÓT</span>
+      </button>
+
+      <h2 class="shop-title">
+        🎁 <span data-i18n="packShop">SKLEP Z PACZKAMI</span>
+      </h2>
+
+      <div class="shop-header-info">
+        <div class="shop-stat-box">
+          ⏱️ Reset: <span id="shopTimer">5:00</span>
+        </div>
+        <div class="shop-stat-box">💰 <span id="shopBalance">0</span> LUP</div>
+        <div class="shop-stat-box clickable" onclick="openCollection()">
+          🃏 <span data-i18n="collection">Kolekcja</span>:
+          <span id="collectionCount">0</span>
+        </div>
+      </div>
+
+      <div class="pack-grid" id="packGrid"></div>
+    </div>
+
+    <!-- Collection Screen -->
+    <div class="collection-screen" id="collectionScreen">
+      <button class="menu-btn back-btn-fixed" onclick="closeCollection()">
+        ← <span data-i18n="back">POWRÓT</span>
+      </button>
+
+      <h2 class="shop-title">
+        🃏 <span data-i18n="myCollection">MOJA KOLEKCJA</span>
+      </h2>
+
+      <div id="collectionStats" class="collection-stats"></div>
+
+      <div class="collection-filters">
+        <button
+          class="filter-btn active"
+          data-filter="all"
+          onclick="filterCollection('all')"
+        >
+          <span data-i18n="all">Wszystkie</span>
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="base"
+          onclick="filterCollection('base')"
+        >
+          <span data-i18n="baseCards">Podstawowe</span>
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="packs"
+          onclick="filterCollection('packs')"
+        >
+          <span data-i18n="fromPacks">Z paczek</span>
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="common"
+          onclick="filterCollection('common')"
+        >
+          <span data-i18n="common">Zwykłe</span>
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="rare"
+          onclick="filterCollection('rare')"
+        >
+          <span data-i18n="rare">Rzadkie</span>
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="special"
+          onclick="filterCollection('special')"
+        >
+          <span data-i18n="special">Specjalne</span>
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="legendary"
+          onclick="filterCollection('legendary')"
+        >
+          <span data-i18n="legendary">Legendarne</span>
+        </button>
+      </div>
+
+      <div class="collection-grid" id="collectionGrid"></div>
+    </div>
+
+    <!-- Pack Opening Overlay -->
+    <div class="pack-opening-overlay" id="packOpeningOverlay">
+      <div class="pack-cards-container" id="packCardsContainer"></div>
+      <button
+        class="menu-btn"
+        id="closePackBtn"
+        style="display: none; margin-top: 2rem"
+        onclick="closePackOpening()"
+      >
+        <span data-i18n="close">ZAMKNIJ</span>
+      </button>
+    </div>
+
+    <style>
+      .pack-shop-screen,
+      .collection-screen,
+      .market-screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+        padding-top: 5rem;
+      }
+      .pack-shop-screen.active,
+      .collection-screen.active,
+      .market-screen.active {
+        display: flex;
+      }
+
+      .back-btn-fixed {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        padding: 0.8rem 1.5rem;
+        z-index: 100;
+      }
+
+      .shop-title {
+        font-family: Cinzel, serif;
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        color: var(--gold);
+        margin: 1rem 0;
+        text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+      }
+
+      .shop-header-info {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .shop-stat-box {
+        padding: 0.6rem 1.5rem;
+        background: rgba(212, 175, 55, 0.15);
+        border: 2px solid var(--gold);
+        border-radius: 25px;
+        font-family: Cinzel, serif;
+        font-size: 1rem;
+        color: var(--gold);
+      }
+
+      .shop-stat-box.clickable {
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .shop-stat-box.clickable:hover {
+        background: rgba(212, 175, 55, 0.3);
+        transform: scale(1.05);
+      }
+
+      /* ==================== MARKET STYLES ==================== */
+      .market-content {
+        width: 100%;
+        max-width: 1200px;
+      }
+
+      .market-cards-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+      }
+
+      .market-card-row {
+        background: linear-gradient(
+          145deg,
+          rgba(26, 26, 46, 0.95) 0%,
+          rgba(22, 33, 62, 0.95) 50%,
+          rgba(26, 26, 46, 0.95) 100%
+        );
+        border: 2px solid var(--gold);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .market-card-row:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5),
+          0 0 20px rgba(212, 175, 55, 0.15);
+      }
+
+      .market-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .market-card-header:hover {
+        background: rgba(212, 175, 55, 0.1);
+      }
+
+      .market-card-main {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .market-card-icon {
+        width: 55px;
+        height: 75px;
+        background: linear-gradient(
+          145deg,
+          #1a1a2e 0%,
+          #16213e 50%,
+          #1a1a2e 100%
+        );
+        border: 3px solid var(--gold);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: Cinzel, serif;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4),
+          inset 0 1px 5px rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .market-card-icon::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.05) 50%,
+          transparent 60%
+        );
+      }
+
+      .market-card-icon .value {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: var(--gold);
+      }
+      .market-card-icon .suits {
+        font-size: 0.8rem;
+      }
+
+      .market-card-info h3 {
+        font-family: Cinzel, serif;
+        font-size: 1.2rem;
+        color: var(--gold);
+        margin-bottom: 0.2rem;
+      }
+      .market-card-info p {
+        font-size: 0.85rem;
+        color: var(--cream);
+        opacity: 0.8;
+      }
+
+      .market-card-price {
+        text-align: right;
+      }
+      .market-card-price .current {
+        font-family: Cinzel, serif;
+        font-size: 1.3rem;
+        color: var(--gold-light);
+        font-weight: bold;
+      }
+      .market-card-price .change {
+        font-size: 0.9rem;
+        font-weight: bold;
+      }
+      .market-card-price .change.up {
+        color: #22c55e;
+      }
+      .market-card-price .change.down {
+        color: #ef4444;
+      }
+
+      .market-card-expand {
+        font-size: 1.5rem;
+        color: var(--gold);
+        transition: transform 0.3s;
+      }
+      .market-card-row.expanded .market-card-expand {
+        transform: rotate(180deg);
+      }
+
+      .market-card-right {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      /* Mini Karta CZARNA w nagłówku */
+      .black-card-mini {
+        width: 40px;
+        height: 55px;
+        background: linear-gradient(135deg, #000 0%, #1a1a2e 50%, #000 100%);
+        border: 2px solid #ffd700;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        animation: blackMiniPulse 2s infinite;
+        transition: transform 0.2s;
+      }
+
+      .black-card-mini:hover {
+        transform: scale(1.15);
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+      }
+
+      .black-mini-value {
+        color: #fff;
+        font-family: Cinzel, serif;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-shadow: 0 0 10px #fff;
+      }
+
+      .black-mini-label {
+        color: #ffd700;
+        font-size: 0.45rem;
+        font-weight: bold;
+        text-shadow: 0 0 5px #ffd700;
+        letter-spacing: 0.05em;
+      }
+
+      @keyframes blackMiniPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 8px rgba(255, 215, 0, 0.4),
+            inset 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        50% {
+          box-shadow: 0 0 18px rgba(255, 215, 0, 0.7),
+            inset 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+      }
+
+      /* Card Detail Modal */
+      .card-detail-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 5000;
+        animation: fadeIn 0.3s;
+        backdrop-filter: blur(10px);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .card-detail-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      .card-detail-flip-container {
+        width: 220px;
+        height: 310px;
+        perspective: 1000px;
+        cursor: pointer;
+      }
+
+      .card-detail-flipper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .card-detail-flip-container.flipped .card-detail-flipper {
+        transform: rotateY(180deg);
+      }
+
+      .card-detail-front,
+      .card-detail-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 18px;
+        border: 5px solid;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          145deg,
+          #1a1a2e 0%,
+          #16213e 30%,
+          #0f3460 50%,
+          #16213e 70%,
+          #1a1a2e 100%
+        );
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6),
+          inset 0 2px 15px rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+      }
+
+      .card-detail-front::before {
+        content: "";
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background: linear-gradient(
+          45deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.08) 50%,
+          transparent 60%
+        );
+        animation: detailShine 4s ease-in-out infinite;
+      }
+
+      @keyframes detailShine {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(-50%) rotate(45deg);
+        }
+        50% {
+          transform: translateX(0%) translateY(0%) rotate(45deg);
+        }
+      }
+
+      .card-detail-back {
+        transform: rotateY(180deg);
+        padding: 1.8rem;
+      }
+
+      .card-front-corner {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        font-family: Cinzel, serif;
+        font-size: 1.8rem;
+        font-weight: bold;
+      }
+
+      .card-front-center {
+        font-family: Cinzel, serif;
+        font-size: 6rem;
+        font-weight: bold;
+        text-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .card-front-suits {
+        font-size: 1.8rem;
+        margin-top: 0.5rem;
+        opacity: 0.8;
+      }
+
+      .card-front-tier {
+        position: absolute;
+        bottom: 18px;
+        font-family: Cinzel, serif;
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .card-detail-back h3 {
+        font-family: Cinzel, serif;
+        font-size: 1.5rem;
+        margin-bottom: 1.2rem;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .card-back-stats {
+        width: 100%;
+      }
+
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 1rem;
+        color: var(--cream);
+      }
+
+      .card-back-action {
+        margin-top: 1.2rem;
+      }
+
+      .buy-btn-big {
+        padding: 1rem 2rem;
+        font-family: Cinzel, serif;
+        font-size: 1rem;
+        background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+        color: #1a1a2e;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        transition: all 0.3s;
+      }
+
+      .buy-btn-big:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+      }
+
+      .buy-btn-big:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .buy-btn-big.black-buy {
+        background: linear-gradient(135deg, #000 0%, #1a1a2e 100%);
+        color: #ffd700;
+        border: 2px solid #ffd700;
+        box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+      }
+
+      .sell-btn-big {
+        padding: 1rem 2rem;
+        font-family: Cinzel, serif;
+        font-size: 1rem;
+        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
+        transition: all 0.3s;
+      }
+
+      .sell-btn-big:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.5);
+      }
+
+      .close-detail-btn {
+        margin-top: 2rem;
+        padding: 0.8rem 2.5rem;
+        font-family: Cinzel, serif;
+        background: transparent;
+        color: var(--gold);
+        border: 2px solid var(--gold);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .close-detail-btn:hover {
+        background: rgba(212, 175, 55, 0.1);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+      }
+
+      /* Collection Screen Styles */
+      .collection-screen {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-gradient);
+        z-index: 2000;
+        flex-direction: column;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .collection-screen.active {
+        display: flex;
+      }
+
+      .collection-title {
+        font-family: Cinzel, serif;
+        font-size: 2rem;
+        background: linear-gradient(
+          180deg,
+          #ffd700 0%,
+          #d4af37 40%,
+          #b8860b 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+      }
+
+      .collection-balance {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        font-family: Cinzel, serif;
+        font-size: 1.3rem;
+        color: var(--gold);
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+      }
+
+      .collection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .collection-card {
+        perspective: 1000px;
+        cursor: pointer;
+      }
+
+      .collection-card-inner {
+        width: 160px;
+        height: 220px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        margin: 0 auto;
+      }
+
+      .collection-card:hover .collection-card-inner {
+        transform: translateY(-8px);
+      }
+
+      .collection-card.flipped .collection-card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .collection-card-front,
+      .collection-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 15px;
+        border: 4px solid;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          145deg,
+          #1a1a2e 0%,
+          #16213e 30%,
+          #0f3460 50%,
+          #16213e 70%,
+          #1a1a2e 100%
+        );
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+          inset 0 2px 10px rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .collection-card-front::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.05) 50%,
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+
+      .collection-card-back {
+        transform: rotateY(180deg);
+        padding: 1.2rem;
+        justify-content: space-between;
+      }
+
+      .collection-card-front .card-value {
+        font-family: Cinzel, serif;
+        font-size: 4rem;
+        font-weight: bold;
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      }
+
+      .collection-card-front .card-suits {
+        font-size: 1.3rem;
+        margin-top: 0.5rem;
+        opacity: 0.8;
+      }
+
+      .collection-card-front .card-tier-name {
+        position: absolute;
+        bottom: 12px;
+        font-family: Cinzel, serif;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .collection-card-front .card-corner {
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        font-family: Cinzel, serif;
+        font-size: 1.1rem;
+        font-weight: bold;
+      }
+
+      .collection-card-back h4 {
+        font-family: Cinzel, serif;
+        font-size: 1.1rem;
+        margin: 0;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      .collection-card-back .back-stats {
+        width: 100%;
+        font-size: 0.8rem;
+      }
+
+      .collection-card-back .back-stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.4rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--cream);
+      }
+
+      .collection-card-back .sell-collection-btn {
+        padding: 0.6rem 1.2rem;
+        font-family: Cinzel, serif;
+        font-size: 0.75rem;
+        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        transition: all 0.3s;
+      }
+
+      .collection-card-back .sell-collection-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+      }
+
+      .collection-card-back .sell-collection-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .collection-card.black-edition .collection-card-front {
+        background: linear-gradient(
+          145deg,
+          #000 0%,
+          #1a1a2e 30%,
+          #0d0d0d 50%,
+          #1a1a2e 70%,
+          #000 100%
+        );
+        border-color: #ffd700;
+        animation: blackCardPulse 2s infinite;
+      }
+
+      @keyframes blackCardPulse {
+        0%,
+        100% {
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+            0 0 30px rgba(255, 215, 0, 0.3);
+        }
+        50% {
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+            0 0 50px rgba(255, 215, 0, 0.5);
+        }
+      }
+
+      .market-card-versions {
+        display: none;
+        padding: 0 1rem 1rem;
+        border-top: 1px solid rgba(212, 175, 55, 0.3);
+      }
+      .market-card-row.expanded .market-card-versions {
+        display: block;
+      }
+
+      .market-version-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.6rem;
+        margin-top: 1rem;
+        max-height: 450px;
+        overflow-y: auto;
+        padding: 0.3rem;
+      }
+
+      .market-version-item {
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid;
+        border-radius: 8px;
+        padding: 0.6rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        transition: all 0.3s;
+        cursor: pointer;
+        min-height: 110px;
+      }
+      .market-version-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      }
+      .market-version-item.owned {
+        background: rgba(34, 197, 94, 0.15);
+      }
+      .market-version-item.selected {
+        background: rgba(212, 175, 55, 0.25);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        transform: scale(1.02);
+      }
+
+      .version-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.1rem;
+      }
+      .version-tier {
+        font-family: Cinzel, serif;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+      .version-bonus {
+        font-size: 0.7rem;
+        color: var(--cream);
+        opacity: 0.9;
+      }
+
+      .version-price {
+        text-align: center;
+      }
+      .version-price .price {
+        font-family: Cinzel, serif;
+        font-size: 0.8rem;
+        font-weight: bold;
+      }
+      .version-price .change {
+        font-size: 0.65rem;
+        font-weight: bold;
+      }
+
+      .buy-btn {
+        padding: 0.35rem 0.7rem;
+        font-family: Cinzel, serif;
+        font-size: 0.65rem;
+        background: var(--gold);
+        color: var(--velvet);
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+      }
+      .buy-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+      }
+      .buy-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .buy-btn.owned {
+        background: #22c55e;
+        cursor: default;
+      }
+
+      .sell-btn {
+        padding: 0.35rem 0.5rem;
+        font-family: Cinzel, serif;
+        font-size: 0.55rem;
+        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+      }
+      .sell-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+      }
+
+      .current-badge {
+        padding: 0.25rem 0.5rem;
+        font-family: Cinzel, serif;
+        font-size: 0.6rem;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: white;
+        border-radius: 10px;
+        font-weight: bold;
+      }
+
+      .market-version-item.current {
+        background: rgba(34, 197, 94, 0.2);
+        border-width: 3px;
+      }
+
+      /* Karta CZARNA special styles */
+      .market-version-item.black-card {
+        background: linear-gradient(
+          135deg,
+          #000 0%,
+          #1a1a2e 50%,
+          #000 100%
+        ) !important;
+        border: 2px solid #fff !important;
+        animation: blackPulse 2s infinite;
+      }
+
+      @keyframes blackPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.3),
+            inset 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(255, 255, 255, 0.5),
+            inset 0 0 50px rgba(255, 255, 255, 0.2),
+            0 0 60px rgba(255, 215, 0, 0.3);
+        }
+      }
+
+      .buy-btn.black-buy {
+        background: linear-gradient(135deg, #000 0%, #1a1a2e 100%);
+        color: #ffd700;
+        border: 1px solid #ffd700;
+        font-size: 0.55rem;
+        padding: 0.35rem 0.5rem;
+        border: 2px solid #ffd700;
+        text-shadow: 0 0 10px #ffd700;
+        animation: blackBtnPulse 1.5s infinite;
+      }
+
+      @keyframes blackBtnPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+        }
+      }
+
+      .market-version-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.8rem;
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 0.5rem;
+      }
+
+      /* Chart */
+      .chart-container {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 10px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        display: none;
+      }
+      .chart-container.active {
+        display: block;
+        animation: chartFadeIn 0.3s ease-out;
+      }
+      @keyframes chartFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .chart-title {
+        font-family: Cinzel, serif;
+        font-size: 1rem;
+        color: var(--gold);
+      }
+      .chart-info {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+      .chart-time {
+        font-size: 0.8rem;
+        color: var(--cream);
+        opacity: 0.7;
+      }
+      .chart-live {
+        font-size: 0.75rem;
+        color: #22c55e;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .chart-live-dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: livePulse 1s ease-in-out infinite;
+      }
+      @keyframes livePulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(0.8);
+        }
+      }
+
+      .chart-canvas-container {
+        position: relative;
+        width: 100%;
+        height: 180px;
+      }
+
+      .chart-canvas {
+        width: 100%;
+        height: 100%;
+      }
+
+      .chart-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+        font-size: 0.7rem;
+        color: var(--cream);
+        opacity: 0.6;
+      }
+
+      .chart-current-price {
+        text-align: center;
+        margin-top: 0.8rem;
+        padding: 0.5rem;
+        background: rgba(212, 175, 55, 0.1);
+        border-radius: 8px;
+      }
+      .chart-current-price .price-value {
+        font-family: Cinzel, serif;
+        font-size: 1.5rem;
+        color: var(--gold-light);
+        font-weight: bold;
+      }
+      .chart-current-price .price-change {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-left: 0.5rem;
+      }
+      .price-change.up {
+        color: #22c55e;
+      }
+      .price-change.down {
+        color: #ef4444;
+      }
+
+      /* Upgrade notification */
+      .upgrade-notification {
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(
+          135deg,
+          rgba(34, 197, 94, 0.95) 0%,
+          rgba(22, 163, 74, 0.95) 100%
+        );
+        border: 3px solid var(--gold);
+        border-radius: 15px;
+        padding: 1.5rem 2.5rem;
+        text-align: center;
+        z-index: 3000;
+        animation: notificationPop 0.5s ease-out;
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+      }
+      @keyframes notificationPop {
+        0% {
+          transform: translateX(-50%) scale(0);
+          opacity: 0;
+        }
+        70% {
+          transform: translateX(-50%) scale(1.1);
+        }
+        100% {
+          transform: translateX(-50%) scale(1);
+          opacity: 1;
+        }
+      }
+      .upgrade-notification h3 {
+        font-family: Cinzel, serif;
+        font-size: 1.5rem;
+        color: var(--gold);
+        margin-bottom: 0.5rem;
+      }
+      .upgrade-notification p {
+        font-size: 1rem;
+        color: white;
+      }
+      .upgrade-notification .card-preview {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin: 1rem 0;
+        font-size: 1.2rem;
+      }
+
+      .pack-card-upgraded {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #22c55e;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 0.6rem;
+        font-weight: bold;
+      }
+
+      .pack-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        width: 100%;
+        max-width: 1000px;
+      }
+
+      .pack-item {
+        background: linear-gradient(
+          135deg,
+          rgba(212, 175, 55, 0.1) 0%,
+          rgba(139, 0, 0, 0.2) 100%
+        );
+        border: 2px solid var(--gold);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .pack-item:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        border-color: var(--gold-light);
+      }
+
+      .pack-icon {
+        font-size: 3.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .pack-name {
+        font-family: Cinzel, serif;
+        font-size: 1.1rem;
+        color: var(--gold);
+        margin-bottom: 0.3rem;
+      }
+      .pack-info {
+        font-size: 0.85rem;
+        color: var(--cream);
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+      }
+      .pack-price {
+        font-family: Cinzel, serif;
+        font-size: 1.3rem;
+        color: var(--gold-light);
+        font-weight: bold;
+      }
+
+      .pack-opening-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.97);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      }
+      .pack-opening-overlay.active {
+        display: flex;
+      }
+
+      .pack-cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem;
+        max-width: 95%;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+
+      .pack-card {
+        width: 130px;
+        height: 185px;
+        background: linear-gradient(
+          145deg,
+          var(--velvet) 0%,
+          var(--velvet-light) 50%,
+          var(--velvet) 100%
+        );
+        border: 4px solid var(--gold);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        animation: cardReveal 0.6s ease-out forwards;
+        transform: scale(0);
+        position: relative;
+        overflow: hidden;
+      }
+      .pack-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        animation: cardShine 2s ease-in-out infinite;
+      }
+      .pack-card.glow {
+        animation: cardReveal 0.6s ease-out forwards,
+          cardPulse 2s ease-in-out infinite;
+      }
+      .pack-card.rainbow {
+        animation: cardReveal 0.6s ease-out forwards,
+          rainbowGlow 3s linear infinite;
+      }
+      @keyframes cardReveal {
+        0% {
+          transform: scale(0) rotateY(180deg);
+        }
+        70% {
+          transform: scale(1.1) rotateY(20deg);
+        }
+        100% {
+          transform: scale(1) rotateY(0);
+        }
+      }
+      @keyframes cardPulse {
+        0%,
+        100% {
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.3);
+        }
+      }
+      @keyframes cardShine {
+        0% {
+          left: -100%;
+        }
+        50%,
+        100% {
+          left: 100%;
+        }
+      }
+      @keyframes rainbowGlow {
+        0% {
+          box-shadow: 0 0 30px #ff0000;
+        }
+        16% {
+          box-shadow: 0 0 30px #ff8800;
+        }
+        33% {
+          box-shadow: 0 0 30px #ffff00;
+        }
+        50% {
+          box-shadow: 0 0 30px #00ff00;
+        }
+        66% {
+          box-shadow: 0 0 30px #0088ff;
+        }
+        83% {
+          box-shadow: 0 0 30px #8800ff;
+        }
+        100% {
+          box-shadow: 0 0 30px #ff0000;
+        }
+      }
+
+      .pack-card-value {
+        font-family: Cinzel, serif;
+        font-size: 2.8rem;
+        font-weight: bold;
+        line-height: 1;
+      }
+      .pack-card-suit {
+        font-size: 2.2rem;
+        margin: 0.2rem 0;
+      }
+      .pack-card-tier {
+        font-size: 0.75rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .pack-card-bonus {
+        font-size: 0.9rem;
+        color: var(--gold);
+        margin-top: 0.3rem;
+        font-weight: bold;
+      }
+
+      /* KOLEKCJA */
+      .collection-stats {
+        font-family: Cinzel, serif;
+        font-size: 1rem;
+        color: var(--cream);
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      .collection-stats b {
+        color: var(--gold);
+      }
+
+      .collection-filters {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        font-family: Cinzel, serif;
+        font-size: 0.85rem;
+        background: rgba(212, 175, 55, 0.1);
+        border: 2px solid var(--gold);
+        border-radius: 20px;
+        color: var(--gold);
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .filter-btn:hover {
+        background: rgba(212, 175, 55, 0.25);
+      }
+      .filter-btn.active {
+        background: var(--gold);
+        color: var(--velvet);
+      }
+
+      .collection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.8rem;
+        width: 100%;
+        max-width: 1000px;
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 0.5rem;
+      }
+
+      .collection-card {
+        width: 100%;
+        aspect-ratio: 2.5/3.5;
+        background: linear-gradient(
+          145deg,
+          var(--velvet) 0%,
+          var(--velvet-light) 100%
+        );
+        border: 3px solid var(--gold);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.3rem;
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+      .collection-card:hover {
+        transform: scale(1.1);
+        z-index: 10;
+      }
+      .collection-card.glow {
+        animation: cardPulse 2s ease-in-out infinite;
+      }
+      .collection-card.rainbow {
+        animation: rainbowGlow 3s linear infinite;
+      }
+
+      .collection-card.base-card {
+        border-style: dashed;
+        position: relative;
+      }
+      .collection-card.base-card::after {
+        content: "⭐";
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        font-size: 0.6rem;
+      }
+
+      .collection-card-value {
+        font-family: Cinzel, serif;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1;
+      }
+      .collection-card-suit {
+        font-size: 1.2rem;
+      }
+      .collection-card-tier {
+        font-size: 0.5rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-top: 0.2rem;
+      }
+      .collection-card-bonus {
+        font-size: 0.6rem;
+        color: var(--gold);
+      }
+
+      @media (max-width: 600px) {
+        .pack-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .pack-card {
+          width: 110px;
+          height: 155px;
+        }
+        .pack-card-value {
+          font-size: 2rem;
+        }
+        .pack-card-suit {
+          font-size: 1.6rem;
+        }
+        .collection-grid {
+          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        }
+      }
+    </style>
   </body>
 </html>
